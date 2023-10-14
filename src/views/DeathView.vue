@@ -4,146 +4,145 @@
       <v-expansion-panel-text>
         <h6 class="text-h6">ワクチンに関する条件の設定</h6>
         <v-row>
-        <v-col cols="12" sm="4">
-        <v-text-field
-          label="メーカー"
-          v-model="makerFilterVal"
-          @input="triggerFunc()"
-          clearable
-          hide-details
-        ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="4">
-        <v-text-field
-          label="ワクチン名"
-          v-model="vaccineNameFilterVal"
-          @input="triggerFunc()"
-          clearable
-          hide-details
-        ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="4">
-        <v-text-field
-          label="ロット番号"
-          v-model="lotNoFilterVal"
-          @input="triggerFunc()"
-          clearable
-          hide-details
-        ></v-text-field>
-        </v-col>
+          <v-col cols="12" sm="4">
+            <v-text-field
+              label="メーカー"
+              v-model="makerFilterVal"
+              @input="triggerFunc()"
+              clearable
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="4">
+            <v-text-field
+              label="ワクチン名"
+              v-model="vaccineNameFilterVal"
+              @input="triggerFunc()"
+              clearable
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="4">
+            <v-text-field
+              label="ロット番号"
+              v-model="lotNoFilterVal"
+              @input="triggerFunc()"
+              clearable
+              hide-details
+            ></v-text-field>
+          </v-col>
         </v-row>
 
-        <br>
+        <br />
         <h6 class="text-h6">個人に関する条件の設定</h6>
         <v-row>
-        <v-col cols="12" sm="6" class="group">
-        <v-text-field
-          label="症状"
-          v-model="causeFilterVal"
-          @input="triggerFunc()"
-          clearable
-          hide-details
-        ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="6" class="group">
-        <v-text-field
-          label="因果関係"
-          v-model="causalRelFilterVal"
-          @input="triggerFunc()"
-          clearable
-          hide-details
-        ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="3" class="group">
-        <v-text-field
-          label="年齢（from）"
-          v-model="ageFromFilterVal"
-          @input="triggerFunc()"
-          type="number"
-          clearable
-          hide-details
-        ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="3" class="group">
-        <v-text-field
-          label="年齢（to）"
-          v-model="ageToFilterVal"
-          @input="triggerFunc()"
-          type="number"
-          clearable
-          hide-details
-        ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="6" class="group">
-        <v-text-field
-          label="性別"
-          v-model="genderFilterVal"
-          @input="triggerFunc()"
-          clearable
-          hide-details
-        ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="3" class="group">
-        <v-text-field
-          label="接種日（from）"
-          v-model="vaccinatedDateFromFilterVal"
-          @input="triggerFunc()"
-          type="date"
-          clearable
-          hide-details
-        ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="3" class="group">
-        <v-text-field
-          label="接種日（to）"
-          v-model="vaccinatedDateToFilterVal"
-          @input="triggerFunc()"
-          type="date"
-          clearable
-          hide-details
-        ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="3" class="group">
-        <v-text-field
-          label="症状発生日（from）"
-          v-model="occurredDateFromFilterVal"
-          @input="triggerFunc()"
-          type="date"
-          clearable
-          hide-details
-        ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="3" class="group">
-        <v-text-field
-          label="症状発生日（to）"
-          v-model="occurredDateToFilterVal"
-          @input="triggerFunc()"
-          type="date"
-          clearable
-          hide-details
-        ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="6" class="group">
-        <v-text-field
-          label="接種回数"
-          v-model="vaccinatedTimesFilterVal"
-          @input="triggerFunc()"
-          type="number"
-          clearable
-          hide-details
-        ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="6" class="group">
-        <v-text-field
-          label="基礎疾患"
-          v-model="preExistingConditionFilterVal"
-          @input="triggerFunc()"
-          clearable
-          hide-details
-        ></v-text-field>
-        </v-col>
+          <v-col cols="12" sm="6" class="group">
+            <v-text-field
+              label="症状"
+              v-model="causeFilterVal"
+              @input="triggerFunc()"
+              clearable
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="6" class="group">
+            <v-text-field
+              label="因果関係"
+              v-model="causalRelFilterVal"
+              @input="triggerFunc()"
+              clearable
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="3" class="group">
+            <v-text-field
+              label="年齢（from）"
+              v-model="ageFromFilterVal"
+              @input="triggerFunc()"
+              type="number"
+              clearable
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="3" class="group">
+            <v-text-field
+              label="年齢（to）"
+              v-model="ageToFilterVal"
+              @input="triggerFunc()"
+              type="number"
+              clearable
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="6" class="group">
+            <v-text-field
+              label="性別"
+              v-model="genderFilterVal"
+              @input="triggerFunc()"
+              clearable
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="3" class="group">
+            <v-text-field
+              label="接種日（from）"
+              v-model="vaccinatedDateFromFilterVal"
+              @input="triggerFunc()"
+              type="date"
+              clearable
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="3" class="group">
+            <v-text-field
+              label="接種日（to）"
+              v-model="vaccinatedDateToFilterVal"
+              @input="triggerFunc()"
+              type="date"
+              clearable
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="3" class="group">
+            <v-text-field
+              label="症状発生日（from）"
+              v-model="occurredDateFromFilterVal"
+              @input="triggerFunc()"
+              type="date"
+              clearable
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="3" class="group">
+            <v-text-field
+              label="症状発生日（to）"
+              v-model="occurredDateToFilterVal"
+              @input="triggerFunc()"
+              type="date"
+              clearable
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="6" class="group">
+            <v-text-field
+              label="接種回数"
+              v-model="vaccinatedTimesFilterVal"
+              @input="triggerFunc()"
+              type="number"
+              clearable
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="6" class="group">
+            <v-text-field
+              label="基礎疾患"
+              v-model="preExistingConditionFilterVal"
+              @input="triggerFunc()"
+              clearable
+              hide-details
+            ></v-text-field>
+          </v-col>
         </v-row>
-
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
