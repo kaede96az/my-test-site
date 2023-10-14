@@ -4,17 +4,7 @@ on:
   push:
     branches:
       - 'main'
-    paths:
-      - '.github/workflows/**'
-      - 'public/**'
-      - 'src/**'
-      - 'package.json'
   pull_request:
-    paths:
-      - '.github/workflows/**'
-      - 'public/**'
-      - 'src/**'
-      - 'package.json'
   workflow_call:
 
 
