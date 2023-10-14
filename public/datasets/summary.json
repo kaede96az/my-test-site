@@ -1,0 +1,31 @@
+{
+	"reported_items": [
+		{
+			"title": "副反応疑い",
+			"data": "36,441",
+			"unit": "件"
+		},
+		{
+			"title": "重篤",
+			"data": "8,627",
+			"unit": "件"
+		},
+		{
+			"title": "死亡",
+			"data": "2,076",
+			"unit": "件"
+		}
+	],
+	"certified_items": [
+		{
+			"title": "副反応",
+			"data": "4,650",
+			"unit": "件"
+		},
+		{
+			"title": "死亡",
+			"data": "269",
+			"unit": "件"
+		}
+	]
+}
