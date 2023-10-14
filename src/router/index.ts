@@ -6,7 +6,9 @@ import type { IReportedDeathIssues } from '@/types/ReportedDeath'
 
 // todo: 本番リポジトリに行く際には、いろいろパス修正が必要（my-test-site -> new-repo-name）
 
-const summaryRes = await axios.get<ISummaryItems>('https://kaede96az.github.io/my-test-site/datasets/summary.json')
+const summaryRes = await axios.get<ISummaryItems>(
+  'https://kaede96az.github.io/datasets/summary.json'
+)
 const summaryItems = summaryRes.data
 const reportedDeathRes = await axios.get<IReportedDeathIssues>(
   'https://gist.githubusercontent.com/kaede96az/88e2090c0a0f81615cd37abbfb5474d0/raw/4e865fb0a6a686116e720eb4c549aed02c1f3a21/reported-death-issues.json'
@@ -15,21 +17,21 @@ const reportedDeathIssues = reportedDeathRes.data
 
 export const routes = [
   {
-    path: '/my-test-site',
+    path: '/',
     name: 'Home',
     icon: 'mdi-view-dashboard-outline',
     component: HomeView,
     props: { items: summaryItems }
   },
   {
-    path: '/my-test-site/reported-death-issues',
+    path: '/reported-death-issues',
     name: '死亡報告',
     icon: 'mdi-heart-off',
     props: { items: reportedDeathIssues },
     component: () => import('../views/DeathView.vue')
   },
   {
-    path: '/my-test-site/about',
+    path: '/about',
     name: 'About',
     // route level code-splitting
     // this generates a separate chunk (About.[hash].js) for this route
