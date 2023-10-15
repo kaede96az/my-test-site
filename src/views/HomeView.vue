@@ -39,8 +39,10 @@ const selectTileColor = (title: string): string => {
 </script>
 
 <template>
+  <v-container>
   <h4 class="text-h4">報告数</h4>
-  <v-container v-for="item in items.reported_items" :key="item.title">
+  <v-row>
+  <v-col cols="12" sm="4" v-for="item in items.reported_items" :key="item.title">
     <SummaryCard
       :icon="selectIcon(item.title)"
       :tile_color="selectTileColor(item.title)"
@@ -48,10 +50,14 @@ const selectTileColor = (title: string): string => {
       :data="item.data"
       :unit="item.unit"
     />
+  </v-col>
+  </v-row>
   </v-container>
 
+  <v-container>
   <h4 class="text-h4">因果関係を認定済み</h4>
-  <v-container v-for="item in items.certified_items" :key="item.title">
+  <v-row>
+  <v-col cols="12" sm="6" v-for="item in items.certified_items" :key="item.title">
     <SummaryCard
       :icon="selectIcon(item.title)"
       :tile_color="selectTileColor(item.title)"
@@ -59,6 +65,8 @@ const selectTileColor = (title: string): string => {
       :data="item.data"
       :unit="item.unit"
     />
+  </v-col>
+  </v-row>
   </v-container>
 </template>
 
