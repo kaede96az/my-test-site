@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import { routes } from './router/index'
+const baseURL = import.meta.env.BASE_URL
 </script>
 
 <script lang="ts">
@@ -19,7 +20,7 @@ export default {
           :prepend-icon="r.icon"
           :title="r.name"
           :value="r.name"
-          :href="r.path"
+          :href="`${baseURL}#${r.path}`"
         ></v-list-item>
       </v-list>
     </v-navigation-drawer>

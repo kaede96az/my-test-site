@@ -1,13 +1,11 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import axios from 'axios'
-import type { ISummaryItems } from '@/types/Summary'
-import type { IReportedDeathIssues } from '@/types/ReportedDeath'
-
-// todo: 本番リポジトリに行く際には、いろいろパス修正が必要（my-test-site -> new-repo-name）
+import type { ISummaryItems } from '../types/Summary'
+import type { IReportedDeathIssues } from '../types/ReportedDeath'
 
 const summaryRes = await axios.get<ISummaryItems>(
-  'https://kaede96az.github.io/datasets/summary.json'
+  'https://gist.githubusercontent.com/kaede96az/b9102295771f6c4bf0f3e98ea2d2e6f2/raw/171a18e121e3f776c95d0e2fc77ec45486e05ac9/summary.json'
 )
 const summaryItems = summaryRes.data
 const reportedDeathRes = await axios.get<IReportedDeathIssues>(
@@ -41,8 +39,10 @@ export const routes = [
   }
 ]
 
+//console.log('BASE_URL: ', import.meta.env.BASE_URL)
+
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: routes
 })
 

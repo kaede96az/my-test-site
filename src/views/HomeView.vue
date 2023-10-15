@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SummaryCard from '../components/SummaryCard.vue'
-import type { ISummaryItems } from '@/types/Summary'
+import type { ISummaryItems } from '../types/Summary'
 
 defineProps<{
   items: ISummaryItems
