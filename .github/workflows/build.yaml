@@ -4,15 +4,7 @@ on:
   push:
     branches:
       - 'main'
-    paths:
-      - 'public/**'
-      - 'src/**'
-      - 'package.json'
   pull_request:
-    paths:
-      - 'public/**'
-      - 'src/**'
-      - 'package.json'
   workflow_call:
 
 
@@ -21,7 +13,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup node
         uses: actions/setup-node@v3
         with:
