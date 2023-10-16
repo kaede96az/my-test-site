@@ -5,7 +5,7 @@ import type { ISummaryItems } from '../types/Summary'
 import type { IReportedDeathIssues } from '../types/ReportedDeath'
 
 const summaryRes = await axios.get<ISummaryItems>(
-  'https://gist.githubusercontent.com/kaede96az/b9102295771f6c4bf0f3e98ea2d2e6f2/raw/68baf7e37a0d6b35fa0040830fcac91b2cdbb837/summary.json'
+  'https://gist.githubusercontent.com/kaede96az/b9102295771f6c4bf0f3e98ea2d2e6f2/raw/50897adfbc7cf21466502490df976a5619c25247/summary.json'
 )
 const summaryItems = summaryRes.data
 const reportedDeathRes = await axios.get<IReportedDeathIssues>(
