@@ -14,9 +14,11 @@ export default {
 
 <template>
   <v-app>
-    <v-navigation-drawer app v-model="drawer">
-      <v-list v-for="r in routes" :key="r.name">
+    <v-navigation-drawer v-model="drawer" temporary>
+      <v-list>
         <v-list-item
+          v-for="r in routes"
+          :key="r.name"
           :prepend-icon="r.icon"
           :title="r.name"
           :value="r.name"
