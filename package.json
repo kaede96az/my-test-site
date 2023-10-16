@@ -14,10 +14,12 @@
   },
   "dependencies": {
     "@mdi/font": "^7.3.67",
+    "apexcharts": "^3.43.2-0",
     "axios": "^1.5.1",
     "pinia": "^2.1.6",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4",
+    "vue3-apexcharts": "^1.4.4",
     "vuetify": "^3.3.21"
   },
   "devDependencies": {

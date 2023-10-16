@@ -10,6 +10,7 @@ import * as allComponents from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import { VDataTable } from 'vuetify/labs/VDataTable'
+import VueApexCharts from "vue3-apexcharts";
 
 const vuetify = createVuetify({
   components: {
@@ -27,5 +28,6 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(vuetify)
+app.use(VueApexCharts);
 
 app.mount('#app')
