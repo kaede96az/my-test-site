@@ -52,24 +52,7 @@ const selectTileColor = (title: string): string => {
         />
       </v-col>
     </v-row>
-  </v-container>
 
-  <v-container>
-    <h4 class="text-h4">因果関係を認定済み</h4>
-    <v-row>
-      <v-col cols="12" sm="6" v-for="item in items.certified_issues" :key="item.title">
-        <SummaryCard
-          :icon="selectIcon(item.title)"
-          :tile_color="selectTileColor(item.title)"
-          :title="item.title"
-          :data="item.data"
-          :unit="item.unit"
-        />
-      </v-col>
-    </v-row>
-  </v-container>
-
-  <v-container>
     <v-row>
       <v-col cols="12" sm="6">
         <apexchart
@@ -93,6 +76,21 @@ const selectTileColor = (title: string): string => {
             }
           ]"
         ></apexchart>
+      </v-col>
+    </v-row>
+  </v-container>
+
+  <v-container>
+    <h4 class="text-h4">因果関係を認定済み</h4>
+    <v-row>
+      <v-col cols="12" sm="6" v-for="item in items.certified_issues" :key="item.title">
+        <SummaryCard
+          :icon="selectIcon(item.title)"
+          :tile_color="selectTileColor(item.title)"
+          :title="item.title"
+          :data="item.data"
+          :unit="item.unit"
+        />
       </v-col>
     </v-row>
   </v-container>
