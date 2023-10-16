@@ -61,7 +61,7 @@ const selectTileColor = (title: string): string => {
           :options="{
             chart: { id: 'number_of_deaths_reported_by_age_group' },
             colors: ['#c83f3d'],
-            title: { text: '年代別死亡報告数', floating: true },
+            title: { text: '年代別の死亡報告数', floating: true },
             xaxis: {
               title: { text: '年代' },
               categories: items.number_of_deaths_reported_by_age_group.x_axis.data
@@ -73,6 +73,29 @@ const selectTileColor = (title: string): string => {
             {
               name: items.number_of_deaths_reported_by_age_group.y_axis.name,
               data: items.number_of_deaths_reported_by_age_group.y_axis.data
+            }
+          ]"
+        ></apexchart>
+      </v-col>
+      <v-col cols="12" sm="6">
+        <apexchart
+          height="400"
+          type="bar"
+          :options="{
+            chart: { id: 'number_of_deaths_reported_by_vaccinated_times_group' },
+            colors: ['#c83f3d'],
+            title: { text: '接種回数別の死亡報告数', floating: true },
+            xaxis: {
+              title: { text: '接種回数' },
+              categories: items.number_of_deaths_reported_by_vaccinated_times_group.x_axis.data
+            },
+            yaxis: { title: { text: '死亡報告数 (人)' } },
+            plotOptions: { bar: { horizontal: true, borderRadius: 2 } }
+          }"
+          :series="[
+            {
+              name: items.number_of_deaths_reported_by_vaccinated_times_group.y_axis.name,
+              data: items.number_of_deaths_reported_by_vaccinated_times_group.y_axis.data
             }
           ]"
         ></apexchart>
