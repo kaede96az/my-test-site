@@ -146,9 +146,10 @@
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
+  <br>
 
   <v-data-table
-    :items="items"
+    :items="(items as any)"
     :headers="headers"
     :search="searchTrigger"
     :custom-filter="
@@ -171,15 +172,29 @@
       basic_disease: preExistingConditionFilterFunc
     }"
   >
+    <template v-slot:[`item.maker`]="item">
+      <div class="maker-text"> {{ item.value }} </div>
+    </template>
+    <template v-slot:[`item.vaccine_name`]="item">
+      <div class="vaccine-name-text"> {{ item.value }} </div>
+    </template>
+    <template v-slot:[`item.basic_disease`]="item">
+      <v-btn v-if="String(item.value).length > 10" class="detail-button">
+        {{ String(item.value).substring(0,6) + '...'}}
+        <v-tooltip activator="parent" location="bottom" :open-on-hover="false" :open-on-forcus="true">{{ item.value }}</v-tooltip>
+      </v-btn>
+      <span v-else>{{ item.value }}</span>
+    </template>
   </v-data-table>
 </template>
 
 <script setup lang="ts">
+import type { IReportedDeathIssues } from '@/types/ReportedDeath';
 import { shallowRef } from 'vue'
 
 // searchになにか文字を指定することでv-data-tableのfilterが実行されるようにする。（空文字だとフィルタリングがOffになる）
 // custom-filterの処理は常にtrueを返すように上書きして、search文字列によるフィルタリング処理が行われないようにする。
-// custom-key-filterの設定は、keyに対応する列のアイテムに対して指定の関数をフィルタリング処理として使うというもの。
+// custom-key-filterの設定は、keyに対応する列のアイテムに対して指定の関数をフィルタリング処理として使う。
 const searchTrigger = shallowRef('a')
 const trigger = () => {
   searchTrigger.value = searchTrigger.value == 'a' ? 'b' : 'a'
@@ -202,7 +217,7 @@ const preExistingConditionFilterVal = shallowRef('')
 
 const triggerFunc = () => {
   // todo: 変化があった入力欄がどれなのかを判別する必要があれば、string型の引数で情報を
-  // もらうようにすればよいと思う。
+  // もらうように変更して対応すればよいと思う。
   trigger()
 }
 
@@ -228,7 +243,8 @@ const causalRelFilterFunc = (value: string): boolean => {
 }
 const ageFilterFunc = (value: string): boolean => {
   const v = Number(value)
-  // コメントがついているなど数字に変換できないデータをフィルタリングする際は非表示にする
+  // コメントがついているなど数字に変換できないデータの場合は、数字による大小比較が
+  // 困難なためフィルタリング時に「非表示」にする
   if (isNaN(v)) return false
 
   if (ageFromFilterVal.value != '') {
@@ -251,7 +267,8 @@ const genderFilterFunc = (value: string): boolean => {
 }
 const vaccinatedDateFilterFunc = (value: string): boolean => {
   const v = new Date(value)
-  // ワクチン接種日が「不明」の場合や、改行・注記など含む場合はフィルタリングで非表示にする
+  // ワクチン接種日が「不明」の場合や、改行・注記など含んでいて「YYYY/MM/DD」形式でない場合は
+  // Date型に変換しての比較が困難なためフィルタリング時に「非表示」にする
   if (isNaN(v.getTime())) return false
 
   if (vaccinatedDateFromFilterVal.value != null) {
@@ -270,7 +287,8 @@ const vaccinatedDateFilterFunc = (value: string): boolean => {
 }
 const occurredDateFilterFunc = (value: string): boolean => {
   const v = new Date(value)
-  // ワクチン接種日が「不明」の場合や、改行・注記など含む場合はフィルタリングで非表示にする
+  // 症状発生日が「不明」の場合や、改行・注記など含んでいて「YYYY/MM/DD」形式でない場合は
+  // Date型に変換しての比較が困難なためフィルタリング時に「非表示」にする
   if (isNaN(v.getTime())) return false
 
   if (occurredDateFromFilterVal.value != null) {
@@ -296,10 +314,8 @@ const preExistingConditionFilterFunc = (value: string): boolean => {
   return value.indexOf(preExistingConditionFilterVal.value) > -1
 }
 
-// todo: v-data-tableの列ヘッダに相当する型が公開されていないなど、まだ発展途上の仕組みで型チェックを通すのが
-// 困難なため、any型を使って型チェックを無効化している。
 defineProps<{
-  items: any
+  items: IReportedDeathIssues
 }>()
 
 let headers: any
@@ -334,5 +350,15 @@ headers = [
 .group {
   padding-top: 0.4rem;
   padding-bottom: 0.3rem;
+}
+.maker-text {
+  font-size: 0.9rem;
+}
+.vaccine-name-text {
+  font-size: 0.74rem;
+}
+
+.detail-button {
+  width: 10rem;
 }
 </style>
