@@ -181,7 +181,7 @@
     <template v-slot:[`item.basic_disease`]="item">
       <v-btn v-if="String(item.value).length > 10" class="detail-button">
         {{ String(item.value).substring(0,6) + '...'}}
-        <v-tooltip activator="parent" location="bottom" :open-on-hover="false" :open-on-click="true">{{ item.value }}</v-tooltip>
+        <v-tooltip activator="parent" location="bottom" :open-on-hover="true" :open-on-click="true">{{ item.value }}</v-tooltip>
       </v-btn>
       <span v-else>{{ item.value }}</span>
     </template>
