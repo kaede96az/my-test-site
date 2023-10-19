@@ -16,14 +16,16 @@ export default {
   <v-app>
     <v-navigation-drawer v-model="drawer" temporary>
       <v-list>
-        <v-list-item
-          v-for="r in routes"
-          :key="r.name"
-          :prepend-icon="r.icon"
-          :title="r.name"
-          :value="r.name"
-          :href="`${baseURL}#${r.path}`"
-        ></v-list-item>
+        <div v-for="r in routes" :key="r.name">
+          <v-list-item
+            v-if="r.path != ''"
+            :prepend-icon="r.icon"
+            :title="r.name"
+            :value="r.name"
+            :href="`${baseURL}#${r.path}`"
+          ></v-list-item>
+          <span v-else>{{ r.name }}</span>
+        </div>
       </v-list>
     </v-navigation-drawer>
 
