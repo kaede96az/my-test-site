@@ -1,4 +1,8 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { AppBarTitle, AppBarColor} from '@/router/data'
+AppBarTitle.value = 'Aboutページ'
+AppBarColor.value = 'blue-grey-lighten-4'
+</script>
 
 <template>
   <v-sheet>

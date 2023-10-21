@@ -74,6 +74,10 @@ import SummaryCard from '../components/SummaryCard.vue'
 import type { ISummaryItems } from '@/types/Summary'
 import { SelectIcon } from '@/tools/SelectIcon'
 import { SelectTileColor } from '@/tools/SelectTileColor'
+import { AppBarTitle, AppBarColor} from '@/router/data'
+
+AppBarTitle.value = '副反応疑い報告 - 集計結果'
+AppBarColor.value = '#2962ff'
 
 defineProps<{
   items: ISummaryItems

@@ -5,7 +5,6 @@ export const HomeRoute = {
   name: 'トップページ',
   icon: 'mdi-home',
   component: () => import('../views/HomeView.vue'),
-  props: { items: SummaryItems }
 }
 export const AboutRoute = {
   path: '/about',

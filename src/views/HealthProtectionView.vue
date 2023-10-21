@@ -25,6 +25,10 @@ import SummaryCard from '../components/SummaryCard.vue'
 import type { ISummaryItems } from '../types/Summary'
 import { SelectIcon } from '@/tools/SelectIcon'
 import { SelectTileColor } from '@/tools/SelectTileColor'
+import { AppBarTitle, AppBarColor} from '@/router/data'
+
+AppBarTitle.value = '予防接種健康被害 救済制度 - 集計結果'
+AppBarColor.value = '#00c853'
 
 defineProps<{
   items: ISummaryItems

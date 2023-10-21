@@ -7,6 +7,11 @@ import {
   AboutRoute,
   HomeRoute
 } from '@/router/routes'
+import { AppBarTitle, AppBarColor} from '@/router/data'
+import { shallowRef } from 'vue'
+
+const selectedItem = shallowRef('')
+
 const baseURL = import.meta.env.BASE_URL
 </script>
 
@@ -20,6 +25,13 @@ export default {
 
 <template>
   <v-app>
+    <v-app-bar app :color="AppBarColor">
+      <template v-slot:prepend>
+        <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-toolbar-title>{{ AppBarTitle }}</v-toolbar-title>
+      </template>
+    </v-app-bar>
+
     <v-navigation-drawer v-model="drawer" temporary width="10rem">
       <v-list>
         <v-list-item>
@@ -34,6 +46,8 @@ export default {
           :value="HomeRoute.name"
           :href="`${baseURL}#${HomeRoute.path}`"
           class="root-icon home"
+          :active="HomeRoute.name === selectedItem"
+          @click="selectedItem = HomeRoute.name"
         >
           <v-list-item-title class="root-title">{{ HomeRoute.name }}</v-list-item-title>
         </v-list-item>
@@ -55,6 +69,8 @@ export default {
             prepend-icon="mdi-chart-bar"
             :href="`${baseURL}#${SuspectedIssuesHomeRoute.path}`"
             class="sub-icon suspeted-issue-sub"
+            :active="SuspectedIssuesHomeRoute.name === selectedItem"
+            @click="selectedItem = SuspectedIssuesHomeRoute.name"
           >
             <v-list-item-title class="sub-title suspeted-issue-sub">集計結果</v-list-item-title>
           </v-list-item>
@@ -65,6 +81,8 @@ export default {
             :value="r.name"
             :href="`${baseURL}#${r.path}`"
             class="sub-icon suspeted-issue-sub"
+            :active="r.name === selectedItem"
+            @click="selectedItem = r.name"
           >
             <v-list-item-title class="sub-title suspeted-issue-sub">{{ r.name }}</v-list-item-title>
           </v-list-item>
@@ -87,6 +105,8 @@ export default {
             prepend-icon="mdi-chart-bar"
             :href="`${baseURL}#${HealthProtectionHomeRoute.path}`"
             class="sub-icon health-protection-sub"
+            :active="HealthProtectionHomeRoute.name === selectedItem"
+            @click="selectedItem = HealthProtectionHomeRoute.name"
           >
             <v-list-item-title class="sub-title health-protection-sub">集計結果</v-list-item-title>
           </v-list-item>
@@ -107,18 +127,13 @@ export default {
           :value="AboutRoute.name"
           :href="`${baseURL}#${AboutRoute.path}`"
           class="root-icon"
+          :active="AboutRoute.name === selectedItem"
+          @click="selectedItem = AboutRoute.name"
         >
           <v-list-item-title class="root-title">{{ AboutRoute.name }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-
-    <v-app-bar app>
-      <template v-slot:prepend>
-        <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-toolbar-title>副反応ダッシュボード</v-toolbar-title>
-      </template>
-    </v-app-bar>
 
     <!-- アプリケーションのコンポーネントに基づいてコンテンツのサイズを決定 -->
     <v-main>
