@@ -1,9 +1,8 @@
 <template>
   <v-container>
-
     <v-row>
       <v-col cols="12">
-    	<h4 class="text-h4">予防接種健康被害 救済制度</h4>
+        <h4 class="text-h4">予防接種健康被害 救済制度</h4>
       </v-col>
     </v-row>
 
@@ -18,15 +17,14 @@
         />
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
 <script setup lang="ts">
 import SummaryCard from '../components/SummaryCard.vue'
 import type { ISummaryItems } from '../types/Summary'
-import {SelectIcon} from '@/tools/SelectIcon';
-import {SelectTileColor} from '@/tools/SelectTileColor';
+import { SelectIcon } from '@/tools/SelectIcon'
+import { SelectTileColor } from '@/tools/SelectTileColor'
 
 defineProps<{
   items: ISummaryItems

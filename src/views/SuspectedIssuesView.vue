@@ -71,14 +71,13 @@
 
 <script setup lang="ts">
 import SummaryCard from '../components/SummaryCard.vue'
-import type { ISummaryItems } from '@/types/Summary';
-import {SelectIcon} from '@/tools/SelectIcon';
-import {SelectTileColor} from '@/tools/SelectTileColor';
+import type { ISummaryItems } from '@/types/Summary'
+import { SelectIcon } from '@/tools/SelectIcon'
+import { SelectTileColor } from '@/tools/SelectTileColor'
 
 defineProps<{
   items: ISummaryItems
 }>()
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

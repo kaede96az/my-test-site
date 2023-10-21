@@ -1,5 +1,5 @@
 <template>
-<v-expansion-panels>
+  <v-expansion-panels>
     <v-expansion-panel title="詳細検索...">
       <v-expansion-panel-text>
         <h6 class="text-h6">ワクチンに関する条件の設定</h6>
@@ -128,10 +128,10 @@
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
-  <br>
+  <br />
 
   <v-data-table
-    :items="(items as any)"
+    :items="items as any"
     :headers="headers"
     :search="searchTrigger"
     :custom-filter="
@@ -149,43 +149,55 @@
       date_vaccinated: vaccinatedDateFilterFunc,
       date_occurred: occurredDateFilterFunc,
       count: vaccinatedTimesFilterFunc,
-      basic_disease: preExistingConditionFilterFunc,
+      basic_disease: preExistingConditionFilterFunc
     }"
   >
     <template v-slot:[`item.maker`]="item">
-      <div class="maker-text"> {{ item.value }} </div>
+      <div class="maker-text">{{ item.value }}</div>
     </template>
     <template v-slot:[`item.vaccine_name`]="item">
-      <div class="vaccine-name-text"> {{ item.value }} </div>
+      <div class="vaccine-name-text">{{ item.value }}</div>
     </template>
     <template v-slot:[`item.date_occurred`]="data">
-      <v-expansion-panels v-if="String(data.value).split('\n').length > 1" v-model="expantionModel" multiple>
-        <v-expansion-panel :value=" data.internalItem.raw.no + '-date_occurred'">
-          <div v-for="t,k in String(data.value).split('\n')" :key="k">
-          <v-expansion-panel-title v-if="k == 0">{{ t }}</v-expansion-panel-title>
-          <v-expansion-panel-text v-else>{{ t }}</v-expansion-panel-text>
+      <v-expansion-panels
+        v-if="String(data.value).split('\n').length > 1"
+        v-model="expantionModel"
+        multiple
+      >
+        <v-expansion-panel :value="data.internalItem.raw.no + '-date_occurred'">
+          <div v-for="(t, k) in String(data.value).split('\n')" :key="k">
+            <v-expansion-panel-title v-if="k == 0">{{ t }}</v-expansion-panel-title>
+            <v-expansion-panel-text v-else>{{ t }}</v-expansion-panel-text>
           </div>
           <v-btn @click="expantion(data.internalItem.raw.no)">more..</v-btn>
         </v-expansion-panel>
       </v-expansion-panels>
     </template>
     <template v-slot:[`item.PT`]="data">
-      <v-expansion-panels v-if="String(data.value).split('\n').length > 1" v-model="expantionModel" multiple>
-        <v-expansion-panel :value=" data.internalItem.raw.no + '-PT'">
-          <div v-for="t,k in String(data.value).split('\n')" :key="k">
-          <v-expansion-panel-title v-if="k == 0">{{ t }}</v-expansion-panel-title>
-          <v-expansion-panel-text v-else class="panel-text">{{ t }}</v-expansion-panel-text>
+      <v-expansion-panels
+        v-if="String(data.value).split('\n').length > 1"
+        v-model="expantionModel"
+        multiple
+      >
+        <v-expansion-panel :value="data.internalItem.raw.no + '-PT'">
+          <div v-for="(t, k) in String(data.value).split('\n')" :key="k">
+            <v-expansion-panel-title v-if="k == 0">{{ t }}</v-expansion-panel-title>
+            <v-expansion-panel-text v-else class="panel-text">{{ t }}</v-expansion-panel-text>
           </div>
           <v-btn @click="expantion(data.internalItem.raw.no)">more..</v-btn>
         </v-expansion-panel>
       </v-expansion-panels>
     </template>
-        <template v-slot:[`item.basic_disease`]="data">
-      <v-expansion-panels v-if="String(data.value).split(';').length > 1" v-model="expantionModel" multiple>
-        <v-expansion-panel :value=" data.internalItem.raw.no + '-basic_disease'">
-          <div v-for="t,k in String(data.value).split(';')" :key="k">
-          <v-expansion-panel-title v-if="k == 0">{{ t }}</v-expansion-panel-title>
-          <v-expansion-panel-text v-else class="panel-text">{{ t }}</v-expansion-panel-text>
+    <template v-slot:[`item.basic_disease`]="data">
+      <v-expansion-panels
+        v-if="String(data.value).split(';').length > 1"
+        v-model="expantionModel"
+        multiple
+      >
+        <v-expansion-panel :value="data.internalItem.raw.no + '-basic_disease'">
+          <div v-for="(t, k) in String(data.value).split(';')" :key="k">
+            <v-expansion-panel-title v-if="k == 0">{{ t }}</v-expansion-panel-title>
+            <v-expansion-panel-text v-else class="panel-text">{{ t }}</v-expansion-panel-text>
           </div>
           <v-btn @click="expantion(data.internalItem.raw.no)">more..</v-btn>
         </v-expansion-panel>
@@ -195,7 +207,7 @@
 </template>
 
 <script setup lang="ts">
-import type { IReportedMyocarditisIssues } from '@/types/ReportedMyocarditis';
+import type { IReportedMyocarditisIssues } from '@/types/ReportedMyocarditis'
 import { shallowRef } from 'vue'
 
 // searchになにか文字を指定することでv-data-tableのfilterが実行されるようにする。（空文字だとフィルタリングがOffになる）
@@ -209,11 +221,11 @@ const trigger = () => {
 
 let expantionModel = shallowRef([''])
 const expantion = (no: string) => {
-  if(expantionModel.value.indexOf(no+'-date_occurred') > -1){
+  if (expantionModel.value.indexOf(no + '-date_occurred') > -1) {
     expantionModel.value = []
     return
   }
-  expantionModel.value = [ no+'-date_occurred', no+'-PT', no+'-basic_disease' ]
+  expantionModel.value = [no + '-date_occurred', no + '-PT', no + '-basic_disease']
 }
 
 const makerFilterVal = shallowRef('')
@@ -340,7 +352,7 @@ headers = [
   { title: '症状名', align: 'end', key: 'PT' },
   { title: '接種回数', align: 'end', key: 'count' },
   { title: '基礎疾患', align: 'end', key: 'basic_disease' },
-  { title: '評価', align: 'end', key: 'evaluation'}
+  { title: '評価', align: 'end', key: 'evaluation' }
   /*
   { title: 'No', align: 'end', key: 'no' },
   */

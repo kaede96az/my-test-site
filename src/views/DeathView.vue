@@ -146,10 +146,10 @@
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
-  <br>
+  <br />
 
   <v-data-table
-    :items="(items as any)"
+    :items="items as any"
     :headers="headers"
     :search="searchTrigger"
     :custom-filter="
@@ -173,15 +173,21 @@
     }"
   >
     <template v-slot:[`item.maker`]="item">
-      <div class="maker-text"> {{ item.value }} </div>
+      <div class="maker-text">{{ item.value }}</div>
     </template>
     <template v-slot:[`item.vaccine_name`]="item">
-      <div class="vaccine-name-text"> {{ item.value }} </div>
+      <div class="vaccine-name-text">{{ item.value }}</div>
     </template>
     <template v-slot:[`item.basic_disease`]="item">
       <v-btn v-if="String(item.value).length > 10" class="detail-button">
-        {{ String(item.value).substring(0,6) + '...'}}
-        <v-tooltip activator="parent" location="bottom" :open-on-hover="true" :open-on-click="true">{{ item.value }}</v-tooltip>
+        {{ String(item.value).substring(0, 6) + '...' }}
+        <v-tooltip
+          activator="parent"
+          location="bottom"
+          :open-on-hover="true"
+          :open-on-click="true"
+          >{{ item.value }}</v-tooltip
+        >
       </v-btn>
       <span v-else>{{ item.value }}</span>
     </template>
@@ -189,7 +195,7 @@
 </template>
 
 <script setup lang="ts">
-import type { IReportedDeathIssues } from '@/types/ReportedDeath';
+import type { IReportedDeathIssues } from '@/types/ReportedDeath'
 import { shallowRef } from 'vue'
 
 // searchになにか文字を指定することでv-data-tableのfilterが実行されるようにする。（空文字だとフィルタリングがOffになる）
