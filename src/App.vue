@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { routes } from './router/index'
+import { AllRoutes } from './router/routes'
+import { SuspectedIssuesHomeRoute, SuspectedIssuesSubRoutes, HealthProtectionHomeRoute, AboutRoute, HomeRoute} from '@/router/routes'
 const baseURL = import.meta.env.BASE_URL
 </script>
 
@@ -14,18 +15,94 @@ export default {
 
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" temporary>
+    <v-navigation-drawer v-model="drawer" temporary width="10rem">
       <v-list>
-        <div v-for="r in routes" :key="r.name">
+        <v-list-item>
+            <v-list-item-content>
+                <v-list-item-title class="title">
+                    <span class="font-weight-bold">副反応ダッシュボード</span>
+                </v-list-item-title>
+                <v-list-item-subtitle></v-list-item-subtitle>
+            </v-list-item-content>
+        </v-list-item>
+        <v-divider></v-divider>
+
+        <v-list-item
+          :prepend-icon="HomeRoute.icon"     
+          :value="HomeRoute.name"
+          :href="`${baseURL}#${HomeRoute.path}`"
+          class="root-icon"
+        >
+          <v-list-item-title class="root-title">{{ HomeRoute.name }}</v-list-item-title>
+        </v-list-item>
+
+        <v-list-group value="SuspectedIssues">
+          <template v-slot:activator="{ props }">
+            <v-list-item v-bind="props"
+            :prepend-icon="SuspectedIssuesHomeRoute.icon"
+            class="root-icon"
+            >
+              <v-list-item-title class="root-title">{{ SuspectedIssuesHomeRoute.name }}</v-list-item-title>
+            </v-list-item>
+          </template>
+
           <v-list-item
-            v-if="r.path != ''"
+          prepend-icon="mdi-chart-bar"
+          :href="`${baseURL}#${SuspectedIssuesHomeRoute.path}`"
+          class="sub-icon"
+          >
+            <v-list-item-title class="sub-title">集計結果</v-list-item-title>
+          </v-list-item>
+          <v-list-item
+            v-for="r,i in SuspectedIssuesSubRoutes"
+            :key="i"
             :prepend-icon="r.icon"
-            :title="r.name"
             :value="r.name"
             :href="`${baseURL}#${r.path}`"
-          ></v-list-item>
-          <span v-else>{{ r.name }}</span>
-        </div>
+            class="sub-icon"
+          >
+            <v-list-item-title class="sub-title">{{ r.name }}</v-list-item-title>
+          </v-list-item>
+        </v-list-group>
+
+        <v-list-group value="HealthProtection">
+          <template v-slot:activator="{ props }">
+            <v-list-item v-bind="props"
+            :prepend-icon="HealthProtectionHomeRoute.icon"
+            class="root-icon"
+            >
+              <v-list-item-title class="root-title">{{ HealthProtectionHomeRoute.name }}</v-list-item-title>
+            </v-list-item>
+          </template>
+
+          <v-list-item
+          prepend-icon="mdi-chart-bar"
+          :href="`${baseURL}#${HealthProtectionHomeRoute.path}`"
+          class="sub-icon"
+          >
+            <v-list-item-title class="sub-title">集計結果</v-list-item-title>
+          </v-list-item>
+          <!--v-list-item
+            v-for="r,i in HealthProtectionSubRoutes"
+            :key="i"
+            :prepend-icon="r.icon"
+            :value="r.name"
+            :href="`${baseURL}#${r.path}`"
+            class="sub-icon"
+          >
+            <v-list-item-title class="sub-title">{{ r.name }}</v-list-item-title>
+          </v-list-item-->
+        </v-list-group>
+
+        <v-list-item
+          :prepend-icon="AboutRoute.icon"     
+          :value="AboutRoute.name"
+          :href="`${baseURL}#${AboutRoute.path}`"
+          class="root-icon"
+        >
+          <v-list-item-title class="root-title">{{ AboutRoute.name }}</v-list-item-title>
+        </v-list-item>
+
       </v-list>
     </v-navigation-drawer>
 
@@ -51,4 +128,25 @@ export default {
   </v-app>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+.drawer-card-text {
+  font-size: 1.5rem;
+}
+
+.root-icon {
+  font-size: 2rem;
+}
+
+.root-title {
+  font-size: 1.5rem;
+}
+
+.sub-icon {
+  font-size: 1.5rem;
+}
+
+.sub-title {
+  font-size: 1.2rem;
+}
+</style>
