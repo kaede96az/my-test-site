@@ -18,12 +18,9 @@ export default {
     <v-navigation-drawer v-model="drawer" temporary width="10rem">
       <v-list>
         <v-list-item>
-            <v-list-item-content>
-                <v-list-item-title class="title">
-                    <span class="font-weight-bold">副反応ダッシュボード</span>
-                </v-list-item-title>
-                <v-list-item-subtitle></v-list-item-subtitle>
-            </v-list-item-content>
+            <v-list-item-title class="title">
+                <span class="font-weight-bold">副反応ダッシュボード</span>
+            </v-list-item-title>
         </v-list-item>
         <v-divider></v-divider>
 
@@ -31,7 +28,7 @@ export default {
           :prepend-icon="HomeRoute.icon"     
           :value="HomeRoute.name"
           :href="`${baseURL}#${HomeRoute.path}`"
-          class="root-icon"
+          class="root-icon home"
         >
           <v-list-item-title class="root-title">{{ HomeRoute.name }}</v-list-item-title>
         </v-list-item>
@@ -40,7 +37,7 @@ export default {
           <template v-slot:activator="{ props }">
             <v-list-item v-bind="props"
             :prepend-icon="SuspectedIssuesHomeRoute.icon"
-            class="root-icon"
+            class="root-icon suspeted-issue-root"
             >
               <v-list-item-title class="root-title">{{ SuspectedIssuesHomeRoute.name }}</v-list-item-title>
             </v-list-item>
@@ -49,9 +46,9 @@ export default {
           <v-list-item
           prepend-icon="mdi-chart-bar"
           :href="`${baseURL}#${SuspectedIssuesHomeRoute.path}`"
-          class="sub-icon"
+          class="sub-icon suspeted-issue-sub"
           >
-            <v-list-item-title class="sub-title">集計結果</v-list-item-title>
+            <v-list-item-title class="sub-title suspeted-issue-sub">集計結果</v-list-item-title>
           </v-list-item>
           <v-list-item
             v-for="r,i in SuspectedIssuesSubRoutes"
@@ -59,9 +56,9 @@ export default {
             :prepend-icon="r.icon"
             :value="r.name"
             :href="`${baseURL}#${r.path}`"
-            class="sub-icon"
+            class="sub-icon suspeted-issue-sub"
           >
-            <v-list-item-title class="sub-title">{{ r.name }}</v-list-item-title>
+            <v-list-item-title class="sub-title suspeted-issue-sub">{{ r.name }}</v-list-item-title>
           </v-list-item>
         </v-list-group>
 
@@ -69,18 +66,18 @@ export default {
           <template v-slot:activator="{ props }">
             <v-list-item v-bind="props"
             :prepend-icon="HealthProtectionHomeRoute.icon"
-            class="root-icon"
+            class="root-icon health-protection-root"
             >
-              <v-list-item-title class="root-title">{{ HealthProtectionHomeRoute.name }}</v-list-item-title>
+              <v-list-item-title class="root-title health-protection-root">{{ HealthProtectionHomeRoute.name }}</v-list-item-title>
             </v-list-item>
           </template>
 
           <v-list-item
           prepend-icon="mdi-chart-bar"
           :href="`${baseURL}#${HealthProtectionHomeRoute.path}`"
-          class="sub-icon"
+          class="sub-icon health-protection-sub"
           >
-            <v-list-item-title class="sub-title">集計結果</v-list-item-title>
+            <v-list-item-title class="sub-title health-protection-sub">集計結果</v-list-item-title>
           </v-list-item>
           <!--v-list-item
             v-for="r,i in HealthProtectionSubRoutes"
@@ -129,11 +126,6 @@ export default {
 </template>
 
 <style scoped>
-
-.drawer-card-text {
-  font-size: 1.5rem;
-}
-
 .root-icon {
   font-size: 2rem;
 }
@@ -148,5 +140,23 @@ export default {
 
 .sub-title {
   font-size: 1.2rem;
+}
+
+.suspeted-issue-root {
+  color: #2962FF;
+}
+.suspeted-issue-sub {
+  color: #00B0FF;
+}
+
+.health-protection-root {
+  color: #00C853;
+}
+.health-protection-sub {
+  color: #558B2F;
+}
+
+.home {
+  color: #C62828;
 }
 </style>

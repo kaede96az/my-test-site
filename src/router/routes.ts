@@ -25,14 +25,14 @@ export const SuspectedIssuesSubRoutes = [
 	{
     path: '/reported-myocarditis-issues',
     name: '心筋炎/心膜炎報告',
-    icon: 'mdi-account-alert',
+    icon: 'mdi-account-search',
     props: { items: ReportedMyocarditisIssues },
     component: () => import('../views/MyocarditisView.vue')
   },
   {
     path: '/reported-death-issues',
     name: '死亡報告',
-    icon: 'mdi-heart-off',
+    icon: 'mdi-account-search',
     props: { items: ReportedDeathIssues },
     component: () => import('../views/DeathView.vue')
   }
