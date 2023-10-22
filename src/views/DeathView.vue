@@ -154,7 +154,7 @@
   <br />
 
   <v-data-table
-  color="#00b0ff"
+    color="#00b0ff"
     :items="items as any"
     :headers="headers"
     :search="searchTrigger"
@@ -204,7 +204,7 @@
 <script setup lang="ts">
 import type { IReportedDeathIssues } from '@/types/ReportedDeath'
 import { shallowRef } from 'vue'
-import { AppBarTitle, AppBarColor} from '@/router/data'
+import { AppBarTitle, AppBarColor } from '@/router/data'
 
 AppBarTitle.value = '副反応疑い報告 - 死亡報告'
 AppBarColor.value = '#2962ff'
@@ -338,18 +338,18 @@ defineProps<{
 const sortable = shallowRef('false')
 
 let headers: any = [
-  { title: 'メーカー', align: 'end', key: 'maker',sortable: false },
-  { title: 'ワクチン名', align: 'end', key: 'vaccine_name',sortable: false },
-  { title: 'ロット番号', align: 'end', key: 'lot_no',sortable: false },
-  { title: '症状', align: 'end', key: 'cause',sortable: false },
-  { title: '因果関係', align: 'end', key: 'causual_relationship',sortable: false },
-  { title: '年齢', align: 'end', key: 'age',sortable: false },
-  { title: '性別', align: 'end', key: 'gender',sortable: false },
-  { title: '接種日', align: 'end', key: 'date_vaccinated',sortable: false },
-  { title: '症状発生日', align: 'end', key: 'date_occurred',sortable: false },
-  { title: '接種回数', align: 'end', key: 'count',sortable: false },
-  { title: '基礎疾患', align: 'end', key: 'basic_disease',sortable: false },
-  { title: '検査方法', align: 'end', key: 'method',sortable: false }
+  { title: 'メーカー', align: 'end', key: 'maker', sortable: false },
+  { title: 'ワクチン名', align: 'end', key: 'vaccine_name', sortable: false },
+  { title: 'ロット番号', align: 'end', key: 'lot_no', sortable: false },
+  { title: '症状', align: 'end', key: 'cause', sortable: false },
+  { title: '因果関係', align: 'end', key: 'causual_relationship', sortable: false },
+  { title: '年齢', align: 'end', key: 'age', sortable: false },
+  { title: '性別', align: 'end', key: 'gender', sortable: false },
+  { title: '接種日', align: 'end', key: 'date_vaccinated', sortable: false },
+  { title: '症状発生日', align: 'end', key: 'date_occurred', sortable: false },
+  { title: '接種回数', align: 'end', key: 'count', sortable: false },
+  { title: '基礎疾患', align: 'end', key: 'basic_disease', sortable: false },
+  { title: '検査方法', align: 'end', key: 'method', sortable: false }
   /*
   { title: 'No', align: 'end', key: 'no' },
   { title: 'PT名', align: 'end', key: 'PT' },
@@ -385,35 +385,5 @@ let headers: any = [
 .search-title {
   font-size: 1.5rem;
   padding-left: 0.8rem;
-}
-</style>
-
-<style>
-.data-table-style th {
-	background-color: #FFFFFF00 !important;
-	font-weight: bold !important;
-  color: white !important;
-	padding-right: 5px !important;
-}
-.data-table-style td {
-	background-color: #FFFFFF00 !important;
-	padding-right: 5px !important;
-}
-
-.data-table-style thead {
-	background-color: #03A9F4 !important;
-}
-
-.data-table-style tbody tr:nth-child(odd) {
-	background-color: #FFFFFF;
-}
-
-.data-table-style tbody tr:nth-child(even) {
-	background-color: #BBDEFB;
-}
-
-.data-table-style .v-data-table-footer {
-	background-color: #FFFFFF;
-	font-weight: bold;
 }
 </style>

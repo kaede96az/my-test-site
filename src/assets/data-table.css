@@ -1,0 +1,27 @@
+.data-table-style th {
+  background-color: #ffffff00 !important;
+  font-weight: bold !important;
+  color: white !important;
+  padding-right: 5px !important;
+}
+.data-table-style td {
+  background-color: #ffffff00 !important;
+  padding-right: 5px !important;
+}
+
+.data-table-style thead {
+  background-color: #757575;
+}
+
+.data-table-style tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.data-table-style tbody tr:nth-child(even) {
+  background-color: #CFD8DC;
+}
+
+.data-table-style .v-data-table-footer {
+  background-color: #ffffff;
+  font-weight: bold;
+}

@@ -3,9 +3,10 @@ import type { ISummaryItems } from '../types/Summary'
 import type { IReportedDeathIssues } from '../types/ReportedDeath'
 import type { IReportedMyocarditisIssues } from '@/types/ReportedMyocarditis'
 import { shallowRef } from 'vue'
+import type { ICertifiedHealthHazardIssues } from '@/types/CertifiedHealthHazard'
 
 const summaryRes = await axios.get<ISummaryItems>(
-  'https://gist.githubusercontent.com/kaede96az/b9102295771f6c4bf0f3e98ea2d2e6f2/raw/50897adfbc7cf21466502490df976a5619c25247/summary.json'
+  'https://gist.githubusercontent.com/kaede96az/b9102295771f6c4bf0f3e98ea2d2e6f2/raw/d9b5e6504034581b0ef9963b5272df9eb1780441/summary.json'
 )
 export const SummaryItems = summaryRes.data
 
@@ -18,6 +19,11 @@ const reportedMyocarditisRes = await axios.get<IReportedMyocarditisIssues>(
   'https://gist.githubusercontent.com/kaede96az/4a8008d80d5e36840e89021918cfa27e/raw/e1ec3da421d78fe1efe096ee90b27502010a769a/myocarditis.json'
 )
 export const ReportedMyocarditisIssues = reportedMyocarditisRes.data
+
+const certifiedHealthHazardRes = await axios.get<ICertifiedHealthHazardIssues>(
+  'https://gist.githubusercontent.com/kaede96az/982f47e9e6613c77af9ba49acf818b7e/raw/d26623eda3724ed36dc41da508ba67d45736d184/certified-health-hazards.json'
+)
+export const CertifiedHealthHazardIssues = certifiedHealthHazardRes.data
 
 export const AppBarTitle = shallowRef('副反応ダッシュボード')
 export const AppBarColor = shallowRef('white')

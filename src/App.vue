@@ -3,11 +3,12 @@ import { RouterView } from 'vue-router'
 import {
   SuspectedIssuesHomeRoute,
   SuspectedIssuesSubRoutes,
-  HealthProtectionHomeRoute,
+  HealthHazardsHomeRoute,
   AboutRoute,
-  HomeRoute
+  HomeRoute,
+  HealthHazardsSubRoutes
 } from '@/router/routes'
-import { AppBarTitle, AppBarColor} from '@/router/data'
+import { AppBarTitle, AppBarColor } from '@/router/data'
 import { shallowRef } from 'vue'
 
 const selectedItem = shallowRef('')
@@ -92,34 +93,34 @@ export default {
           <template v-slot:activator="{ props }">
             <v-list-item
               v-bind="props"
-              :prepend-icon="HealthProtectionHomeRoute.icon"
-              class="root-icon health-protection-root"
+              :prepend-icon="HealthHazardsHomeRoute.icon"
+              class="root-icon health-hazards-root"
             >
-              <v-list-item-title class="root-title health-protection-root">{{
-                HealthProtectionHomeRoute.name
+              <v-list-item-title class="root-title health-hazards-root">{{
+                HealthHazardsHomeRoute.name
               }}</v-list-item-title>
             </v-list-item>
           </template>
 
           <v-list-item
             prepend-icon="mdi-chart-bar"
-            :href="`${baseURL}#${HealthProtectionHomeRoute.path}`"
-            class="sub-icon health-protection-sub"
-            :active="HealthProtectionHomeRoute.name === selectedItem"
-            @click="selectedItem = HealthProtectionHomeRoute.name"
+            :href="`${baseURL}#${HealthHazardsHomeRoute.path}`"
+            class="sub-icon health-hazards-sub"
+            :active="HealthHazardsHomeRoute.name === selectedItem"
+            @click="selectedItem = HealthHazardsHomeRoute.name"
           >
-            <v-list-item-title class="sub-title health-protection-sub">集計結果</v-list-item-title>
+            <v-list-item-title class="sub-title health-hazards-sub">集計結果</v-list-item-title>
           </v-list-item>
-          <!--v-list-item
-            v-for="r,i in HealthProtectionSubRoutes"
+          <v-list-item
+            v-for="(r, i) in HealthHazardsSubRoutes"
             :key="i"
             :prepend-icon="r.icon"
             :value="r.name"
             :href="`${baseURL}#${r.path}`"
-            class="sub-icon"
+            class="sub-icon health-hazards-sub"
           >
-            <v-list-item-title class="sub-title">{{ r.name }}</v-list-item-title>
-          </v-list-item-->
+            <v-list-item-title class="sub-title health-hazards-sub">{{ r.name }}</v-list-item-title>
+          </v-list-item>
         </v-list-group>
 
         <v-list-item
@@ -174,10 +175,10 @@ export default {
   color: #00b0ff;
 }
 
-.health-protection-root {
+.health-hazards-root {
   color: #00c853;
 }
-.health-protection-sub {
+.health-hazards-sub {
   color: #558b2f;
 }
 

@@ -1,10 +1,15 @@
-import { ReportedDeathIssues, ReportedMyocarditisIssues, SummaryItems } from './data'
+import {
+  CertifiedHealthHazardIssues,
+  ReportedDeathIssues,
+  ReportedMyocarditisIssues,
+  SummaryItems
+} from './data'
 
 export const HomeRoute = {
   path: '/',
   name: 'トップページ',
   icon: 'mdi-home',
-  component: () => import('../views/HomeView.vue'),
+  component: () => import('../views/HomeView.vue')
 }
 export const AboutRoute = {
   path: '/about',
@@ -14,7 +19,7 @@ export const AboutRoute = {
 }
 
 export const SuspectedIssuesHomeRoute = {
-  path: '/suspected-adverse-reaction-reports',
+  path: '/suspected-issues-summary',
   name: '副反応疑い報告',
   icon: 'mdi-file-document-alert-outline',
   props: { items: SummaryItems },
@@ -37,18 +42,29 @@ export const SuspectedIssuesSubRoutes = [
   }
 ]
 
-export const HealthProtectionHomeRoute = {
-  path: '/preventive-vaccination-health-protection-system',
+export const HealthHazardsHomeRoute = {
+  path: '/certified-health-hazard-summary',
   name: '予防接種健康被害 救済制度',
   icon: 'mdi-medical-bag',
   props: { items: SummaryItems },
-  component: () => import('../views/HealthProtectionView.vue')
+  component: () => import('../views/CertifiedHealthHazardsHomeView.vue')
 }
+
+export const HealthHazardsSubRoutes = [
+  {
+    path: '/certified-health-hazard-reports',
+    name: '健康被害 認定済み一覧',
+    icon: 'mdi-account-search',
+    props: { items: CertifiedHealthHazardIssues },
+    component: () => import('../views/CertifiedHealthHazardsView.vue')
+  }
+]
 
 export const AllRoutes = [
   HomeRoute,
   AboutRoute,
   SuspectedIssuesHomeRoute,
   ...SuspectedIssuesSubRoutes,
-  HealthProtectionHomeRoute
+  HealthHazardsHomeRoute,
+  ...HealthHazardsSubRoutes
 ]

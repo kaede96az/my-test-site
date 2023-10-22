@@ -5,7 +5,7 @@
         <v-icon class="search-icon">mdi-magnify</v-icon>
         <span class="search-title">詳細検索...</span>
       </v-expansion-panel-title>
-      
+
       <v-expansion-panel-text>
         <h6 class="text-h6">ワクチンに関する条件の設定</h6>
         <v-row>
@@ -187,8 +187,12 @@
       >
         <v-expansion-panel :value="data.internalItem.raw.no + '-PT'">
           <div v-for="(t, k) in String(data.value).split('\n')" :key="k">
-            <v-expansion-panel-title v-if="k == 0 && !expanded">{{ t.length > 10 ? t.substring(0,6) + '...': t }}</v-expansion-panel-title>
-            <v-expansion-panel-title v-else-if="k == 0 && expanded">{{ t }}</v-expansion-panel-title>
+            <v-expansion-panel-title v-if="k == 0 && !expanded">{{
+              t.length > 10 ? t.substring(0, 6) + '...' : t
+            }}</v-expansion-panel-title>
+            <v-expansion-panel-title v-else-if="k == 0 && expanded">{{
+              t
+            }}</v-expansion-panel-title>
             <v-expansion-panel-text v-else class="panel-text">{{ t }}</v-expansion-panel-text>
           </div>
           <v-btn @click="expantion(data.internalItem.raw.no)">more..</v-btn>
@@ -203,8 +207,12 @@
       >
         <v-expansion-panel :value="data.internalItem.raw.no + '-basic_disease'">
           <div v-for="(t, k) in String(data.value).split(';')" :key="k">
-            <v-expansion-panel-title v-if="k == 0 && !expanded">{{ t.length > 10 ? t.substring(0,6) + '...': t }}</v-expansion-panel-title>
-            <v-expansion-panel-title v-else-if="k == 0 && expanded">{{ t }}</v-expansion-panel-title>
+            <v-expansion-panel-title v-if="k == 0 && !expanded">{{
+              t.length > 10 ? t.substring(0, 6) + '...' : t
+            }}</v-expansion-panel-title>
+            <v-expansion-panel-title v-else-if="k == 0 && expanded">{{
+              t
+            }}</v-expansion-panel-title>
             <v-expansion-panel-text v-else class="panel-text">{{ t }}</v-expansion-panel-text>
           </div>
           <v-btn @click="expantion(data.internalItem.raw.no)">more..</v-btn>
@@ -217,7 +225,7 @@
 <script setup lang="ts">
 import type { IReportedMyocarditisIssues } from '@/types/ReportedMyocarditis'
 import { shallowRef } from 'vue'
-import { AppBarTitle, AppBarColor} from '@/router/data'
+import { AppBarTitle, AppBarColor } from '@/router/data'
 
 AppBarTitle.value = '副反応疑い報告 - 心筋炎/心膜炎報告'
 AppBarColor.value = '#2962ff'
@@ -392,35 +400,5 @@ headers = [
 .search-title {
   font-size: 1.5rem;
   padding-left: 0.8rem;
-}
-</style>
-
-<style>
-.data-table-style th {
-	background-color: #FFFFFF00 !important;
-	font-weight: bold !important;
-  color: white !important;
-	padding-right: 5px !important;
-}
-.data-table-style td {
-	background-color: #FFFFFF00 !important;
-	padding-right: 5px !important;
-}
-
-.data-table-style thead {
-	background-color: #03A9F4 !important;
-}
-
-.data-table-style tbody tr:nth-child(odd) {
-	background-color: #FFFFFF;
-}
-
-.data-table-style tbody tr:nth-child(even) {
-	background-color: #BBDEFB;
-}
-
-.data-table-style .v-data-table-footer {
-	background-color: #FFFFFF;
-	font-weight: bold;
 }
 </style>

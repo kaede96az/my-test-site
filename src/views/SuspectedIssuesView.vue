@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
       <v-col cols="12">
         <h4 class="text-h4">副反応疑い報告</h4>
@@ -74,7 +74,7 @@ import SummaryCard from '../components/SummaryCard.vue'
 import type { ISummaryItems } from '@/types/Summary'
 import { SelectIcon } from '@/tools/SelectIcon'
 import { SelectTileColor } from '@/tools/SelectTileColor'
-import { AppBarTitle, AppBarColor} from '@/router/data'
+import { AppBarTitle, AppBarColor } from '@/router/data'
 
 AppBarTitle.value = '副反応疑い報告 - 集計結果'
 AppBarColor.value = '#2962ff'
