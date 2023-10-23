@@ -1,27 +1,47 @@
-.data-table-style th {
+.data-table-health-hazard th {
   background-color: #ffffff00 !important;
   font-weight: bold !important;
-  color: white !important;
+  color: #FAFAFA !important;
   padding-right: 5px !important;
 }
-.data-table-style td {
+.data-table-health-hazard td {
   background-color: #ffffff00 !important;
   padding-right: 5px !important;
 }
-
-.data-table-style thead {
-  background-color: #757575;
+.data-table-health-hazard thead {
+  background-color: #4CAF50;
 }
-
-.data-table-style tbody tr:nth-child(odd) {
+.data-table-health-hazard tbody tr:nth-child(odd) {
   background-color: #ffffff;
 }
-
-.data-table-style tbody tr:nth-child(even) {
-  background-color: #CFD8DC;
+.data-table-health-hazard tbody tr:nth-child(even) {
+  background-color: #C8E6C9;
+}
+.data-table-health-hazard .v-data-table-footer {
+  background-color: #ffffff;
+  font-weight: bold;
 }
 
-.data-table-style .v-data-table-footer {
+.data-table-suspect-issues th {
+  background-color: #ffffff00 !important;
+  font-weight: bold !important;
+  color: #FAFAFA !important;
+  padding-right: 5px !important;
+}
+.data-table-suspect-issues td {
+  background-color: #ffffff00 !important;
+  padding-right: 5px !important;
+}
+.data-table-suspect-issues thead {
+  background-color: #2962ff;
+}
+.data-table-suspect-issues tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+.data-table-suspect-issues tbody tr:nth-child(even) {
+  background-color: #BBDEFB;
+}
+.data-table-suspect-issues .v-data-table-footer {
   background-color: #ffffff;
   font-weight: bold;
 }

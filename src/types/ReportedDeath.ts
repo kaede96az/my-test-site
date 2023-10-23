@@ -6,8 +6,8 @@ export interface IReportedDeathIssue {
   no: number
   age: number
   gender: string
-  date_vaccinated: Date
-  date_occurred: Date
+  date_vaccinated: string
+  date_occurred: string
   lot_no: string
   count: string
   basic_disease: string

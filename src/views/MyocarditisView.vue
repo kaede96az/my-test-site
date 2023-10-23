@@ -145,7 +145,7 @@
       }
     "
     density="compact"
-    class="data-table-style"
+    class="data-table-suspect-issues"
     :custom-key-filter="{
       maker: makerFilterFunc,
       vaccine_name: vaccineNameFilterFunc,

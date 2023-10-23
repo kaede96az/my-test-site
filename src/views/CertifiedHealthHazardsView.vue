@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-expansion-panels>
       <v-expansion-panel>
-        <v-expansion-panel-title color="#00c853">
+        <v-expansion-panel-title color="#66BB6A">
           <v-icon class="search-icon">mdi-magnify</v-icon>
           <span class="search-title">詳細検索...</span>
         </v-expansion-panel-title>
@@ -126,7 +126,7 @@
         }
       "
       density="compact"
-      class="data-table-style"
+      class="data-table-health-hazard"
       :custom-key-filter="{
         vaccine_name: vaccineNameFilterFunc,
         name: symptomsFilterFunc,
@@ -139,8 +139,9 @@
       }"
     >
       <template v-slot:[`item.vaccine_name`]="item">
-        <div class="vaccine-name-text">{{ item.value }}</div>
+        <span>{{ item.value }}</span>
       </template>
+
       <template v-slot:[`item.basic_disease`]="data">
         <v-expansion-panels v-if="String(data.value).length > 1" v-model="expantionModel" multiple>
           <v-expansion-panel :value="getUniqueKey(data) + '-basic_disease'">
@@ -157,6 +158,7 @@
           </v-expansion-panel>
         </v-expansion-panels>
       </template>
+
     </v-data-table>
   </v-container>
 </template>
@@ -168,7 +170,7 @@ import type { ICertifiedHealthHazardIssues } from '@/types/CertifiedHealthHazard
 import { AgeFilterFunc, DateFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 
 AppBarTitle.value = '予防接種健康被害 救済制度 - 健康被害 認定済み一覧'
-AppBarColor.value = '#00c853'
+AppBarColor.value = '#4CAF50'
 
 // searchになにか文字を指定することでv-data-tableのfilterが実行されるようにする。（空文字だとフィルタリングがOffになる）
 // custom-filterの処理は常にtrueを返すように上書きして、search文字列によるフィルタリング処理が行われないようにする。

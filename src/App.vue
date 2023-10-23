@@ -185,4 +185,8 @@ export default {
 .home {
   color: #c62828;
 }
+
+.app-title {
+  color: #FAFAFA;
+}
 </style>

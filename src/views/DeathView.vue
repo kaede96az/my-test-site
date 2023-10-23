@@ -164,7 +164,7 @@
       }
     "
     density="compact"
-    class="data-table-style"
+    class="data-table-suspect-issues"
     :custom-key-filter="{
       maker: makerFilterFunc,
       vaccine_name: vaccineNameFilterFunc,
@@ -205,6 +205,7 @@
 import type { IReportedDeathIssues } from '@/types/ReportedDeath'
 import { shallowRef } from 'vue'
 import { AppBarTitle, AppBarColor } from '@/router/data'
+import { AgeFilterFunc, DateFilterFunc, StringFilterFunc } from '@/tools/FilterFunc';
 
 AppBarTitle.value = '副反応疑い報告 - 死亡報告'
 AppBarColor.value = '#2962ff'
@@ -216,140 +217,88 @@ const searchTrigger = shallowRef('a')
 const trigger = () => {
   searchTrigger.value = searchTrigger.value == 'a' ? 'b' : 'a'
 }
-
-const makerFilterVal = shallowRef('')
-const vaccineNameFilterVal = shallowRef('')
-const lotNoFilterVal = shallowRef('')
-const causeFilterVal = shallowRef('')
-const causalRelFilterVal = shallowRef('')
-const ageFromFilterVal = shallowRef('')
-const ageToFilterVal = shallowRef('')
-const genderFilterVal = shallowRef('')
-const vaccinatedDateFromFilterVal = shallowRef(null)
-const vaccinatedDateToFilterVal = shallowRef(null)
-const occurredDateFromFilterVal = shallowRef(null)
-const occurredDateToFilterVal = shallowRef(null)
-const vaccinatedTimesFilterVal = shallowRef('')
-const preExistingConditionFilterVal = shallowRef('')
-
 const triggerFunc = () => {
   // todo: 変化があった入力欄がどれなのかを判別する必要があれば、string型の引数で情報を
   // もらうように変更して対応すればよいと思う。
   trigger()
 }
 
-const makerFilterFunc = (value: string): boolean => {
-  if (makerFilterVal.value == '') return true
-  return value.indexOf(makerFilterVal.value) > -1
+const makerFilterVal = shallowRef('')
+const makerFilterFunc= (value: string): boolean => {
+  return StringFilterFunc(value, makerFilterVal)
 }
-const vaccineNameFilterFunc = (value: string): boolean => {
-  if (vaccineNameFilterVal.value == '') return true
-  return value.indexOf(vaccineNameFilterVal.value) > -1
+
+const vaccineNameFilterVal = shallowRef('')
+const vaccineNameFilterFunc= (value: string): boolean => {
+  return StringFilterFunc(value, vaccineNameFilterVal)
 }
+
+const lotNoFilterVal = shallowRef('')
 const lotNoFilterFunc = (value: string): boolean => {
-  if (lotNoFilterVal.value == '') return true
-  return value.indexOf(lotNoFilterVal.value) > -1
+  return StringFilterFunc(value, lotNoFilterVal)
 }
+
+const causeFilterVal = shallowRef('')
 const causeFilterFunc = (value: string): boolean => {
-  if (causeFilterVal.value == '') return true
-  return value.indexOf(causeFilterVal.value) > -1
+  return StringFilterFunc(value, causeFilterVal)
 }
+
+const causalRelFilterVal = shallowRef('')
 const causalRelFilterFunc = (value: string): boolean => {
-  if (causalRelFilterVal.value == '') return true
-  return value.indexOf(causalRelFilterVal.value) > -1
+  return StringFilterFunc(value, causalRelFilterVal)
 }
+
+const ageFromFilterVal = shallowRef('')
+const ageToFilterVal = shallowRef('')
 const ageFilterFunc = (value: string): boolean => {
-  const v = Number(value)
-  // コメントがついているなど数字に変換できないデータの場合は、数字による大小比較が
-  // 困難なためフィルタリング時に「非表示」にする
-  if (isNaN(v)) return false
-
-  if (ageFromFilterVal.value != '') {
-    const f = Number(ageFromFilterVal.value)
-    if (v <= f) {
-      return false
-    }
-  }
-  if (ageToFilterVal.value != '') {
-    const t = Number(ageToFilterVal.value)
-    if (v >= t) {
-      return false
-    }
-  }
-  return true
+  return AgeFilterFunc(value, ageFromFilterVal, ageToFilterVal)
 }
+
+const genderFilterVal = shallowRef('')
 const genderFilterFunc = (value: string): boolean => {
-  if (genderFilterVal.value == '') return true
-  return value.indexOf(genderFilterVal.value) > -1
+  return StringFilterFunc(value, genderFilterVal)
 }
+
+const vaccinatedDateFromFilterVal = shallowRef('')
+const vaccinatedDateToFilterVal = shallowRef('')
 const vaccinatedDateFilterFunc = (value: string): boolean => {
-  const v = new Date(value)
-  // ワクチン接種日が「不明」の場合や、改行・注記など含んでいて「YYYY/MM/DD」形式でない場合は
-  // Date型に変換しての比較が困難なためフィルタリング時に「非表示」にする
-  if (isNaN(v.getTime())) return false
-
-  if (vaccinatedDateFromFilterVal.value != null) {
-    const f = new Date(vaccinatedDateFromFilterVal.value)
-    if (v <= f) {
-      return false
-    }
-  }
-  if (vaccinatedDateToFilterVal.value != null) {
-    const f = new Date(vaccinatedDateToFilterVal.value)
-    if (v >= f) {
-      return false
-    }
-  }
-  return true
+  return DateFilterFunc(value, vaccinatedDateFromFilterVal, vaccinatedDateToFilterVal)
 }
+
+const occurredDateFromFilterVal = shallowRef('')
+const occurredDateToFilterVal = shallowRef('')
 const occurredDateFilterFunc = (value: string): boolean => {
-  const v = new Date(value)
-  // 症状発生日が「不明」の場合や、改行・注記など含んでいて「YYYY/MM/DD」形式でない場合は
-  // Date型に変換しての比較が困難なためフィルタリング時に「非表示」にする
-  if (isNaN(v.getTime())) return false
-
-  if (occurredDateFromFilterVal.value != null) {
-    const f = new Date(occurredDateFromFilterVal.value)
-    if (v <= f) {
-      return false
-    }
-  }
-  if (occurredDateToFilterVal.value != null) {
-    const f = new Date(occurredDateToFilterVal.value)
-    if (v >= f) {
-      return false
-    }
-  }
-  return true
+  return DateFilterFunc(value, occurredDateFromFilterVal, occurredDateToFilterVal)
 }
+
+const vaccinatedTimesFilterVal = shallowRef('')
 const vaccinatedTimesFilterFunc = (value: string): boolean => {
-  if (vaccinatedTimesFilterVal.value == '' || value == '') return true
+  if (vaccinatedTimesFilterVal.value == '' || vaccinatedTimesFilterVal.value == null || value == '') return true
   return Number(value.replace('回目', '')) == Number(vaccinatedTimesFilterVal.value)
 }
+
+const preExistingConditionFilterVal = shallowRef('')
 const preExistingConditionFilterFunc = (value: string): boolean => {
-  if (preExistingConditionFilterVal.value == '') return true
-  return value.indexOf(preExistingConditionFilterVal.value) > -1
+  return StringFilterFunc(value, preExistingConditionFilterVal)
 }
 
 defineProps<{
   items: IReportedDeathIssues
 }>()
 
-const sortable = shallowRef('false')
-
 let headers: any = [
-  { title: 'メーカー', align: 'end', key: 'maker', sortable: false },
-  { title: 'ワクチン名', align: 'end', key: 'vaccine_name', sortable: false },
-  { title: 'ロット番号', align: 'end', key: 'lot_no', sortable: false },
-  { title: '症状', align: 'end', key: 'cause', sortable: false },
-  { title: '因果関係', align: 'end', key: 'causual_relationship', sortable: false },
-  { title: '年齢', align: 'end', key: 'age', sortable: false },
-  { title: '性別', align: 'end', key: 'gender', sortable: false },
-  { title: '接種日', align: 'end', key: 'date_vaccinated', sortable: false },
-  { title: '症状発生日', align: 'end', key: 'date_occurred', sortable: false },
-  { title: '接種回数', align: 'end', key: 'count', sortable: false },
-  { title: '基礎疾患', align: 'end', key: 'basic_disease', sortable: false },
-  { title: '検査方法', align: 'end', key: 'method', sortable: false }
+  { title: 'メーカー', align: 'end', key: 'maker'},
+  { title: 'ワクチン名', align: 'end', key: 'vaccine_name'},
+  { title: 'ロット番号', align: 'end', key: 'lot_no'},
+  { title: '症状', align: 'end', key: 'cause'},
+  { title: '因果関係', align: 'end', key: 'causual_relationship'},
+  { title: '年齢', align: 'end', key: 'age'},
+  { title: '性別', align: 'end', key: 'gender'},
+  { title: '接種日', align: 'end', key: 'date_vaccinated'},
+  { title: '症状発生日', align: 'end', key: 'date_occurred'},
+  { title: '接種回数', align: 'end', key: 'count'},
+  { title: '基礎疾患', align: 'end', key: 'basic_disease'},
+  { title: '検査方法', align: 'end', key: 'method'}
   /*
   { title: 'No', align: 'end', key: 'no' },
   { title: 'PT名', align: 'end', key: 'PT' },
