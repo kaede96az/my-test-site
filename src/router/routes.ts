@@ -1,5 +1,6 @@
 import {
   CertifiedHealthHazardIssues,
+  CertifiedSymptoms,
   ReportedDeathIssues,
   ReportedMyocarditisIssues,
   SummaryItems
@@ -57,6 +58,13 @@ export const HealthHazardsSubRoutes = [
     icon: 'mdi-account-search',
     props: { items: CertifiedHealthHazardIssues },
     component: () => import('../views/CertifiedHealthHazardsView.vue')
+  },
+  {
+    path: '/certified-symptoms',
+    name: '健康被害 認定済み症状の一覧',
+    icon: 'mdi-account-search',
+    props: { items: CertifiedSymptoms },
+    component: () => import('../views/CertifiedSymptomsView.vue')
   }
 ]
 

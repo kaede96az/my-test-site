@@ -205,7 +205,7 @@
 import type { IReportedDeathIssues } from '@/types/ReportedDeath'
 import { shallowRef } from 'vue'
 import { AppBarTitle, AppBarColor } from '@/router/data'
-import { AgeFilterFunc, DateFilterFunc, StringFilterFunc } from '@/tools/FilterFunc';
+import { AgeFilterFunc, DateFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 
 AppBarTitle.value = '副反応疑い報告 - 死亡報告'
 AppBarColor.value = '#2962ff'
@@ -224,12 +224,12 @@ const triggerFunc = () => {
 }
 
 const makerFilterVal = shallowRef('')
-const makerFilterFunc= (value: string): boolean => {
+const makerFilterFunc = (value: string): boolean => {
   return StringFilterFunc(value, makerFilterVal)
 }
 
 const vaccineNameFilterVal = shallowRef('')
-const vaccineNameFilterFunc= (value: string): boolean => {
+const vaccineNameFilterFunc = (value: string): boolean => {
   return StringFilterFunc(value, vaccineNameFilterVal)
 }
 
@@ -273,7 +273,8 @@ const occurredDateFilterFunc = (value: string): boolean => {
 
 const vaccinatedTimesFilterVal = shallowRef('')
 const vaccinatedTimesFilterFunc = (value: string): boolean => {
-  if (vaccinatedTimesFilterVal.value == '' || vaccinatedTimesFilterVal.value == null || value == '') return true
+  if (vaccinatedTimesFilterVal.value == '' || vaccinatedTimesFilterVal.value == null || value == '')
+    return true
   return Number(value.replace('回目', '')) == Number(vaccinatedTimesFilterVal.value)
 }
 
@@ -287,18 +288,18 @@ defineProps<{
 }>()
 
 let headers: any = [
-  { title: 'メーカー', align: 'end', key: 'maker'},
-  { title: 'ワクチン名', align: 'end', key: 'vaccine_name'},
-  { title: 'ロット番号', align: 'end', key: 'lot_no'},
-  { title: '症状', align: 'end', key: 'cause'},
-  { title: '因果関係', align: 'end', key: 'causual_relationship'},
-  { title: '年齢', align: 'end', key: 'age'},
-  { title: '性別', align: 'end', key: 'gender'},
-  { title: '接種日', align: 'end', key: 'date_vaccinated'},
-  { title: '症状発生日', align: 'end', key: 'date_occurred'},
-  { title: '接種回数', align: 'end', key: 'count'},
-  { title: '基礎疾患', align: 'end', key: 'basic_disease'},
-  { title: '検査方法', align: 'end', key: 'method'}
+  { title: 'メーカー', align: 'end', key: 'maker' },
+  { title: 'ワクチン名', align: 'end', key: 'vaccine_name' },
+  { title: 'ロット番号', align: 'end', key: 'lot_no' },
+  { title: '症状', align: 'end', key: 'cause' },
+  { title: '因果関係', align: 'end', key: 'causual_relationship' },
+  { title: '年齢', align: 'end', key: 'age' },
+  { title: '性別', align: 'end', key: 'gender' },
+  { title: '接種日', align: 'end', key: 'date_vaccinated' },
+  { title: '症状発生日', align: 'end', key: 'date_occurred' },
+  { title: '接種回数', align: 'end', key: 'count' },
+  { title: '基礎疾患', align: 'end', key: 'basic_disease' },
+  { title: '検査方法', align: 'end', key: 'method' }
   /*
   { title: 'No', align: 'end', key: 'no' },
   { title: 'PT名', align: 'end', key: 'PT' },

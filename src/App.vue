@@ -187,6 +187,6 @@ export default {
 }
 
 .app-title {
-  color: #FAFAFA;
+  color: #fafafa;
 }
 </style>

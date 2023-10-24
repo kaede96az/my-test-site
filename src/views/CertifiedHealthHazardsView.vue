@@ -158,7 +158,6 @@
           </v-expansion-panel>
         </v-expansion-panels>
       </template>
-
     </v-data-table>
   </v-container>
 </template>

@@ -1,7 +1,7 @@
 .data-table-health-hazard th {
   background-color: #ffffff00 !important;
   font-weight: bold !important;
-  color: #FAFAFA !important;
+  color: #fafafa !important;
   padding-right: 5px !important;
 }
 .data-table-health-hazard td {
@@ -9,13 +9,13 @@
   padding-right: 5px !important;
 }
 .data-table-health-hazard thead {
-  background-color: #4CAF50;
+  background-color: #4caf50;
 }
 .data-table-health-hazard tbody tr:nth-child(odd) {
   background-color: #ffffff;
 }
 .data-table-health-hazard tbody tr:nth-child(even) {
-  background-color: #C8E6C9;
+  background-color: #c8e6c9;
 }
 .data-table-health-hazard .v-data-table-footer {
   background-color: #ffffff;
@@ -25,7 +25,7 @@
 .data-table-suspect-issues th {
   background-color: #ffffff00 !important;
   font-weight: bold !important;
-  color: #FAFAFA !important;
+  color: #fafafa !important;
   padding-right: 5px !important;
 }
 .data-table-suspect-issues td {
@@ -39,7 +39,7 @@
   background-color: #ffffff;
 }
 .data-table-suspect-issues tbody tr:nth-child(even) {
-  background-color: #BBDEFB;
+  background-color: #bbdefb;
 }
 .data-table-suspect-issues .v-data-table-footer {
   background-color: #ffffff;
