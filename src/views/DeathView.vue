@@ -205,7 +205,7 @@
 import type { IReportedDeathIssues } from '@/types/ReportedDeath'
 import { shallowRef } from 'vue'
 import { AppBarTitle, AppBarColor } from '@/router/data'
-import { AgeFilterFunc, DateFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
+import { NumberFilterFunc, DateFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 
 AppBarTitle.value = '副反応疑い報告 - 死亡報告'
 AppBarColor.value = '#2962ff'
@@ -251,7 +251,7 @@ const causalRelFilterFunc = (value: string): boolean => {
 const ageFromFilterVal = shallowRef('')
 const ageToFilterVal = shallowRef('')
 const ageFilterFunc = (value: string): boolean => {
-  return AgeFilterFunc(value, ageFromFilterVal, ageToFilterVal)
+  return NumberFilterFunc(value, ageFromFilterVal, ageToFilterVal)
 }
 
 const genderFilterVal = shallowRef('')

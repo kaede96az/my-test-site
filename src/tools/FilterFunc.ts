@@ -9,7 +9,7 @@ const nullOrEmptyString = (value: string): boolean => {
   return value == '' || value == null
 }
 
-export const AgeFilterFunc = (
+export const NumberFilterFunc = (
   value: string,
   fromFilterVal: ShallowRef<string>,
   toFilterVal: ShallowRef<string>

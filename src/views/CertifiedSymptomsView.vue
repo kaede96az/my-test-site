@@ -18,7 +18,7 @@
                 hide-details
               ></v-text-field>
             </v-col>
-          
+
             <v-col cols="12" sm="3" class="group">
               <v-text-field
                 label="合計件数（最小値）"
@@ -68,7 +68,7 @@
 <script setup lang="ts">
 import { shallowRef } from 'vue'
 import { AppBarTitle, AppBarColor } from '@/router/data'
-import { AgeFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
+import { NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import type { ICertifiedSymptoms } from '@/types/CertifiedSymptom'
 
 AppBarTitle.value = '予防接種健康被害 救済制度 - 健康被害 認定済みの症状一覧'
@@ -97,7 +97,7 @@ const symptomsFilterFunc = (value: string): boolean => {
 const sumFromFilterVal = shallowRef('')
 const sumToFilterVal = shallowRef('')
 const sumFilterFunc = (value: string): boolean => {
-  return AgeFilterFunc(value, sumFromFilterVal, sumToFilterVal)
+  return NumberFilterFunc(value, sumFromFilterVal, sumToFilterVal)
 }
 
 defineProps<{

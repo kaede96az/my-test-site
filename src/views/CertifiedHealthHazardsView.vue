@@ -166,7 +166,7 @@
 import { shallowRef } from 'vue'
 import { AppBarTitle, AppBarColor } from '@/router/data'
 import type { ICertifiedHealthHazardIssues } from '@/types/CertifiedHealthHazard'
-import { AgeFilterFunc, DateFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
+import { NumberFilterFunc, DateFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 
 AppBarTitle.value = '予防接種健康被害 救済制度 - 健康被害 認定済み一覧'
 AppBarColor.value = '#4CAF50'
@@ -236,7 +236,7 @@ const certifiedDateFilterFunc = (value: string): boolean => {
 const ageFromFilterVal = shallowRef('')
 const ageToFilterVal = shallowRef('')
 const ageFilterFunc = (value: string): boolean => {
-  return AgeFilterFunc(value, ageFromFilterVal, ageToFilterVal)
+  return NumberFilterFunc(value, ageFromFilterVal, ageToFilterVal)
 }
 
 const genderFilterVal = shallowRef('')
