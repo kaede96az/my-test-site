@@ -118,6 +118,8 @@ export default {
             :value="r.name"
             :href="`${baseURL}#${r.path}`"
             class="sub-icon health-hazards-sub"
+            :active="r.name === selectedItem"
+            @click="selectedItem = r.name"
           >
             <v-list-item-title class="sub-title health-hazards-sub">{{ r.name }}</v-list-item-title>
           </v-list-item>
