@@ -2,6 +2,7 @@ import {
   CertifiedHealthHazardIssues,
   CertifiedSymptoms,
   ReportedDeathIssues,
+  ReportedModernaIssues,
   ReportedMyocarditisIssues,
   SummaryItems
 } from './data'
@@ -27,6 +28,13 @@ export const SuspectedIssuesHomeRoute = {
   component: () => import('../views/SuspectedIssuesView.vue')
 }
 export const SuspectedIssuesSubRoutes = [
+  {
+    path: '/reported-moderna-issues',
+    name: 'モデルナからの報告',
+    icon: 'mdi-account-search',
+    props: { items: ReportedModernaIssues },
+    component: () => import('../views/ModernaView.vue')
+  },
   {
     path: '/reported-myocarditis-issues',
     name: '心筋炎/心膜炎報告',
