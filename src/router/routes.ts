@@ -4,6 +4,7 @@ import {
   ReportedDeathIssues,
   ReportedModernaIssues,
   ReportedMyocarditisIssues,
+  ReportedPfizerIssues,
   SummaryItems
 } from './data'
 
@@ -28,6 +29,13 @@ export const SuspectedIssuesHomeRoute = {
   component: () => import('../views/SuspectedIssuesView.vue')
 }
 export const SuspectedIssuesSubRoutes = [
+  {
+    path: '/reported-pfizer-issues',
+    name: 'ファイザーからの報告',
+    icon: 'mdi-account-search',
+    props: { items: ReportedPfizerIssues },
+    component: () => import('../views/PfizerView.vue')
+  },
   {
     path: '/reported-moderna-issues',
     name: 'モデルナからの報告',

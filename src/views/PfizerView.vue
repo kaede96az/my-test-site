@@ -272,7 +272,7 @@
 import { shallowRef } from 'vue'
 import { AppBarTitle, AppBarColor } from '@/router/data'
 import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc';
-import type { IReportedModernaIssues } from '@/types/Moderna';
+import type { IReportedPfizerIssues } from '@/types/Pfizer';
 
 AppBarTitle.value = '副反応疑い報告 - モデルナからの報告'
 AppBarColor.value = '#2962ff'
@@ -373,7 +373,7 @@ const resultFilterFunc = (value: string): boolean => {
 }
 
 defineProps<{
-  items: IReportedModernaIssues
+  items: IReportedPfizerIssues
 }>()
 
 let headers: any
