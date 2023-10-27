@@ -174,10 +174,10 @@
     "
     density="compact"
     class="data-table-suspect-issues"
-	show-expand
-	expand-on-click
-	item-value="no"
-	v-model:expanded="expandedArray"
+    show-expand
+    expand-on-click
+    item-value="no"
+    v-model:expanded="expandedArray"
     :custom-key-filter="{
       maker: makerFilterFunc,
       vaccine_name: vaccineNameFilterFunc,
@@ -201,78 +201,104 @@
     </template>
 
     <template v-slot:[`item.PT_name`]="item">
-      <span v-if="item.value.length > 10">{{ item.value.substring(0,7) + '...' }}</span>
+      <span v-if="item.value.length > 10">{{ item.value.substring(0, 7) + '...' }}</span>
       <span v-else>{{ item.value }}</span>
     </template>
 
     <template v-slot:[`item.date_occurred`]="item">
-      <span v-if="item.value.split(delimiters).length > 1">{{ item.value.split(delimiters)[0] + '...' }}</span>
+      <span v-if="item.value.split(delimiters).length > 1">{{
+        item.value.split(delimiters)[0] + '...'
+      }}</span>
       <span v-else>{{ item.value }}</span>
     </template>
 
     <template v-slot:[`item.result_date`]="item">
-      <span v-if="item.value.split(delimiters).length > 1 && item.value.split(delimiters)[0].length >= 10">{{ item.value.split(delimiters)[0].substring(0,10) + '...' }}</span>
-      <span v-else-if="item.value.split(delimiters).length > 1 && item.value.split(delimiters)[0].length < 9">{{ item.value.split(delimiters)[0] + '...' }}</span>
-      <span v-else-if="item.value.length >= 10 && item.value.indexOf('/') > -1">{{ item.value.substring(0,10) + '...' }}</span>
-      <span v-else-if="item.value.length >= 6 && item.value.indexOf('/') == -1">{{ item.value.substring(0,6) + '...' }}</span>
+      <span
+        v-if="
+          item.value.split(delimiters).length > 1 && item.value.split(delimiters)[0].length >= 10
+        "
+        >{{ item.value.split(delimiters)[0].substring(0, 10) + '...' }}</span
+      >
+      <span
+        v-else-if="
+          item.value.split(delimiters).length > 1 && item.value.split(delimiters)[0].length < 9
+        "
+        >{{ item.value.split(delimiters)[0] + '...' }}</span
+      >
+      <span v-else-if="item.value.length >= 10 && item.value.indexOf('/') > -1">{{
+        item.value.substring(0, 10) + '...'
+      }}</span>
+      <span v-else-if="item.value.length >= 6 && item.value.indexOf('/') == -1">{{
+        item.value.substring(0, 6) + '...'
+      }}</span>
       <span v-else>{{ item.value }}</span>
     </template>
 
     <template v-slot:[`item.result`]="item">
-      <span v-if="item.value.split(delimiters).length > 1 && item.value.split(delimiters)[0].length >= 10">{{ item.value.split(delimiters)[0].substring(0,7) + '...' }}</span>
-      <span v-else-if="item.value.split(delimiters).length > 1 && item.value.split(delimiters)[0].length < 9">{{ item.value.split(delimiters)[0] }}</span>
-      <span v-else-if="item.value.length >= 10">{{ item.value.substring(0,7) + '...' }}</span>
+      <span
+        v-if="
+          item.value.split(delimiters).length > 1 && item.value.split(delimiters)[0].length >= 10
+        "
+        >{{ item.value.split(delimiters)[0].substring(0, 7) + '...' }}</span
+      >
+      <span
+        v-else-if="
+          item.value.split(delimiters).length > 1 && item.value.split(delimiters)[0].length < 9
+        "
+        >{{ item.value.split(delimiters)[0] }}</span
+      >
+      <span v-else-if="item.value.length >= 10">{{ item.value.substring(0, 7) + '...' }}</span>
       <span v-else>{{ item.value }}</span>
     </template>
 
-  	<template v-slot:expanded-row="{ item }">
-		<td :colspan="headers.length+1">
-			<v-card variant="elevated" color="blue-grey-darken-1">
-				<v-card-title>症状と経過の詳細（No. {{ item.no }}）</v-card-title>
-				<v-card-text>
+    <template v-slot:expanded-row="{ item }">
+      <td :colspan="headers.length + 1">
+        <v-card variant="elevated" color="blue-grey-darken-1">
+          <v-card-title>症状と経過の詳細（No. {{ item.no }}）</v-card-title>
+          <v-card-text>
+            <v-row>
+              <v-col v-for="(day, i) in item.date_occurred.split(delimiters)" :key="day + '-' + i">
+                <v-timeline density="compact" align="start">
+                  <v-timeline-item dot-color="orange" size="x-small">
+                    <div class="mb-4">
+                      <div class="font-weight-normal">
+                        <strong>{{ day }}</strong
+                        >： {{ item.PT_name.split(delimiters)[i] }}）
+                      </div>
+                    </div>
+                  </v-timeline-item>
 
-					<v-row>
-						<v-col v-for="day, i in item.date_occurred.split(delimiters)" :key="day + '-' + i">
-							<v-timeline density="compact" align="start">
-								<v-timeline-item
-								dot-color="orange"
-								size="x-small"
-								>
-								<div class="mb-4">
-									<div class="font-weight-normal">
-										<strong>{{ day }}</strong>： {{ item.PT_name.split(delimiters)[i] }}）
-									</div>
-								</div>
-								</v-timeline-item>
-
-								<v-timeline-item
-								:dot-color="getTimeLineColor(item.result.split(delimiters)[i])"
-								size="x-small"
-								>
-								<div class="mb-4">
-									<div class="font-weight-normal">
-										<strong>{{ item.result_date.split(delimiters)[i] }}</strong>： {{ item.result.split(delimiters)[i] }}
-									</div>
-								</div>
-								</v-timeline-item>
-							</v-timeline>
-						</v-col>
-					</v-row>
-
-				</v-card-text>
-				<v-card-actions><v-btn variant="outlined" @click="expandedArray = []">詳細表示を閉じる</v-btn></v-card-actions>
-			</v-card>
-		</td>
+                  <v-timeline-item
+                    :dot-color="getTimeLineColor(item.result.split(delimiters)[i])"
+                    size="x-small"
+                  >
+                    <div class="mb-4">
+                      <div class="font-weight-normal">
+                        <strong>{{ item.result_date.split(delimiters)[i] }}</strong
+                        >： {{ item.result.split(delimiters)[i] }}
+                      </div>
+                    </div>
+                  </v-timeline-item>
+                </v-timeline>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-actions
+            ><v-btn variant="outlined" @click="expandedArray = []"
+              >詳細表示を閉じる</v-btn
+            ></v-card-actions
+          >
+        </v-card>
+      </td>
     </template>
-
   </v-data-table>
 </template>
 
 <script setup lang="ts">
 import { shallowRef } from 'vue'
 import { AppBarTitle, AppBarColor } from '@/router/data'
-import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc';
-import type { IReportedModernaIssues } from '@/types/Moderna';
+import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
+import type { IReportedModernaIssues } from '@/types/Moderna'
 
 AppBarTitle.value = '副反応疑い報告 - モデルナからの報告'
 AppBarColor.value = '#2962ff'
@@ -296,21 +322,21 @@ const triggerFunc = () => {
 
 let expandedArray = shallowRef([])
 const getTimeLineColor = (result: string): string => {
-	switch (result) {
-		case '回復':
-			return 'green'
-		case '軽快':
-			return 'lime'
-		case '未回復':
-			return 'orange'
-		case '後遺症あり':
-			return 'pink-darken-4'
-		case '死亡':
-			return 'red'
-	
-		default:
-			return 'grey'
-	}
+  switch (result) {
+    case '回復':
+      return 'green'
+    case '軽快':
+      return 'lime'
+    case '未回復':
+      return 'orange'
+    case '後遺症あり':
+      return 'pink-darken-4'
+    case '死亡':
+      return 'red'
+
+    default:
+      return 'grey'
+  }
 }
 
 const makerFilterVal = shallowRef('')
@@ -383,7 +409,7 @@ headers = [
   { title: 'メーカー', align: 'start', key: 'maker' },
   { title: 'ワクチン名', align: 'start', key: 'vaccine_name', width: 200 },
   { title: 'ロット番号', align: 'start', key: 'lot_no' },
-  { title: '年齢', align: 'start', key: 'age'},
+  { title: '年齢', align: 'start', key: 'age' },
   { title: '性別', align: 'start', key: 'gender' },
   { title: '接種日', align: 'start', key: 'date_vaccinated' },
   { title: '症状発生日', align: 'start', key: 'date_occurred' },
@@ -391,7 +417,7 @@ headers = [
   { title: '重症度', align: 'start', key: 'severity' },
   { title: '転帰日', align: 'start', key: 'result_date' },
   { title: '転帰内容', align: 'start', key: 'result' },
-  { title: '元資料', align: 'start', key: 'source' },
+  { title: '元資料', align: 'start', key: 'source' }
 ]
 </script>
 
@@ -418,7 +444,7 @@ headers = [
 
 <style>
 .expanded-row-style {
-	border: medium dashed green;
-	background-color: beige !important;
+  border: medium dashed green;
+  background-color: beige !important;
 }
 </style>

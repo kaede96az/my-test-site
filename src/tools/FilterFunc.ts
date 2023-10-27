@@ -17,7 +17,7 @@ export const NumberFilterFunc = (
   toFilterVal: ShallowRef<string>
 ): boolean => {
   // フィルタリング処理が不要な場合はtrueを返すことで、項目を表示させる
-  if( nullOrEmptyString(fromFilterVal.value) && nullOrEmptyString(toFilterVal.value) ) return true
+  if (nullOrEmptyString(fromFilterVal.value) && nullOrEmptyString(toFilterVal.value)) return true
 
   const v = Number(value)
   // コメントがついているなど数字に変換できないデータの場合は、数字による大小比較が
@@ -45,11 +45,11 @@ export const DateFilterFunc = (
   toFilterVal: ShallowRef<string>
 ): boolean => {
   // フィルタリング処理が不要な場合はtrueを返すことで、項目を表示させる
-  if( nullOrEmptyString(fromFilterVal.value) && nullOrEmptyString(toFilterVal.value) ) return true
+  if (nullOrEmptyString(fromFilterVal.value) && nullOrEmptyString(toFilterVal.value)) return true
 
   const v: [Date, boolean] = tryParseDate(value)
   // パースに失敗した場合は、日付としての比較ができないため非表示にする
-  if(!v[1]) return false
+  if (!v[1]) return false
 
   if (fromFilterVal.value != '' && fromFilterVal.value != null) {
     const f = new Date(fromFilterVal.value)
@@ -66,12 +66,12 @@ export const DateFilterFunc = (
   return true
 }
 
-const tryParseDate = (value: string):[data: Date, result: boolean] => {
+const tryParseDate = (value: string): [data: Date, result: boolean] => {
   const splitters = ['\n', '、', ',']
-  splitters.forEach(s => {
+  splitters.forEach((s) => {
     const data = new Date(value.split(s)[0])
-    if(!isNaN(data.getTime())) return [data, true]
-  });
+    if (!isNaN(data.getTime())) return [data, true]
+  })
 
   return [new Date(), false]
 }
