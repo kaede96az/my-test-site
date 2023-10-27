@@ -300,7 +300,7 @@ import { AppBarTitle, AppBarColor } from '@/router/data'
 import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import type { IReportedPfizerIssues } from '@/types/Pfizer'
 
-AppBarTitle.value = '副反応疑い報告 - モデルナからの報告'
+AppBarTitle.value = '副反応疑い報告 - ファイザーからの報告'
 AppBarColor.value = '#2962ff'
 
 const delimiters = /[,、）\n]+/
