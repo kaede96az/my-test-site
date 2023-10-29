@@ -223,13 +223,21 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, shallowRef } from 'vue'
+import axios from 'axios'
 import type { IReportedMyocarditisIssues } from '@/types/ReportedMyocarditis'
-import { shallowRef } from 'vue'
-import { AppBarTitle, AppBarColor } from '@/router/data'
+import { AppBarTitle, AppBarColor, ReportedMyocarditisDataURL } from '@/router/data'
 import router from '@/router/index'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
+
+const items = shallowRef<IReportedMyocarditisIssues>()
+onMounted( () => {
+  axios.get<IReportedMyocarditisIssues>(ReportedMyocarditisDataURL)
+  .then(response => items.value = response.data)
+  .catch(error => console.log('failed to get myocarditis data: ' + error))
+})
 
 // searchになにか文字を指定することでv-data-tableのfilterが実行されるようにする。（空文字だとフィルタリングがOffになる）
 // custom-filterの処理は常にtrueを返すように上書きして、search文字列によるフィルタリング処理が行われないようにする。
@@ -359,10 +367,6 @@ const preExistingConditionFilterFunc = (value: string): boolean => {
   if (preExistingConditionFilterVal.value == '') return true
   return value.indexOf(preExistingConditionFilterVal.value) > -1
 }
-
-defineProps<{
-  items: IReportedMyocarditisIssues
-}>()
 
 let headers: any
 headers = [

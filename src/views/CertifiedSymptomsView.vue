@@ -66,14 +66,22 @@
 </template>
 
 <script setup lang="ts">
-import { shallowRef } from 'vue'
-import { AppBarTitle, AppBarColor } from '@/router/data'
+import { onMounted, shallowRef } from 'vue'
+import axios from 'axios'
+import { AppBarTitle, AppBarColor, CertifiedSymptomsDataURL } from '@/router/data'
 import { NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import type { ICertifiedSymptoms } from '@/types/CertifiedSymptom'
 import router from '@/router/index'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#4CAF50'
+
+const items = shallowRef<ICertifiedSymptoms>()
+onMounted( () => {
+  axios.get<ICertifiedSymptoms>(CertifiedSymptomsDataURL)
+  .then(response => items.value = response.data)
+  .catch(error => console.log('failed to get certified symptoms data: ' + error))
+})
 
 // searchになにか文字を指定することでv-data-tableのfilterが実行されるようにする。（空文字だとフィルタリングがOffになる）
 // custom-filterの処理は常にtrueを返すように上書きして、search文字列によるフィルタリング処理が行われないようにする。
@@ -100,10 +108,6 @@ const sumToFilterVal = shallowRef('')
 const sumFilterFunc = (value: string): boolean => {
   return NumberFilterFunc(value, sumFromFilterVal, sumToFilterVal)
 }
-
-defineProps<{
-  items: ICertifiedSymptoms
-}>()
 
 let headers: any
 headers = [

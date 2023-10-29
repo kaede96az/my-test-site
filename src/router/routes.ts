@@ -1,12 +1,3 @@
-import {
-  CertifiedHealthHazardIssues,
-  CertifiedSymptoms,
-  ReportedDeathIssues,
-  ReportedModernaIssues,
-  ReportedMyocarditisIssues,
-  ReportedPfizerIssues,
-} from './data'
-
 export const HomeRoute = {
   path: '/',
   name: 'トップページ',
@@ -35,7 +26,6 @@ export const SuspectedIssuesSubRoutes = [
     name: '副反応疑い報告 - ファイザーからの報告',
     menu_name: 'ファイザーからの報告',
     icon: 'mdi-account-search',
-    props: { items: ReportedPfizerIssues },
     component: () => import('../views/PfizerView.vue')
   },
   {
@@ -43,7 +33,6 @@ export const SuspectedIssuesSubRoutes = [
     name: '副反応疑い報告 - モデルナからの報告',
     menu_name: 'モデルナからの報告',
     icon: 'mdi-account-search',
-    props: { items: ReportedModernaIssues },
     component: () => import('../views/ModernaView.vue')
   },
   {
@@ -51,7 +40,6 @@ export const SuspectedIssuesSubRoutes = [
     name: '副反応疑い報告 - 心筋炎/心膜炎報告',
     menu_name: '心筋炎/心膜炎報告',
     icon: 'mdi-account-search',
-    props: { items: ReportedMyocarditisIssues },
     component: () => import('../views/MyocarditisView.vue')
   },
   {
@@ -59,7 +47,6 @@ export const SuspectedIssuesSubRoutes = [
     name: '副反応疑い報告 - 死亡報告',
     menu_name: '死亡報告',
     icon: 'mdi-account-search',
-    props: { items: ReportedDeathIssues },
     component: () => import('../views/DeathView.vue')
   }
 ]
@@ -78,7 +65,6 @@ export const HealthHazardsSubRoutes = [
     name: '予防接種健康被害 救済制度 - 健康被害 認定済み一覧',
     menu_name: '健康被害 認定済み一覧',
     icon: 'mdi-account-search',
-    props: { items: CertifiedHealthHazardIssues },
     component: () => import('../views/CertifiedHealthHazardsView.vue')
   },
   {
@@ -86,7 +72,6 @@ export const HealthHazardsSubRoutes = [
     name: '予防接種健康被害 救済制度 - 健康被害 認定済み症状の一覧',
     menu_name: '健康被害 認定済み症状の一覧',
     icon: 'mdi-account-search',
-    props: { items: CertifiedSymptoms },
     component: () => import('../views/CertifiedSymptomsView.vue')
   }
 ]

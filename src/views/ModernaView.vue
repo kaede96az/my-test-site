@@ -295,14 +295,22 @@
 </template>
 
 <script setup lang="ts">
-import { shallowRef } from 'vue'
-import { AppBarTitle, AppBarColor } from '@/router/data'
+import { onMounted, shallowRef } from 'vue'
+import axios from 'axios'
+import { AppBarTitle, AppBarColor, ReportedModernaDataURL } from '@/router/data'
 import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import type { IReportedModernaIssues } from '@/types/Moderna'
 import router from '@/router/index'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
+
+const items = shallowRef<IReportedModernaIssues>()
+onMounted( () => {
+  axios.get<IReportedModernaIssues>(ReportedModernaDataURL)
+  .then(response => items.value = response.data)
+  .catch(error => console.log('failed to get reported moderna data: ' + error))
+})
 
 const delimiters = /[,、）\n]+/
 
@@ -398,10 +406,6 @@ const resultFilterVal = shallowRef('')
 const resultFilterFunc = (value: string): boolean => {
   return StringFilterFunc(value, resultFilterVal)
 }
-
-defineProps<{
-  items: IReportedModernaIssues
-}>()
 
 let headers: any
 headers = [

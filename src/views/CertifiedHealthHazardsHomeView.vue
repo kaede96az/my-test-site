@@ -14,6 +14,7 @@
         :width="10"
       ></v-progress-circular>
     </v-container>
+
     <v-container v-else>
     <v-row>
       <v-col cols="12" sm="6" v-for="item in items.certified_issues.summary_items" :key="item.title">
@@ -40,16 +41,15 @@ import SummaryCard from '../components/SummaryCard.vue'
 import type { ISummaryItems } from '../types/Summary'
 import { SelectIcon } from '@/tools/SelectIcon'
 import { SelectTileColor } from '@/tools/SelectTileColor'
-import { AppBarTitle, AppBarColor } from '@/router/data'
+import { AppBarTitle, AppBarColor, SummaryDataURL } from '@/router/data'
 import router from '@/router/index'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#00c853'
 
 const items = shallowRef<ISummaryItems>()
-const data_url = 'https://gist.githubusercontent.com/kaede96az/b9102295771f6c4bf0f3e98ea2d2e6f2/raw/9fc00ccd479da2bd860b82e867b1fea4e41d3db7/summary.json' 
 onMounted( () => {
-  axios.get<ISummaryItems>(data_url)
+  axios.get<ISummaryItems>(SummaryDataURL)
   .then(response => items.value = response.data)
   .catch(error => console.log('failed to get summary data: ' + error))
 })

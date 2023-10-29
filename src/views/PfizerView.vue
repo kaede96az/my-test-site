@@ -295,14 +295,22 @@
 </template>
 
 <script setup lang="ts">
-import { shallowRef } from 'vue'
-import { AppBarTitle, AppBarColor } from '@/router/data'
+import { onMounted, shallowRef } from 'vue'
+import axios from 'axios'
+import { AppBarTitle, AppBarColor, ReportedPfizerDataURL } from '@/router/data'
 import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import type { IReportedPfizerIssues } from '@/types/Pfizer'
 import router from '@/router/index'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
+
+const items = shallowRef<IReportedPfizerIssues>()
+onMounted( () => {
+  axios.get<IReportedPfizerIssues>(ReportedPfizerDataURL)
+  .then(response => items.value = response.data)
+  .catch(error => console.log('failed to get reported pfizer data: ' + error))
+})
 
 const delimiters = /[,、）\n]+/
 
@@ -398,10 +406,6 @@ const resultFilterVal = shallowRef('')
 const resultFilterFunc = (value: string): boolean => {
   return StringFilterFunc(value, resultFilterVal)
 }
-
-defineProps<{
-  items: IReportedPfizerIssues
-}>()
 
 let headers: any
 headers = [

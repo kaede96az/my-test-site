@@ -163,14 +163,22 @@
 </template>
 
 <script setup lang="ts">
-import { shallowRef } from 'vue'
-import { AppBarTitle, AppBarColor } from '@/router/data'
+import { onMounted, shallowRef } from 'vue'
+import axios from 'axios'
+import { AppBarTitle, AppBarColor, CertifiedHealthHazardDataURL } from '@/router/data'
 import type { ICertifiedHealthHazardIssues } from '@/types/CertifiedHealthHazard'
 import { NumberFilterFunc, DateFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import router from '@/router/index'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#4CAF50'
+
+const items = shallowRef<ICertifiedHealthHazardIssues>()
+onMounted( () => {
+  axios.get<ICertifiedHealthHazardIssues>(CertifiedHealthHazardDataURL)
+  .then(response => items.value = response.data)
+  .catch(error => console.log('failed to get certified heallth hazard data: ' + error))
+})
 
 // searchになにか文字を指定することでv-data-tableのfilterが実行されるようにする。（空文字だとフィルタリングがOffになる）
 // custom-filterの処理は常にtrueを返すように上書きして、search文字列によるフィルタリング処理が行われないようにする。
@@ -249,10 +257,6 @@ const preExistingConditionFilterVal = shallowRef('')
 const preExistingConditionFilterFunc = (value: string): boolean => {
   return StringFilterFunc(value, preExistingConditionFilterVal)
 }
-
-defineProps<{
-  items: ICertifiedHealthHazardIssues
-}>()
 
 let headers: any
 headers = [
