@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-expansion-panels>
+    <v-expansion-panels v-model="expand_search">
       <v-expansion-panel>
         <v-expansion-panel-title color="#66BB6A">
           <v-icon class="search-icon">mdi-magnify</v-icon>
@@ -63,7 +63,14 @@
         sum_count: sumFilterFunc
       }"
     >
+
+    <template v-slot:[`item.symptom_name`]="item">
+      <v-btn variant="text" color="deep-purple-darken-1" @click="setFilter(item.value)"><b>{{ item.value }}</b></v-btn>
+      <span></span>
+    </template>
+
     </v-data-table>
+
   </v-container>
 </template>
 
@@ -88,6 +95,12 @@ onMounted( () => {
   })
   .catch(error => console.log('failed to get certified symptoms data: ' + error))
 })
+
+const setFilter = (value: string) => {
+  symptomsFilterVal.value = value
+  expand_search.value = [0]
+}
+const expand_search = shallowRef<Number[]>([])
 
 // searchになにか文字を指定することでv-data-tableのfilterが実行されるようにする。（空文字だとフィルタリングがOffになる）
 // custom-filterの処理は常にtrueを返すように上書きして、search文字列によるフィルタリング処理が行われないようにする。
