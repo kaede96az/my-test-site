@@ -309,13 +309,14 @@ AppBarColor.value = '#2962ff'
 
 const loading = shallowRef(true)
 const items = shallowRef<IReportedModernaIssues>()
-onMounted( () => {
-  axios.get<IReportedModernaIssues>(ReportedModernaDataURL)
-  .then( (response) => {
-    items.value = response.data
-    loading.value = false
-  })
-  .catch(error => console.log('failed to get reported moderna data: ' + error))
+onMounted(() => {
+  axios
+    .get<IReportedModernaIssues>(ReportedModernaDataURL)
+    .then((response) => {
+      items.value = response.data
+      loading.value = false
+    })
+    .catch((error) => console.log('failed to get reported moderna data: ' + error))
 })
 
 const delimiters = /[,、）\n]+/

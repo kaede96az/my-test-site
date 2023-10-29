@@ -71,7 +71,9 @@ export default {
             :active="SuspectedIssuesHomeRoute.name === selectedItem"
             @click="selectedItem = SuspectedIssuesHomeRoute.name"
           >
-            <v-list-item-title class="sub-title suspeted-issue-sub">{{ SuspectedIssuesHomeRoute.menu_name }}</v-list-item-title>
+            <v-list-item-title class="sub-title suspeted-issue-sub">{{
+              SuspectedIssuesHomeRoute.menu_name
+            }}</v-list-item-title>
           </v-list-item>
           <v-list-item
             v-for="(r, i) in SuspectedIssuesSubRoutes"
@@ -83,7 +85,9 @@ export default {
             :active="r.name === selectedItem"
             @click="selectedItem = r.name"
           >
-            <v-list-item-title class="sub-title suspeted-issue-sub">{{ r.menu_name }}</v-list-item-title>
+            <v-list-item-title class="sub-title suspeted-issue-sub">{{
+              r.menu_name
+            }}</v-list-item-title>
           </v-list-item>
         </v-list-group>
 
@@ -94,7 +98,9 @@ export default {
               prepend-icon="mdi-medical-bag"
               class="root-icon health-hazards-root"
             >
-              <v-list-item-title class="root-title health-hazards-root">予防接種健康被害 救済制度</v-list-item-title>
+              <v-list-item-title class="root-title health-hazards-root"
+                >予防接種健康被害 救済制度</v-list-item-title
+              >
             </v-list-item>
           </template>
 
@@ -105,7 +111,9 @@ export default {
             :active="HealthHazardsHomeRoute.name === selectedItem"
             @click="selectedItem = HealthHazardsHomeRoute.name"
           >
-            <v-list-item-title class="sub-title health-hazards-sub">{{ HealthHazardsHomeRoute.menu_name }}</v-list-item-title>
+            <v-list-item-title class="sub-title health-hazards-sub">{{
+              HealthHazardsHomeRoute.menu_name
+            }}</v-list-item-title>
           </v-list-item>
           <v-list-item
             v-for="(r, i) in HealthHazardsSubRoutes"
@@ -117,7 +125,9 @@ export default {
             :active="r.name === selectedItem"
             @click="selectedItem = r.name"
           >
-            <v-list-item-title class="sub-title health-hazards-sub">{{ r.menu_name }}</v-list-item-title>
+            <v-list-item-title class="sub-title health-hazards-sub">{{
+              r.menu_name
+            }}</v-list-item-title>
           </v-list-item>
         </v-list-group>
 

@@ -309,13 +309,14 @@ AppBarColor.value = '#2962ff'
 
 const loading = shallowRef(true)
 const items = shallowRef<IReportedPfizerIssues>()
-onMounted( () => {
-  axios.get<IReportedPfizerIssues>(ReportedPfizerDataURL)
-  .then( (response) => {
-    items.value = response.data
-    loading.value = false
-  })
-  .catch(error => console.log('failed to get reported pfizer data: ' + error))
+onMounted(() => {
+  axios
+    .get<IReportedPfizerIssues>(ReportedPfizerDataURL)
+    .then((response) => {
+      items.value = response.data
+      loading.value = false
+    })
+    .catch((error) => console.log('failed to get reported pfizer data: ' + error))
 })
 
 const delimiters = /[,、）\n]+/

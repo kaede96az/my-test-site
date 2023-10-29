@@ -236,13 +236,14 @@ AppBarColor.value = '#2962ff'
 
 const loading = shallowRef(true)
 const items = shallowRef<IReportedMyocarditisIssues>()
-onMounted( () => {
-  axios.get<IReportedMyocarditisIssues>(ReportedMyocarditisDataURL)
-  .then((response) => {
-    items.value = response.data
-    loading.value = false
-  })
-  .catch(error => console.log('failed to get myocarditis data: ' + error))
+onMounted(() => {
+  axios
+    .get<IReportedMyocarditisIssues>(ReportedMyocarditisDataURL)
+    .then((response) => {
+      items.value = response.data
+      loading.value = false
+    })
+    .catch((error) => console.log('failed to get myocarditis data: ' + error))
 })
 
 // searchになにか文字を指定することでv-data-tableのfilterが実行されるようにする。（空文字だとフィルタリングがOffになる）

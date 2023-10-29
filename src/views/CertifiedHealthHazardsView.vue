@@ -177,13 +177,14 @@ AppBarColor.value = '#4CAF50'
 
 const loading = shallowRef(true)
 const items = shallowRef<ICertifiedHealthHazardIssues>()
-onMounted( () => {
-  axios.get<ICertifiedHealthHazardIssues>(CertifiedHealthHazardDataURL)
-  .then((response) => {
-    items.value = response.data
-    loading.value = false
-  })
-  .catch(error => console.log('failed to get certified heallth hazard data: ' + error))
+onMounted(() => {
+  axios
+    .get<ICertifiedHealthHazardIssues>(CertifiedHealthHazardDataURL)
+    .then((response) => {
+      items.value = response.data
+      loading.value = false
+    })
+    .catch((error) => console.log('failed to get certified heallth hazard data: ' + error))
 })
 
 // searchになにか文字を指定することでv-data-tableのfilterが実行されるようにする。（空文字だとフィルタリングがOffになる）

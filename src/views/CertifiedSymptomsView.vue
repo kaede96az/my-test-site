@@ -63,14 +63,13 @@
         sum_count: sumFilterFunc
       }"
     >
-
-    <template v-slot:[`item.symptom_name`]="item">
-      <v-btn variant="text" color="deep-purple-darken-1" @click="setFilter(item.value)"><b>{{ item.value }}</b></v-btn>
-      <span></span>
-    </template>
-
+      <template v-slot:[`item.symptom_name`]="item">
+        <v-btn variant="text" color="deep-purple-darken-1" @click="setFilter(item.value)"
+          ><b>{{ item.value }}</b></v-btn
+        >
+        <span></span>
+      </template>
     </v-data-table>
-
   </v-container>
 </template>
 
@@ -87,13 +86,14 @@ AppBarColor.value = '#4CAF50'
 
 const loading = shallowRef(true)
 const items = shallowRef<ICertifiedSymptoms>()
-onMounted( () => {
-  axios.get<ICertifiedSymptoms>(CertifiedSymptomsDataURL)
-  .then((response) => {
-    items.value = response.data
-    loading.value = false
-  })
-  .catch(error => console.log('failed to get certified symptoms data: ' + error))
+onMounted(() => {
+  axios
+    .get<ICertifiedSymptoms>(CertifiedSymptomsDataURL)
+    .then((response) => {
+      items.value = response.data
+      loading.value = false
+    })
+    .catch((error) => console.log('failed to get certified symptoms data: ' + error))
 })
 
 const setFilter = (value: string) => {

@@ -1,10 +1,10 @@
 export interface ISummaryItems {
   suspected_issues: {
-    source_info: ISourceInfo,
+    source_info: ISourceInfo
     summary_items: ISummaryItem[]
   }
   certified_issues: {
-    source_info: ISourceInfo,
+    source_info: ISourceInfo
     summary_items: ISummaryItem[]
   }
   number_of_deaths_reported_by_age_group: IChartItem

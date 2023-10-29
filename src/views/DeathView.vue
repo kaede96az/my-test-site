@@ -216,13 +216,14 @@ AppBarColor.value = '#2962ff'
 
 const loading = shallowRef(true)
 const items = shallowRef<IReportedDeathIssues>()
-onMounted( () => {
-  axios.get<IReportedDeathIssues>(ReportedDeathDataURL)
-  .then((response) => {
-    items.value = response.data
-    loading.value = false
-  })
-  .catch(error => console.log('failed to get death data: ' + error))
+onMounted(() => {
+  axios
+    .get<IReportedDeathIssues>(ReportedDeathDataURL)
+    .then((response) => {
+      items.value = response.data
+      loading.value = false
+    })
+    .catch((error) => console.log('failed to get death data: ' + error))
 })
 
 // searchになにか文字を指定することでv-data-tableのfilterが実行されるようにする。（空文字だとフィルタリングがOffになる）
