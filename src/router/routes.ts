@@ -5,7 +5,6 @@ import {
   ReportedModernaIssues,
   ReportedMyocarditisIssues,
   ReportedPfizerIssues,
-  SummaryItems
 } from './data'
 
 export const HomeRoute = {
@@ -28,7 +27,6 @@ export const SuspectedIssuesHomeRoute = {
   name: '副反応疑い報告 - 集計結果',
   menu_name: '集計結果',
   icon: 'mdi-chart-bar',
-  props: { items: SummaryItems },
   component: () => import('../views/SuspectedIssuesView.vue')
 }
 export const SuspectedIssuesSubRoutes = [
@@ -71,7 +69,6 @@ export const HealthHazardsHomeRoute = {
   name: '予防接種健康被害 救済制度 - 集計結果',
   menu_name: '集計結果',
   icon: 'mdi-chart-bar',
-  props: { items: SummaryItems },
   component: () => import('../views/CertifiedHealthHazardsHomeView.vue')
 }
 

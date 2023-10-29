@@ -1,5 +1,4 @@
 import axios from 'axios'
-import type { ISummaryItems } from '../types/Summary'
 import type { IReportedDeathIssues } from '../types/ReportedDeath'
 import type { IReportedMyocarditisIssues } from '@/types/ReportedMyocarditis'
 import { shallowRef } from 'vue'
@@ -7,11 +6,6 @@ import type { ICertifiedHealthHazardIssues } from '@/types/CertifiedHealthHazard
 import type { ICertifiedSymptoms } from '@/types/CertifiedSymptom'
 import type { IReportedModernaIssues } from '@/types/Moderna'
 import type { IReportedPfizerIssues } from '@/types/Pfizer'
-
-const summaryRes = await axios.get<ISummaryItems>(
-  'https://gist.githubusercontent.com/kaede96az/b9102295771f6c4bf0f3e98ea2d2e6f2/raw/d9b5e6504034581b0ef9963b5272df9eb1780441/summary.json'
-)
-export const SummaryItems = summaryRes.data
 
 const reportedModernaRes = await axios.get<IReportedModernaIssues>(
   'https://gist.githubusercontent.com/kaede96az/c7c5e78406ca40ac23b4931492e44ec4/raw/8476396299a29af7e32c1293b08a62ddf2792bcd/moderna.json'

@@ -1,8 +1,21 @@
 export interface ISummaryItems {
-  reported_issues: ISummaryItem[]
-  certified_issues: ISummaryItem[]
+  suspected_issues: {
+    source_info: ISourceInfo,
+    summary_items: ISummaryItem[]
+  }
+  certified_issues: {
+    source_info: ISourceInfo,
+    summary_items: ISummaryItem[]
+  }
   number_of_deaths_reported_by_age_group: IChartItem
   number_of_deaths_reported_by_vaccinated_times_group: IChartItem
+}
+
+export interface ISourceInfo {
+  name: string
+  date: string
+  description: string
+  url: string
 }
 
 export interface ISummaryItem {
