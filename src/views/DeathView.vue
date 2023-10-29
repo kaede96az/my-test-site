@@ -154,6 +154,8 @@
   <br />
 
   <v-data-table
+    loading-text="データを読み込み中です。"
+    :loading="loading"
     color="#00b0ff"
     :items="items as any"
     :headers="headers"
@@ -212,10 +214,14 @@ import router from '@/router/index'
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 
+const loading = shallowRef(true)
 const items = shallowRef<IReportedDeathIssues>()
 onMounted( () => {
   axios.get<IReportedDeathIssues>(ReportedDeathDataURL)
-  .then(response => items.value = response.data)
+  .then((response) => {
+    items.value = response.data
+    loading.value = false
+  })
   .catch(error => console.log('failed to get death data: ' + error))
 })
 
