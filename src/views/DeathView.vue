@@ -206,8 +206,9 @@ import type { IReportedDeathIssues } from '@/types/ReportedDeath'
 import { shallowRef } from 'vue'
 import { AppBarTitle, AppBarColor } from '@/router/data'
 import { NumberFilterFunc, DateFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
+import router from '@/router/index'
 
-AppBarTitle.value = '副反応疑い報告 - 死亡報告'
+AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 
 // searchになにか文字を指定することでv-data-tableのfilterが実行されるようにする。（空文字だとフィルタリングがOffになる）

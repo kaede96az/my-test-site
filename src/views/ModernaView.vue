@@ -299,8 +299,9 @@ import { shallowRef } from 'vue'
 import { AppBarTitle, AppBarColor } from '@/router/data'
 import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import type { IReportedModernaIssues } from '@/types/Moderna'
+import router from '@/router/index'
 
-AppBarTitle.value = '副反応疑い報告 - モデルナからの報告'
+AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 
 const delimiters = /[,、）\n]+/

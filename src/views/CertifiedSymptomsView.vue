@@ -70,8 +70,9 @@ import { shallowRef } from 'vue'
 import { AppBarTitle, AppBarColor } from '@/router/data'
 import { NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import type { ICertifiedSymptoms } from '@/types/CertifiedSymptom'
+import router from '@/router/index'
 
-AppBarTitle.value = '予防接種健康被害 救済制度 - 健康被害 認定済みの症状一覧'
+AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#4CAF50'
 
 // searchになにか文字を指定することでv-data-tableのfilterが実行されるようにする。（空文字だとフィルタリングがOffになる）

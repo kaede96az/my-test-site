@@ -226,8 +226,9 @@
 import type { IReportedMyocarditisIssues } from '@/types/ReportedMyocarditis'
 import { shallowRef } from 'vue'
 import { AppBarTitle, AppBarColor } from '@/router/data'
+import router from '@/router/index'
 
-AppBarTitle.value = '副反応疑い報告 - 心筋炎/心膜炎報告'
+AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 
 // searchになにか文字を指定することでv-data-tableのfilterが実行されるようにする。（空文字だとフィルタリングがOffになる）

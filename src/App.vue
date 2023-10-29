@@ -50,30 +50,28 @@ export default {
           :active="HomeRoute.name === selectedItem"
           @click="selectedItem = HomeRoute.name"
         >
-          <v-list-item-title class="root-title">{{ HomeRoute.name }}</v-list-item-title>
+          <v-list-item-title class="root-title">{{ HomeRoute.menu_name }}</v-list-item-title>
         </v-list-item>
 
         <v-list-group value="SuspectedIssues">
           <template v-slot:activator="{ props }">
             <v-list-item
               v-bind="props"
-              :prepend-icon="SuspectedIssuesHomeRoute.icon"
+              prepend-icon="mdi-file-document-alert-outline"
               class="root-icon suspeted-issue-root"
             >
-              <v-list-item-title class="root-title">{{
-                SuspectedIssuesHomeRoute.name
-              }}</v-list-item-title>
+              <v-list-item-title class="root-title">副反応疑い報告</v-list-item-title>
             </v-list-item>
           </template>
 
           <v-list-item
-            prepend-icon="mdi-chart-bar"
+            :prepend-icon="SuspectedIssuesHomeRoute.icon"
             :href="`${baseURL}#${SuspectedIssuesHomeRoute.path}`"
             class="sub-icon suspeted-issue-sub"
             :active="SuspectedIssuesHomeRoute.name === selectedItem"
             @click="selectedItem = SuspectedIssuesHomeRoute.name"
           >
-            <v-list-item-title class="sub-title suspeted-issue-sub">集計結果</v-list-item-title>
+            <v-list-item-title class="sub-title suspeted-issue-sub">{{ SuspectedIssuesHomeRoute.menu_name }}</v-list-item-title>
           </v-list-item>
           <v-list-item
             v-for="(r, i) in SuspectedIssuesSubRoutes"
@@ -85,7 +83,7 @@ export default {
             :active="r.name === selectedItem"
             @click="selectedItem = r.name"
           >
-            <v-list-item-title class="sub-title suspeted-issue-sub">{{ r.name }}</v-list-item-title>
+            <v-list-item-title class="sub-title suspeted-issue-sub">{{ r.menu_name }}</v-list-item-title>
           </v-list-item>
         </v-list-group>
 
@@ -93,23 +91,21 @@ export default {
           <template v-slot:activator="{ props }">
             <v-list-item
               v-bind="props"
-              :prepend-icon="HealthHazardsHomeRoute.icon"
+              prepend-icon="mdi-medical-bag"
               class="root-icon health-hazards-root"
             >
-              <v-list-item-title class="root-title health-hazards-root">{{
-                HealthHazardsHomeRoute.name
-              }}</v-list-item-title>
+              <v-list-item-title class="root-title health-hazards-root">予防接種健康被害 救済制度</v-list-item-title>
             </v-list-item>
           </template>
 
           <v-list-item
-            prepend-icon="mdi-chart-bar"
+            :prepend-icon="HealthHazardsHomeRoute.icon"
             :href="`${baseURL}#${HealthHazardsHomeRoute.path}`"
             class="sub-icon health-hazards-sub"
             :active="HealthHazardsHomeRoute.name === selectedItem"
             @click="selectedItem = HealthHazardsHomeRoute.name"
           >
-            <v-list-item-title class="sub-title health-hazards-sub">集計結果</v-list-item-title>
+            <v-list-item-title class="sub-title health-hazards-sub">{{ HealthHazardsHomeRoute.menu_name }}</v-list-item-title>
           </v-list-item>
           <v-list-item
             v-for="(r, i) in HealthHazardsSubRoutes"
@@ -121,7 +117,7 @@ export default {
             :active="r.name === selectedItem"
             @click="selectedItem = r.name"
           >
-            <v-list-item-title class="sub-title health-hazards-sub">{{ r.name }}</v-list-item-title>
+            <v-list-item-title class="sub-title health-hazards-sub">{{ r.menu_name }}</v-list-item-title>
           </v-list-item>
         </v-list-group>
 
@@ -133,7 +129,7 @@ export default {
           :active="AboutRoute.name === selectedItem"
           @click="selectedItem = AboutRoute.name"
         >
-          <v-list-item-title class="root-title">{{ AboutRoute.name }}</v-list-item-title>
+          <v-list-item-title class="root-title">{{ AboutRoute.menu_name }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>

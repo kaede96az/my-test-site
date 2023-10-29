@@ -75,8 +75,9 @@ import type { ISummaryItems } from '@/types/Summary'
 import { SelectIcon } from '@/tools/SelectIcon'
 import { SelectTileColor } from '@/tools/SelectTileColor'
 import { AppBarTitle, AppBarColor } from '@/router/data'
+import router from '@/router/index'
 
-AppBarTitle.value = '副反応疑い報告 - 集計結果'
+AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 
 defineProps<{
