@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-expansion-panels>
+    <v-expansion-panels v-model="expand_search">
       <v-expansion-panel>
         <v-expansion-panel-title color="#66BB6A">
           <v-icon class="search-icon">mdi-magnify</v-icon>
@@ -277,6 +277,15 @@ headers = [
   { title: '性別', align: 'end', key: 'gender' },
   { title: '基礎疾患', align: 'end', key: 'basic_disease' }
 ]
+
+const expand_search = shallowRef<Number[]>([])
+const symptomQuery = router.currentRoute.value.query.symptom
+console.log('symptomQuery is ' + symptomQuery)
+if(symptomQuery != undefined){
+  symptomsFilterVal.value = symptomQuery.toString()
+  expand_search.value = [0]
+}
+
 </script>
 
 <style scoped>
