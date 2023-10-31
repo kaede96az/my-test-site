@@ -61,16 +61,16 @@ export const HealthHazardsHomeRoute = {
 
 export const HealthHazardsSubRoutes = [
   {
-    path: '/certified-health-hazard-reports',
-    name: '予防接種健康被害 救済制度 - 健康被害 認定済み一覧',
-    menu_name: '健康被害 認定済み一覧',
+    path: '/certified-issues',
+    name: '予防接種健康被害 救済制度 - 健康被害 認定済み報告一覧',
+    menu_name: '健康被害 認定済み報告一覧',
     icon: 'mdi-account-search',
     component: () => import('../views/CertifiedHealthHazardsView.vue')
   },
   {
     path: '/certified-symptoms',
-    name: '予防接種健康被害 救済制度 - 健康被害 認定済み症状の一覧',
-    menu_name: '健康被害 認定済み症状の一覧',
+    name: '予防接種健康被害 救済制度 - 健康被害 認定済み症状一覧',
+    menu_name: '健康被害 認定済み症状一覧',
     icon: 'mdi-account-search',
     component: () => import('../views/CertifiedSymptomsView.vue')
   }
