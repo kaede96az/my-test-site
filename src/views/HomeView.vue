@@ -36,9 +36,9 @@
         </v-container>
 
         <v-container>
-          <h4>製薬会社からの報告を検索するページ</h4>
+          <h4>医療機関からの報告を検索するページ</h4>
           <v-row>
-            <v-col cols="12" sm="6" v-for="(r, i) in SuspectedIssuesSubRoutes.slice(2, 4)" :key="i">
+            <v-col cols="12" sm="6" v-for="(r, i) in SuspectedIssuesSubRoutes.slice(0, 2)" :key="i">
               <v-hover v-slot:default="{ isHovering, props }">
                 <v-card
                   v-bind="props"
@@ -54,9 +54,9 @@
         </v-container>
 
         <v-container>
-          <h4>医療機関からの報告を検索するページ</h4>
+          <h4>製薬会社からの報告を検索するページ</h4>
           <v-row>
-            <v-col cols="12" sm="6" v-for="(r, i) in SuspectedIssuesSubRoutes.slice(0, 2)" :key="i">
+            <v-col cols="12" sm="6" v-for="(r, i) in SuspectedIssuesSubRoutes.slice(2, 4)" :key="i">
               <v-hover v-slot:default="{ isHovering, props }">
                 <v-card
                   v-bind="props"

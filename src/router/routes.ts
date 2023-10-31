@@ -22,20 +22,6 @@ export const SuspectedIssuesHomeRoute = {
 }
 export const SuspectedIssuesSubRoutes = [
   {
-    path: '/reported-pfizer-issues',
-    name: '副反応疑い報告 - ファイザーの報告',
-    menu_name: 'ファイザーの報告',
-    icon: 'mdi-account-search',
-    component: () => import('../views/PfizerView.vue')
-  },
-  {
-    path: '/reported-moderna-issues',
-    name: '副反応疑い報告 - モデルナの報告',
-    menu_name: 'モデルナの報告',
-    icon: 'mdi-account-search',
-    component: () => import('../views/ModernaView.vue')
-  },
-  {
     path: '/reported-myocarditis-issues',
     name: '副反応疑い報告 - 心筋炎/心膜炎報告',
     menu_name: '心筋炎/心膜炎報告',
@@ -48,6 +34,20 @@ export const SuspectedIssuesSubRoutes = [
     menu_name: '死亡報告',
     icon: 'mdi-account-search',
     component: () => import('../views/DeathView.vue')
+  },
+  {
+    path: '/reported-pfizer-issues',
+    name: '副反応疑い報告 - ファイザーの報告',
+    menu_name: 'ファイザーの報告',
+    icon: 'mdi-account-search',
+    component: () => import('../views/PfizerView.vue')
+  },
+  {
+    path: '/reported-moderna-issues',
+    name: '副反応疑い報告 - モデルナの報告',
+    menu_name: 'モデルナの報告',
+    icon: 'mdi-account-search',
+    component: () => import('../views/ModernaView.vue')
   }
 ]
 
