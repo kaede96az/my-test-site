@@ -25,7 +25,7 @@
                 <v-card
                   v-bind="props"
                   :prepend-icon="SuspectedIssuesHomeRoute.icon"
-                  :title="SuspectedIssuesHomeRoute.name"
+                  :title="SuspectedIssuesHomeRoute.menu_name"
                   :href="`${baseURL}#${SuspectedIssuesHomeRoute.path}`"
                   :elevation="isHovering ? 10 : 3"
                 >
@@ -43,7 +43,7 @@
                 <v-card
                   v-bind="props"
                   :prepend-icon="r.icon"
-                  :title="r.name"
+                  :title="r.menu_name"
                   :href="`${baseURL}#${r.path}`"
                   :elevation="isHovering ? 10 : 3"
                 >
@@ -61,7 +61,7 @@
                 <v-card
                   v-bind="props"
                   :prepend-icon="r.icon"
-                  :title="r.name"
+                  :title="r.menu_name"
                   :href="`${baseURL}#${r.path}`"
                   :elevation="isHovering ? 10 : 3"
                 >
@@ -123,7 +123,7 @@
                 <v-card
                   v-bind="props"
                   :prepend-icon="HealthHazardsHomeRoute.icon"
-                  :title="HealthHazardsHomeRoute.name"
+                  :title="HealthHazardsHomeRoute.menu_name"
                   :href="`${baseURL}#${HealthHazardsHomeRoute.path}`"
                   :elevation="isHovering ? 10 : 3"
                 >
@@ -141,7 +141,7 @@
                 <v-card
                   v-bind="props"
                   :prepend-icon="r.icon"
-                  :title="r.name"
+                  :title="r.menu_name"
                   :href="`${baseURL}#${r.path}`"
                   :elevation="isHovering ? 10 : 3"
                 >

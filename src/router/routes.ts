@@ -23,15 +23,15 @@ export const SuspectedIssuesHomeRoute = {
 export const SuspectedIssuesSubRoutes = [
   {
     path: '/reported-pfizer-issues',
-    name: '副反応疑い報告 - ファイザーからの報告',
-    menu_name: 'ファイザーからの報告',
+    name: '副反応疑い報告 - ファイザーの報告',
+    menu_name: 'ファイザーの報告',
     icon: 'mdi-account-search',
     component: () => import('../views/PfizerView.vue')
   },
   {
     path: '/reported-moderna-issues',
-    name: '副反応疑い報告 - モデルナからの報告',
-    menu_name: 'モデルナからの報告',
+    name: '副反応疑い報告 - モデルナの報告',
+    menu_name: 'モデルナの報告',
     icon: 'mdi-account-search',
     component: () => import('../views/ModernaView.vue')
   },
@@ -62,15 +62,15 @@ export const HealthHazardsHomeRoute = {
 export const HealthHazardsSubRoutes = [
   {
     path: '/certified-issues',
-    name: '予防接種健康被害 救済制度 - 健康被害 認定済み報告一覧',
-    menu_name: '健康被害 認定済み報告一覧',
+    name: '予防接種健康被害 救済制度 - 認定済み 報告一覧',
+    menu_name: '認定済み 報告一覧',
     icon: 'mdi-account-search',
     component: () => import('../views/CertifiedHealthHazardsView.vue')
   },
   {
     path: '/certified-symptoms',
-    name: '予防接種健康被害 救済制度 - 健康被害 認定済み症状一覧',
-    menu_name: '健康被害 認定済み症状一覧',
+    name: '予防接種健康被害 救済制度 - 認定済み 症状一覧',
+    menu_name: '認定済み 症状一覧',
     icon: 'mdi-account-search',
     component: () => import('../views/CertifiedSymptomsView.vue')
   }
