@@ -9,28 +9,11 @@
       <v-expansion-panel-text>
         <h6 class="text-h6">ワクチンに関する条件の設定</h6>
         <v-row>
-          <v-col cols="12" sm="4">
+          <v-col v-for="item, i in vaccineSearchItems" :key="i" cols="12" :sm="item.sm">
             <v-text-field
-              label="メーカー"
-              v-model="makerFilterVal"
-              @input="triggerFunc()"
-              clearable
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="4">
-            <v-text-field
-              label="ワクチン名"
-              v-model="vaccineNameFilterVal"
-              @input="triggerFunc()"
-              clearable
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="4">
-            <v-text-field
-              label="ロット番号"
-              v-model="lotNoFilterVal"
+              :label="item.label"
+              v-model="item.model.value"
+              :type="item.type"
               @input="triggerFunc()"
               clearable
               hide-details
@@ -41,89 +24,11 @@
         <br />
         <h6 class="text-h6">個人に関する条件の設定</h6>
         <v-row>
-          <v-col cols="12" sm="3" class="group">
+          <v-col v-for="item, i in individualSearchItems" :key="i" cols="12" :sm="item.sm" class="group">
             <v-text-field
-              label="年齢（from）"
-              v-model="ageFromFilterVal"
-              @input="triggerFunc()"
-              type="number"
-              clearable
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="3" class="group">
-            <v-text-field
-              label="年齢（to）"
-              v-model="ageToFilterVal"
-              @input="triggerFunc()"
-              type="number"
-              clearable
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="6" class="group">
-            <v-text-field
-              label="性別"
-              v-model="genderFilterVal"
-              @input="triggerFunc()"
-              clearable
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="3" class="group">
-            <v-text-field
-              label="接種日（from）"
-              v-model="vaccinatedDateFromFilterVal"
-              @input="triggerFunc()"
-              type="date"
-              clearable
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="3" class="group">
-            <v-text-field
-              label="接種日（to）"
-              v-model="vaccinatedDateToFilterVal"
-              @input="triggerFunc()"
-              type="date"
-              clearable
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="3" class="group">
-            <v-text-field
-              label="症状発生日（from）"
-              v-model="occurredDateFromFilterVal"
-              @input="triggerFunc()"
-              type="date"
-              clearable
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="3" class="group">
-            <v-text-field
-              label="症状発生日（to）"
-              v-model="occurredDateToFilterVal"
-              @input="triggerFunc()"
-              type="date"
-              clearable
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="6" class="group">
-            <v-text-field
-              label="接種回数"
-              v-model="vaccinatedTimesFilterVal"
-              @input="triggerFunc()"
-              type="number"
-              clearable
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="6" class="group">
-            <v-text-field
-              label="基礎疾患"
-              v-model="preExistingConditionFilterVal"
+              :label="item.label"
+              v-model="item.model.value"
+              :type="item.type"
               @input="triggerFunc()"
               clearable
               hide-details
@@ -138,8 +43,8 @@
   <v-data-table
     loading-text="データを読み込み中です。"
     :loading="loading"
-    :items="items as any"
-    :headers="headers"
+    :items="dataTableitems as any"
+    :headers="(headers as any)"
     :search="searchTrigger"
     :custom-filter="
       () => {
@@ -148,79 +53,66 @@
     "
     density="compact"
     class="data-table-suspect-issues"
-    :custom-key-filter="{
-      maker: makerFilterFunc,
-      vaccine_name: vaccineNameFilterFunc,
-      lot_no: lotNoFilterFunc,
-      age: ageFilterFunc,
-      gender: genderFilterFunc,
-      date_vaccinated: vaccinatedDateFilterFunc,
-      date_occurred: occurredDateFilterFunc,
-      count: vaccinatedTimesFilterFunc,
-      basic_disease: preExistingConditionFilterFunc
-    }"
+    show-expand
+    expand-on-click
+    item-value="no"
+    v-model:expanded="expandedArray"
+    :custom-key-filter="keyFilters"
   >
     <template v-slot:[`item.maker`]="item">
-      <div class="maker-text">{{ item.value }}</div>
+      <span class="maker-text">{{ item.value }}</span>
     </template>
     <template v-slot:[`item.vaccine_name`]="item">
-      <div class="vaccine-name-text">{{ item.value }}</div>
+      <span class="vaccine-name-text">{{ item.value }}</span>
     </template>
-    <template v-slot:[`item.date_occurred`]="data">
-      <v-expansion-panels
-        v-if="String(data.value).split('\n').length > 1"
-        v-model="expantionModel"
-        multiple
-      >
-        <v-expansion-panel :value="data.internalItem.raw.no + '-date_occurred'">
-          <div v-for="(t, k) in String(data.value).split('\n')" :key="k">
-            <v-expansion-panel-title v-if="k == 0">{{ t }}</v-expansion-panel-title>
-            <v-expansion-panel-text v-else>{{ t }}</v-expansion-panel-text>
-          </div>
-          <v-btn @click="expantion(data.internalItem.raw.no)">more..</v-btn>
-        </v-expansion-panel>
-      </v-expansion-panels>
+
+    <template v-slot:[`item.date_occurred`]="{internalItem, isExpanded}">
+      <DateOccurred :item="internalItem" :is-expanded="isExpanded"></DateOccurred> 
     </template>
-    <template v-slot:[`item.PT`]="data">
-      <v-expansion-panels
-        v-if="String(data.value).split('\n').length > 1"
-        v-model="expantionModel"
-        multiple
-      >
-        <v-expansion-panel :value="data.internalItem.raw.no + '-PT'">
-          <div v-for="(t, k) in String(data.value).split('\n')" :key="k">
-            <v-expansion-panel-title v-if="k == 0 && !expanded">{{
-              t.length > 10 ? t.substring(0, 6) + '...' : t
-            }}</v-expansion-panel-title>
-            <v-expansion-panel-title v-else-if="k == 0 && expanded">{{
-              t
-            }}</v-expansion-panel-title>
-            <v-expansion-panel-text v-else class="panel-text">{{ t }}</v-expansion-panel-text>
-          </div>
-          <v-btn @click="expantion(data.internalItem.raw.no)">more..</v-btn>
-        </v-expansion-panel>
-      </v-expansion-panels>
+
+    <template v-slot:[`item.PT`]="{internalItem, isExpanded}">
+      <PT_Element :item="internalItem" name="PT" :isExpanded="isExpanded"></PT_Element>
     </template>
-    <template v-slot:[`item.basic_disease`]="data">
-      <v-expansion-panels
-        v-if="String(data.value).split(';').length > 1"
-        v-model="expantionModel"
-        multiple
-      >
-        <v-expansion-panel :value="data.internalItem.raw.no + '-basic_disease'">
-          <div v-for="(t, k) in String(data.value).split(';')" :key="k">
-            <v-expansion-panel-title v-if="k == 0 && !expanded">{{
-              t.length > 10 ? t.substring(0, 6) + '...' : t
-            }}</v-expansion-panel-title>
-            <v-expansion-panel-title v-else-if="k == 0 && expanded">{{
-              t
-            }}</v-expansion-panel-title>
-            <v-expansion-panel-text v-else class="panel-text">{{ t }}</v-expansion-panel-text>
-          </div>
-          <v-btn @click="expantion(data.internalItem.raw.no)">more..</v-btn>
-        </v-expansion-panel>
-      </v-expansion-panels>
+
+    <template v-slot:expanded-row="{ item }">
+      <td :colspan="headers.length + 1">
+        <v-card variant="elevated" color="blue-grey-darken-1">
+          <v-card-title>症状と経過の詳細（No. {{ item.no }}）</v-card-title>
+
+          <v-card-text>
+            <v-timeline density="compact" align="start">
+              <v-timeline-item dot-color="yellow-darken-1" size="x-small">
+                <div class="mb-4">
+                  <div class="font-weight-normal">
+                    <strong>{{ item.date_vaccinated }}</strong>： ワクチンを接種
+                  </div>
+                </div>
+              </v-timeline-item>
+
+              <v-timeline-item dot-color="orange" size="x-small" v-for="([day, pts], i) in getMapWithDateAndPT(SplitDate(item.date_occurred), SplitDate(item.PT))" :key="day + '-' + i">
+                <div class="mb-4">
+                  <div class="font-weight-normal">
+                    <strong>{{ day }}</strong>：
+                    <div class="pt-list">
+                      <ul v-for="pt, j in pts" :key="j">
+                        <li>{{ pt }}）</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </v-timeline-item>
+            </v-timeline>
+          </v-card-text>
+
+          <v-card-actions
+            ><v-btn variant="outlined" @click="expandedArray = []"
+              >詳細表示を閉じる</v-btn
+            ></v-card-actions
+          >
+        </v-card>
+      </td>
     </template>
+
   </v-data-table>
 </template>
 
@@ -230,168 +122,149 @@ import axios from 'axios'
 import type { IReportedMyocarditisIssues } from '@/types/ReportedMyocarditis'
 import { AppBarTitle, AppBarColor, ReportedMyocarditisDataURL } from '@/router/data'
 import router from '@/router/index'
+import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
+import DateOccurred from '@/components/DateOccurred.vue'
+import PT_Element from '@/components/PT_Element.vue'
+import { SplitDate } from '@/tools/SplitData'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 
 const loading = shallowRef(true)
-const items = shallowRef<IReportedMyocarditisIssues>()
+const dataTableitems = shallowRef<IReportedMyocarditisIssues>()
 onMounted(() => {
   axios
     .get<IReportedMyocarditisIssues>(ReportedMyocarditisDataURL)
     .then((response) => {
-      items.value = response.data
+      dataTableitems.value = response.data
       loading.value = false
     })
     .catch((error) => console.log('failed to get myocarditis data: ' + error))
 })
 
-// searchになにか文字を指定することでv-data-tableのfilterが実行されるようにする。（空文字だとフィルタリングがOffになる）
-// custom-filterの処理は常にtrueを返すように上書きして、search文字列によるフィルタリング処理が行われないようにする。
-// custom-key-filterの設定は、keyに対応する列のアイテムに対して指定の関数をフィルタリング処理として使う。
-// custom-key-filterは、すべての列に対して設定すると、すべての処理でtrueを返していても「No data available」表示になるので注意。
+const headers = [
+  { key: 'data-table-expand', width: 20 },
+  { title: 'No', align: 'start', key: 'no' },
+  { title: 'メーカー', align: 'start', key: 'maker', width: 110},
+  { title: 'ワクチン名', align: 'start', key: 'vaccine_name' },
+  { title: 'ロット番号', align: 'start', key: 'lot_no' },
+  { title: '年齢', align: 'start', key: 'age' },
+  { title: '性別', align: 'start', key: 'gender' },
+  { title: '接種日', align: 'start', key: 'date_vaccinated' },
+  { title: '症状発生日', align: 'start', key: 'date_occurred' },
+  { title: '発症までの日数', align: 'start', key: 'diff' },
+  { title: '症状名', align: 'start', key: 'PT' },
+  { title: '接種回数', align: 'start', key: 'count' },
+  { title: '基礎疾患', align: 'start', key: 'basic_disease' },
+  { title: '評価', align: 'start', key: 'evaluation' }
+]
+
+let expandedArray = shallowRef([])
+
+const makerFilterVal = shallowRef('')
+const makerFilterFunc = (value: string): boolean => {
+  return StringFilterFunc(value, makerFilterVal)
+}
+
+const vaccineNameFilterVal = shallowRef('')
+const vaccineNameFilterFunc = (value: string): boolean => {
+  return StringFilterFunc(value, vaccineNameFilterVal)
+}
+
+const lotNoFilterVal = shallowRef('')
+const lotNoFilterFunc = (value: string): boolean => {
+  return StringFilterFunc(value, lotNoFilterVal)
+}
+
+const ageFromFilterVal = shallowRef('')
+const ageToFilterVal = shallowRef('')
+const ageFilterFunc = (value: string): boolean => {
+  return NumberFilterFunc(value, ageFromFilterVal, ageToFilterVal)
+}
+
+const genderFilterVal = shallowRef('')
+const genderFilterFunc = (value: string): boolean => {
+  return StringFilterFunc(value, genderFilterVal)
+}
+
+const vaccinatedDateFromFilterVal = shallowRef('')
+const vaccinatedDateToFilterVal = shallowRef('')
+const vaccinatedDateFilterFunc = (value: string): boolean => {
+  return DateFilterFunc(value, vaccinatedDateFromFilterVal, vaccinatedDateToFilterVal)
+}
+
+const daysToOnsetFromFilterVal = shallowRef('')
+const daysToOnsetToFilterVal = shallowRef('')
+const daysToOnsetFilterFunc = (value: string): boolean => {
+  return NumberFilterFunc(value, daysToOnsetFromFilterVal, daysToOnsetToFilterVal)
+}
+
+const vaccinatedTimesFromFilterVal = shallowRef('')
+const vaccinatedTimesToFilterVal = shallowRef('')
+const vaccinatedTimesFilterFunc = (value: string): boolean => {
+  return NumberFilterFunc(value.replace('回目', ''), vaccinatedTimesFromFilterVal, vaccinatedTimesToFilterVal)
+}
+
+const preExistingConditionFilterVal = shallowRef('')
+const preExistingConditionFilterFunc = (value: string): boolean => {
+  return StringFilterFunc(value, preExistingConditionFilterVal)
+}
+
+const keyFilters = {
+  maker: makerFilterFunc,
+  vaccine_name: vaccineNameFilterFunc,
+  lot_no: lotNoFilterFunc,
+  age: ageFilterFunc,
+  gender: genderFilterFunc,
+  date_vaccinated: vaccinatedDateFilterFunc,
+  diff: daysToOnsetFilterFunc,
+  count: vaccinatedTimesFilterFunc,
+  basic_disease: preExistingConditionFilterFunc,
+}
+
 const searchTrigger = shallowRef('a')
 const trigger = () => {
   searchTrigger.value = searchTrigger.value == 'a' ? 'b' : 'a'
 }
-
-let expantionModel = shallowRef([''])
-const expanded = shallowRef(false)
-const expantion = (no: string) => {
-  if (expantionModel.value.indexOf(no + '-date_occurred') > -1) {
-    expantionModel.value = []
-    expanded.value = false
-    return
-  }
-  expantionModel.value = [no + '-date_occurred', no + '-PT', no + '-basic_disease']
-  expanded.value = true
-}
-
-const makerFilterVal = shallowRef('')
-const vaccineNameFilterVal = shallowRef('')
-const lotNoFilterVal = shallowRef('')
-const ageFromFilterVal = shallowRef('')
-const ageToFilterVal = shallowRef('')
-const genderFilterVal = shallowRef('')
-const vaccinatedDateFromFilterVal = shallowRef(null)
-const vaccinatedDateToFilterVal = shallowRef(null)
-const occurredDateFromFilterVal = shallowRef(null)
-const occurredDateToFilterVal = shallowRef(null)
-const vaccinatedTimesFilterVal = shallowRef('')
-const preExistingConditionFilterVal = shallowRef('')
-
 const triggerFunc = () => {
-  // todo: 変化があった入力欄がどれなのかを判別する必要があれば、string型の引数で情報を
-  // もらうように変更して対応すればよいと思う。
   trigger()
 }
-
-const makerFilterFunc = (value: string): boolean => {
-  if (makerFilterVal.value == '') return true
-  return value.indexOf(makerFilterVal.value) > -1
-}
-const vaccineNameFilterFunc = (value: string): boolean => {
-  if (vaccineNameFilterVal.value == '') return true
-  return value.indexOf(vaccineNameFilterVal.value) > -1
-}
-const lotNoFilterFunc = (value: string): boolean => {
-  if (lotNoFilterVal.value == '') return true
-  return value.indexOf(lotNoFilterVal.value) > -1
-}
-const ageFilterFunc = (value: string): boolean => {
-  const v = Number(value)
-  // コメントがついているなど数字に変換できないデータの場合は、数字による大小比較が
-  // 困難なためフィルタリング時に「非表示」にする
-  if (isNaN(v)) return false
-
-  if (ageFromFilterVal.value != '') {
-    const f = Number(ageFromFilterVal.value)
-    if (v <= f) {
-      return false
-    }
-  }
-  if (ageToFilterVal.value != '') {
-    const t = Number(ageToFilterVal.value)
-    if (v >= t) {
-      return false
-    }
-  }
-  return true
-}
-const genderFilterFunc = (value: string): boolean => {
-  if (genderFilterVal.value == '') return true
-  return value.indexOf(genderFilterVal.value) > -1
-}
-const vaccinatedDateFilterFunc = (value: string): boolean => {
-  // 改行を含むデータの場合、最初の日付データだけを使ってフィルタリング処理を行う。
-  const firstVal = value.split('\n')[0]
-  const v = new Date(firstVal)
-  // 「不明」の場合など「YYYY/MM/DD」形式でない場合は、Date型に変換しての比較が
-  // できないためフィルタリング時に「非表示」にする
-  if (isNaN(v.getTime())) return false
-
-  if (vaccinatedDateFromFilterVal.value != null) {
-    const f = new Date(vaccinatedDateFromFilterVal.value)
-    if (v <= f) {
-      return false
-    }
-  }
-  if (vaccinatedDateToFilterVal.value != null) {
-    const f = new Date(vaccinatedDateToFilterVal.value)
-    if (v >= f) {
-      return false
-    }
-  }
-  return true
-}
-const occurredDateFilterFunc = (value: string): boolean => {
-  // 改行を含むデータの場合、最初の日付データだけを使ってフィルタリング処理を行う。
-  const firstVal = value.split('\n')[0]
-  const v = new Date(firstVal)
-  // 「不明」の場合など「YYYY/MM/DD」形式でない場合は、Date型に変換しての比較が
-  // できないためフィルタリング時に「非表示」にする
-  if (isNaN(v.getTime())) return false
-
-  if (occurredDateFromFilterVal.value != null) {
-    const f = new Date(occurredDateFromFilterVal.value)
-    if (v <= f) {
-      return false
-    }
-  }
-  if (occurredDateToFilterVal.value != null) {
-    const f = new Date(occurredDateToFilterVal.value)
-    if (v >= f) {
-      return false
-    }
-  }
-  return true
-}
-const vaccinatedTimesFilterFunc = (value: string): boolean => {
-  if (vaccinatedTimesFilterVal.value == '' || value == '') return true
-  return Number(value.replace('回目', '')) == Number(vaccinatedTimesFilterVal.value)
-}
-const preExistingConditionFilterFunc = (value: string): boolean => {
-  if (preExistingConditionFilterVal.value == '') return true
-  return value.indexOf(preExistingConditionFilterVal.value) > -1
-}
-
-let headers: any
-headers = [
-  { title: 'メーカー', align: 'end', key: 'maker' },
-  { title: 'ワクチン名', align: 'end', key: 'vaccine_name' },
-  { title: 'ロット番号', align: 'end', key: 'lot_no' },
-  { title: '年齢', align: 'end', key: 'age' },
-  { title: '性別', align: 'end', key: 'gender' },
-  { title: '接種日', align: 'end', key: 'date_vaccinated' },
-  { title: '症状発生日', align: 'end', key: 'date_occurred' },
-  { title: '症状名', align: 'end', key: 'PT' },
-  { title: '接種回数', align: 'end', key: 'count' },
-  { title: '基礎疾患', align: 'end', key: 'basic_disease' },
-  { title: '評価', align: 'end', key: 'evaluation' }
-  /*
-  { title: 'No', align: 'end', key: 'no' },
-  */
+const vaccineSearchItems = [
+  { sm: 4, label: "メーカー", model: makerFilterVal, type: "text"},
+  { sm: 4, label: "ワクチン名", model: vaccineNameFilterVal, type: "text"},
+  { sm: 4, label: "ロット番号", model: lotNoFilterVal, type: "text"}
 ]
+const individualSearchItems = [
+  { sm: 2, label: "年齢（from）", model: ageFromFilterVal, type: "number"},
+  { sm: 2, label: "年齢（to）", model: ageToFilterVal, type: "number"},
+  { sm: 4, label: "性別", model: genderFilterVal, type: "number"},
+  { sm: 2, label: "接種日（from）", model: vaccinatedDateFromFilterVal, type: "date"},
+  { sm: 2, label: "接種日（to）", model: vaccinatedDateToFilterVal, type: "date"},
+  { sm: 4, label: "発症までの日数（from）", model: daysToOnsetFromFilterVal, type: "number"},
+  { sm: 4, label: "発症までの日数（to）", model: daysToOnsetToFilterVal, type: "number"},
+  { sm: 2, label: "接種回数（from）", model: vaccinatedTimesFromFilterVal, type: "number"},
+  { sm: 2, label: "接種回数（to）", model: vaccinatedTimesToFilterVal, type: "number"},
+  { sm: 4, label: "基礎疾患", model: preExistingConditionFilterVal, type: "text"},
+]
+
+const getMapWithDateAndPT = (dates: string[], PTs: string[]): Map<string, string[]> => {
+  let ptMap = new Map<string, string[]>();
+  for (let index = 0; index < dates.length; index++) {
+    var val = ""
+    if(PTs.length <= index){
+      val = ""
+    } else {
+      val = PTs[index]
+    }
+
+    if( !ptMap.has(dates[index]) ){
+      ptMap.set(dates[index], [val])
+    } else {
+      ptMap.get(dates[index])?.push(val)
+    }
+  }
+  return new Map([...ptMap.entries()].sort())
+}
 </script>
 
 <style scoped>
@@ -412,5 +285,10 @@ headers = [
 .search-title {
   font-size: 1.5rem;
   padding-left: 0.8rem;
+}
+
+.pt-list {
+  padding-left: 20px;
+  padding-top: 5px;
 }
 </style>
