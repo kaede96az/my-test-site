@@ -4,6 +4,8 @@
       <v-expansion-panel-title color="#00b0ff">
         <v-icon class="search-icon">mdi-magnify</v-icon>
         <span class="search-title">詳細検索...</span>
+        <v-spacer></v-spacer>
+        <v-chip v-if="searchConditionChanged" size="small" variant="elevated" color="orange-lighten-3">変更あり</v-chip>
       </v-expansion-panel-title>
 
       <v-expansion-panel-text>
@@ -14,7 +16,8 @@
               :label="item.label"
               v-model="item.model.value"
               :type="item.type"
-              @input="SearchTriggerFunc"
+              @input="searchTrigerFunc"
+              @click:clear="clearTriggerFunc"
               clearable
               hide-details
             ></v-text-field>
@@ -29,7 +32,8 @@
               :label="item.label"
               v-model="item.model.value"
               :type="item.type"
-              @input="SearchTriggerFunc"
+              @input="searchTrigerFunc"
+              @click:clear="clearTriggerFunc"
               clearable
               hide-details
             ></v-text-field>
@@ -120,6 +124,7 @@ import ResultRow from '@/components/ResultRow.vue'
 import PtRow from '@/components/PtRow.vue'
 import VaccinatedPtResultCard from '@/components/VaccinatedPtResultCard.vue'
 import CausualRelationshipRow from '@/components/CausualRelationshipRow.vue'
+import type { ShallowRef } from 'vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
@@ -230,6 +235,27 @@ const customKeyFilter = {
   causual: causualFilterFunc,
   result_date: resultDateFilterFunc,
   result: resultFilterFunc
+}
+
+const searchConditionChanged = shallowRef<boolean>(false)
+const searchTrigerFunc = () => {
+  SearchTriggerFunc()
+  searchConditionChanged.value = isConditionChanged()
+}
+const clearTriggerFunc = () => {
+  searchConditionChanged.value = isConditionChanged()
+}
+const isConditionChanged = () => {
+  let ret = vaccineSearchItems.find( item => isNotNullEmpty(item.model) )
+  if(ret != undefined) return true
+
+  ret = individualSearchItems.find( item => isNotNullEmpty(item.model) )
+  if(ret != undefined) return true
+
+  return false
+}
+const isNotNullEmpty = (val: ShallowRef<string>): boolean => {
+  return val.value != '' && val.value != null
 }
 
 const vaccineSearchItems = [

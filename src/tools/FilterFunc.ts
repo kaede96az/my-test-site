@@ -24,14 +24,14 @@ export const NumberFilterFunc = (
   // 困難なためフィルタリング時に「非表示」にする
   if (isNaN(v)) return false
 
-  if (fromFilterVal.value != '') {
+  if (!nullOrEmptyString(fromFilterVal.value)) {
     const f = Number(fromFilterVal.value)
     // フィルターの値(from)よりも小さな数ならば非表示にする。フィルターの値(from)と同じ数値は表示する。
     if (v < f) {
       return false
     }
   }
-  if (toFilterVal.value != '') {
+  if (!nullOrEmptyString(toFilterVal.value)) {
     const t = Number(toFilterVal.value)
     // フィルターの値(to)よりも大きな数ならば非表示にする。フィルターの値(to)と同じ数値は表示する。
     if (t < v) {
@@ -53,14 +53,14 @@ export const DateFilterFunc = (
   // パースに失敗した場合は、日付としての比較ができないため非表示にする
   if (isNaN(vDate.getTime())) return false
 
-  if (fromFilterVal.value != '' && fromFilterVal.value != null) {
+  if (!nullOrEmptyString(fromFilterVal.value)) {
     const fDate = new Date(fromFilterVal.value)
     // フィルターの日付(from)よりも前の日付ならば非表示にする。フィルターの日付(from)と同じ日は表示する。
     if (compareDate(vDate, fDate)) {
       return false
     }
   }
-  if (toFilterVal.value != '' && toFilterVal.value != null) {
+  if (!nullOrEmptyString(toFilterVal.value)) {
     const tDate = new Date(toFilterVal.value)
     // フィルターの日付(to)よりも後の日付ならば非表示にする。フィルターの日付(to)と同じ日は表示する。
     if (compareDate(tDate, vDate)) {
