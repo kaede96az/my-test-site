@@ -68,6 +68,10 @@
       <div class="vaccine-name-text">{{ item.value }}</div>
     </template>
 
+    <template v-slot:[`item.date_occurred`]="item">
+      <DateOccurredRow :date="item.value"></DateOccurredRow> 
+    </template>
+
     <template v-slot:[`item.causual_relationship`]="{internalItem, isExpanded}">
       <CausualRelationshipRow :item="internalItem" :CR="internalItem.raw['causual_relationship']" :isExpanded="isExpanded"></CausualRelationshipRow>
     </template>
@@ -113,6 +117,7 @@ import { NumberFilterFunc, DateFilterFunc, StringFilterFunc } from '@/tools/Filt
 import router from '@/router/index'
 import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
 import BasicDiseaseRow from '@/components/BasicDiseaseRow.vue'
+import DateOccurredRow from '@/components/DateOccurredRow.vue'
 import DateAndPT from '@/components/DateAndPT.vue'
 import BasicDiseaseCard from '@/components/BasicDiseaseCard.vue'
 import PtRow from '@/components/PtRow.vue'

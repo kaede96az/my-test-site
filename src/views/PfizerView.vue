@@ -208,10 +208,7 @@
     </template>
 
     <template v-slot:[`item.date_occurred`]="item">
-      <span v-if="item.value.split(delimiters).length > 1">{{
-        item.value.split(delimiters)[0] + '...'
-      }}</span>
-      <span v-else>{{ item.value }}</span>
+      <DateOccurredRow :date="item.value"></DateOccurredRow> 
     </template>
 
     <template v-slot:[`item.result_date`]="item">
@@ -303,6 +300,7 @@ import { AppBarTitle, AppBarColor, ReportedPfizerDataURL } from '@/router/data'
 import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import type { IReportedPfizerIssues } from '@/types/Pfizer'
 import router from '@/router/index'
+import DateOccurredRow from '@/components/DateOccurredRow.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'

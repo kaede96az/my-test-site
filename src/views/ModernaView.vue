@@ -208,11 +208,8 @@
     </template>
 
     <template v-slot:[`item.date_occurred`]="item">
-      <span v-if="item.value.split(delimiters).length > 1">{{
-        item.value.split(delimiters)[0] + '...'
-      }}</span>
-      <span v-else>{{ item.value }}</span>
-    </template>
+      <DateOccurredRow :date="item.value"></DateOccurredRow> 
+    </template>    
 
     <template v-slot:[`item.result_date`]="item">
       <span
@@ -303,6 +300,7 @@ import { AppBarTitle, AppBarColor, ReportedModernaDataURL } from '@/router/data'
 import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import type { IReportedModernaIssues } from '@/types/Moderna'
 import router from '@/router/index'
+import DateOccurredRow from '@/components/DateOccurredRow.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'

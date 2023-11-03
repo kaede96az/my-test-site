@@ -66,8 +66,8 @@
       <span class="vaccine-name-text">{{ item.value }}</span>
     </template>
 
-    <template v-slot:[`item.date_occurred`]="{internalItem, isExpanded}">
-      <DateOccurred :item="internalItem" :is-expanded="isExpanded"></DateOccurred> 
+    <template v-slot:[`item.date_occurred`]="item">
+      <DateOccurredRow :date="item.value"></DateOccurredRow> 
     </template>
 
     <template v-slot:[`item.PT`]="{internalItem, isExpanded}">
@@ -110,7 +110,7 @@ import { AppBarTitle, AppBarColor, ReportedMyocarditisDataURL } from '@/router/d
 import router from '@/router/index'
 import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import BasicDiseaseRow from '@/components/BasicDiseaseRow.vue'
-import DateOccurred from '@/components/DateOccurred.vue'
+import DateOccurredRow from '@/components/DateOccurredRow.vue'
 import BasicDiseaseCard from '@/components/BasicDiseaseCard.vue'
 import PtRow from '@/components/PtRow.vue'
 import DateAndPT from '@/components/DateAndPT.vue'
