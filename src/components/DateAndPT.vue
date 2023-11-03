@@ -31,7 +31,9 @@
       <strong>因果関係（時系列順）：</strong>
       <div class="pt-list">
         <ol>
-          <li v-for="crItem, i in SplitWithArrow(CR)" :key="i">{{ crItem }}</li>
+          <li v-for="crItem, i in SplitWithArrow(CR)" :key="i">
+            <CrChip :CR="crItem" inverse></CrChip>
+          </li>
         </ol>
       </div>
     </v-card-item>
@@ -46,6 +48,7 @@
 
 <script setup lang="ts">
 import {SplitDate, SplitWithArrow} from '@/tools/SplitData'
+import CrChip from '@/components/CertifiedRelationChip.vue'
 
 defineProps<{
   no: string
