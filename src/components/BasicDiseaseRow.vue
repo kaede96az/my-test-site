@@ -1,12 +1,12 @@
 <template>
-	<div v-if="SplitWithSemicolon(bd).length > 1">
-		<div v-if="SplitWithSemicolon(bd)[0].length >= 10">
-			<span v-if="isExpanded(item)">{{ SplitWithSemicolon(bd)[0] }}</span>
-			<span v-else>{{ SplitWithSemicolon(bd)[0].substring(0, 7) + '...' }}</span>
+	<div v-if="SplitBasicDisease(bd).length > 1">
+		<div v-if="SplitBasicDisease(bd)[0].length >= 10">
+			<span v-if="isExpanded(item)">{{ SplitBasicDisease(bd)[0] }}</span>
+			<span v-else>{{ SplitBasicDisease(bd)[0].substring(0, 7) + '...' }}</span>
 		</div>
 		<div v-else>
-			<span v-if="isExpanded(item)">{{ SplitWithSemicolon(bd)[0] }}</span>
-			<span v-else>{{ SplitWithSemicolon(bd)[0] + '...' }}</span>
+			<span v-if="isExpanded(item)">{{ SplitBasicDisease(bd)[0] }}</span>
+			<span v-else>{{ SplitBasicDisease(bd)[0] + '...' }}</span>
 		</div>
     </div>
 	<div v-else>
@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import {SplitWithSemicolon} from '@/tools/SplitData'
+import {SplitBasicDisease} from '@/tools/SplitData'
 
 defineProps<{
   item: any
