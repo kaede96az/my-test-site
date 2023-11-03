@@ -14,7 +14,7 @@
               :label="item.label"
               v-model="item.model.value"
               :type="item.type"
-              @input="triggerFunc()"
+              @input="SearchTriggerFunc"
               clearable
               hide-details
             ></v-text-field>
@@ -29,7 +29,7 @@
               :label="item.label"
               v-model="item.model.value"
               :type="item.type"
-              @input="triggerFunc()"
+              @input="SearchTriggerFunc"
               clearable
               hide-details
             ></v-text-field>
@@ -43,9 +43,9 @@
   <v-data-table
     loading-text="データを読み込み中です。"
     :loading="loading"
-    :items="dataTableitems as any"
+    :items="dataTableItems as any"
     :headers="(headers as any)"
-    :search="searchTrigger"
+    :search="SearchTrigger"
     :custom-filter="
       () => {
         return true
@@ -71,45 +71,31 @@
     </template>
 
     <template v-slot:[`item.PT`]="{internalItem, isExpanded}">
-      <PT_Element :item="internalItem" name="PT" :isExpanded="isExpanded"></PT_Element>
+      <PtRow :item="internalItem" :PT="internalItem.raw['PT']" :isExpanded="isExpanded"></PtRow>
+    </template>
+
+    <template v-slot:[`item.basic_disease`]="{internalItem, isExpanded}">
+      <BasicDiseaseRow :item="internalItem" :bd="internalItem.raw['basic_disease']" :isExpanded="isExpanded"></BasicDiseaseRow>
     </template>
 
     <template v-slot:expanded-row="{ item }">
       <td :colspan="headers.length + 1">
-        <v-card variant="elevated" color="blue-grey-darken-1">
-          <v-card-title>症状と経過の詳細（No. {{ item.no }}）</v-card-title>
-
-          <v-card-text>
-            <v-timeline density="compact" align="start">
-              <v-timeline-item dot-color="yellow-darken-1" size="x-small">
-                <div class="mb-4">
-                  <div class="font-weight-normal">
-                    <strong>{{ item.date_vaccinated }}</strong>： ワクチンを接種
-                  </div>
-                </div>
-              </v-timeline-item>
-
-              <v-timeline-item dot-color="orange" size="x-small" v-for="([day, pts], i) in getMapWithDateAndPT(SplitDate(item.date_occurred), SplitDate(item.PT))" :key="day + '-' + i">
-                <div class="mb-4">
-                  <div class="font-weight-normal">
-                    <strong>{{ day }}</strong>：
-                    <div class="pt-list">
-                      <ul v-for="pt, j in pts" :key="j">
-                        <li>{{ pt }}）</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </v-timeline-item>
-            </v-timeline>
-          </v-card-text>
-
-          <v-card-actions
-            ><v-btn variant="outlined" @click="expandedArray = []"
-              >詳細表示を閉じる</v-btn
-            ></v-card-actions
-          >
-        </v-card>
+        <v-row cols="12" md="6">
+          <v-col>
+            <DateAndPT
+            :no="item.no"
+            :date_vaccinated="item.date_vaccinated"
+            :date_occurred="item.date_occurred"
+            :PT="item.PT"
+            postfix="）"
+            CR=''
+            :clickClose="() => { expandedArray = expandedArray.filter( n => n !== item.no )}"
+            ></DateAndPT>
+          </v-col>
+          <v-col cols="12" md="6">
+            <BasicDiseaseCard :basic_disease="item.basic_disease"></BasicDiseaseCard>
+          </v-col>
+        </v-row>
       </td>
     </template>
 
@@ -123,20 +109,23 @@ import type { IReportedMyocarditisIssues } from '@/types/ReportedMyocarditis'
 import { AppBarTitle, AppBarColor, ReportedMyocarditisDataURL } from '@/router/data'
 import router from '@/router/index'
 import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
+import BasicDiseaseRow from '@/components/BasicDiseaseRow.vue'
 import DateOccurred from '@/components/DateOccurred.vue'
-import PT_Element from '@/components/PT_Element.vue'
-import { SplitDate } from '@/tools/SplitData'
+import BasicDiseaseCard from '@/components/BasicDiseaseCard.vue'
+import PtRow from '@/components/PtRow.vue'
+import DateAndPT from '@/components/DateAndPT.vue'
+import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 
 const loading = shallowRef(true)
-const dataTableitems = shallowRef<IReportedMyocarditisIssues>()
+const dataTableItems = shallowRef<IReportedMyocarditisIssues>()
 onMounted(() => {
   axios
     .get<IReportedMyocarditisIssues>(ReportedMyocarditisDataURL)
     .then((response) => {
-      dataTableitems.value = response.data
+      dataTableItems.value = response.data
       loading.value = false
     })
     .catch((error) => console.log('failed to get myocarditis data: ' + error))
@@ -146,7 +135,7 @@ const headers = [
   { key: 'data-table-expand', width: 20 },
   { title: 'No', align: 'start', key: 'no' },
   { title: 'メーカー', align: 'start', key: 'maker', width: 110},
-  { title: 'ワクチン名', align: 'start', key: 'vaccine_name' },
+  { title: 'ワクチン名', align: 'start', key: 'vaccine_name', width: 110 },
   { title: 'ロット番号', align: 'start', key: 'lot_no' },
   { title: '年齢', align: 'start', key: 'age' },
   { title: '性別', align: 'start', key: 'gender' },
@@ -222,13 +211,6 @@ const keyFilters = {
   basic_disease: preExistingConditionFilterFunc,
 }
 
-const searchTrigger = shallowRef('a')
-const trigger = () => {
-  searchTrigger.value = searchTrigger.value == 'a' ? 'b' : 'a'
-}
-const triggerFunc = () => {
-  trigger()
-}
 const vaccineSearchItems = [
   { sm: 4, label: "メーカー", model: makerFilterVal, type: "text"},
   { sm: 4, label: "ワクチン名", model: vaccineNameFilterVal, type: "text"},
@@ -237,7 +219,7 @@ const vaccineSearchItems = [
 const individualSearchItems = [
   { sm: 2, label: "年齢（from）", model: ageFromFilterVal, type: "number"},
   { sm: 2, label: "年齢（to）", model: ageToFilterVal, type: "number"},
-  { sm: 4, label: "性別", model: genderFilterVal, type: "number"},
+  { sm: 4, label: "性別", model: genderFilterVal, type: "text"},
   { sm: 2, label: "接種日（from）", model: vaccinatedDateFromFilterVal, type: "date"},
   { sm: 2, label: "接種日（to）", model: vaccinatedDateToFilterVal, type: "date"},
   { sm: 4, label: "発症までの日数（from）", model: daysToOnsetFromFilterVal, type: "number"},
@@ -246,25 +228,6 @@ const individualSearchItems = [
   { sm: 2, label: "接種回数（to）", model: vaccinatedTimesToFilterVal, type: "number"},
   { sm: 4, label: "基礎疾患", model: preExistingConditionFilterVal, type: "text"},
 ]
-
-const getMapWithDateAndPT = (dates: string[], PTs: string[]): Map<string, string[]> => {
-  let ptMap = new Map<string, string[]>();
-  for (let index = 0; index < dates.length; index++) {
-    var val = ""
-    if(PTs.length <= index){
-      val = ""
-    } else {
-      val = PTs[index]
-    }
-
-    if( !ptMap.has(dates[index]) ){
-      ptMap.set(dates[index], [val])
-    } else {
-      ptMap.get(dates[index])?.push(val)
-    }
-  }
-  return new Map([...ptMap.entries()].sort())
-}
 </script>
 
 <style scoped>
@@ -285,10 +248,5 @@ const getMapWithDateAndPT = (dates: string[], PTs: string[]): Map<string, string
 .search-title {
   font-size: 1.5rem;
   padding-left: 0.8rem;
-}
-
-.pt-list {
-  padding-left: 20px;
-  padding-top: 5px;
 }
 </style>
