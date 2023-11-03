@@ -26,13 +26,15 @@ export const NumberFilterFunc = (
 
   if (fromFilterVal.value != '') {
     const f = Number(fromFilterVal.value)
-    if (v <= f) {
+    // フィルターの値(from)よりも小さな数ならば非表示にする。フィルターの値(from)と同じ数値は表示する。
+    if (v < f) {
       return false
     }
   }
   if (toFilterVal.value != '') {
     const t = Number(toFilterVal.value)
-    if (v >= t) {
+    // フィルターの値(to)よりも大きな数ならば非表示にする。フィルターの値(to)と同じ数値は表示する。
+    if (t < v) {
       return false
     }
   }
