@@ -25,7 +25,6 @@ const strCount = 12
 const splitPos = 7
 
 defineProps<{
-  item: any
   CR: string
 }>()
 </script>

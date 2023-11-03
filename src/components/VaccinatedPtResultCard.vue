@@ -24,6 +24,25 @@
             </div>
           </div>
         </v-timeline-item>
+
+        <v-timeline-item
+          :dot-color="getTimeLineColor(SplitValue(result)[i])"
+          size="x-small"
+          v-for="([rDay, rs], i) in getMapWithResultDateAndResult(SplitDate(result_date), SplitDate(result))"
+          :key="rDay + '-' + i"
+        >
+          <div class="mb-4">
+            <div>
+              <strong>{{ rDay }}</strong>： <span v-if="ElapsedDays(date_vaccinated, rDay) != undefined">[接種から <v-chip variant="elevated" label size="small" color="blue-grey-lighten-5">{{ ElapsedDays(date_vaccinated, rDay) }}</v-chip> 日後]</span>
+              <div class="pt-list">
+                <ul v-for="r, j in rs" :key="j">
+                  <li>{{ r }}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </v-timeline-item>
+
       </v-timeline>
     </v-card-text>
 
@@ -47,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import {SplitDate, SplitWithArrow} from '@/tools/SplitData'
+import {SplitValue, SplitDate, SplitWithArrow} from '@/tools/SplitData'
 import CrChip from '@/components/CertifiedRelationChip.vue'
 import { ElapsedDays } from '@/tools/ElapsedDays';
 
@@ -58,6 +77,8 @@ defineProps<{
   PT: string
   postfix: string
   CR: string
+  result: string
+  result_date: string
   clickClose: () => void
 }>()
 
@@ -93,6 +114,50 @@ const getMapWithDateAndPT = (dates: string[], PTs: string[]): Map<string, string
   }
 
   return new Map([...ptMap.entries()].sort())
+}
+
+const getMapWithResultDateAndResult = (resultDates: string[], results: string[]): Map<string, string[]> => {
+  let ptMap = new Map<string, string[]>();
+  let index = 0
+  for (index; index < resultDates.length; index++) {
+    var val = ""
+    if(results.length <= index){
+      val = ""
+    } else {
+      val = results[index]
+    }
+
+    if(val == "" || val == ' '){
+      continue
+    }
+
+    if( !ptMap.has(resultDates[index]) ){
+      ptMap.set(resultDates[index], [val])
+    } else {
+      ptMap.get(resultDates[index])?.push(val)
+    }
+  }
+
+  if(results.length > resultDates.length){
+    for (let pIndex = index; pIndex < results.length; pIndex++) {
+      const ptVal = results[pIndex]
+      if(ptVal != ""){
+        ptMap.get(resultDates[index-1])?.push(ptVal)
+      }
+    }
+  }
+
+  return new Map([...ptMap.entries()].sort())
+}
+
+const getTimeLineColor = (r: string): string => {
+  if(r.indexOf('死亡') > -1) return 'red'
+  if(r.indexOf('後遺症あり') > -1) return 'pink-darken-4'
+  if(r.indexOf('未回復') > -1) return 'orange'
+  if(r.indexOf('軽快') > -1) return 'lime'
+  if(r.indexOf('回復') > -1) return 'green'
+
+  return 'grey'
 }
 </script>
 

@@ -72,16 +72,16 @@
       <DateOccurredRow :date="item.value"></DateOccurredRow> 
     </template>
 
-    <template v-slot:[`item.causual_relationship`]="{internalItem, isExpanded}">
-      <CausualRelationshipRow :item="internalItem" :CR="internalItem.raw['causual_relationship']" :isExpanded="isExpanded"></CausualRelationshipRow>
+    <template v-slot:[`item.causual_relationship`]="item">
+      <CausualRelationshipRow :CR="item.value"></CausualRelationshipRow>
     </template>
 
-    <template v-slot:[`item.PT`]="{internalItem, isExpanded}">
-      <PtRow :item="internalItem" :PT="internalItem.raw['PT']" :isExpanded="isExpanded"></PtRow>
+    <template v-slot:[`item.PT`]="item">
+      <PtRow :PT="item.value"></PtRow>
     </template>
 
-    <template v-slot:[`item.basic_disease`]="{internalItem, isExpanded}">
-      <BasicDiseaseRow :item="internalItem" :bd="internalItem.raw['basic_disease']" :isExpanded="isExpanded"></BasicDiseaseRow>
+    <template v-slot:[`item.basic_disease`]="item">
+      <BasicDiseaseRow :bd="item.value"></BasicDiseaseRow>
     </template>
 
     <template v-slot:expanded-row="{ item }">

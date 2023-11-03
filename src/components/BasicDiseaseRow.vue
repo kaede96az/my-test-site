@@ -19,7 +19,6 @@
 import {SplitBasicDisease} from '@/tools/SplitData'
 
 defineProps<{
-  item: any
   bd: string
 }>()
 </script>
