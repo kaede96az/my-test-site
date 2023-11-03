@@ -49,31 +49,35 @@ export const DateFilterFunc = (
   // フィルタリング処理が不要な場合はtrueを返すことで、項目を表示させる
   if (nullOrEmptyString(fromFilterVal.value) && nullOrEmptyString(toFilterVal.value)) return true
 
-  const v: [Date, boolean] = tryParseDate(value)
+  const vDate = new Date(value)
   // パースに失敗した場合は、日付としての比較ができないため非表示にする
-  if (!v[1]) return false
+  if (isNaN(vDate.getTime())) return false
 
   if (fromFilterVal.value != '' && fromFilterVal.value != null) {
-    const f = new Date(fromFilterVal.value)
-    if (v[0] <= f) {
+    const fDate = new Date(fromFilterVal.value)
+    // フィルターの日付(from)よりも前の日付ならば非表示にする。フィルターの日付(from)と同じ日は表示する。
+    if (compareDate(vDate, fDate)) {
       return false
     }
   }
   if (toFilterVal.value != '' && toFilterVal.value != null) {
-    const f = new Date(toFilterVal.value)
-    if (v[0] >= f) {
+    const tDate = new Date(toFilterVal.value)
+    // フィルターの日付(to)よりも後の日付ならば非表示にする。フィルターの日付(to)と同じ日は表示する。
+    if (compareDate(tDate, vDate)) {
       return false
     }
   }
   return true
 }
 
-const tryParseDate = (value: string): [data: Date, result: boolean] => {
-  const splitters = ['\n', '、', ',']
-  splitters.forEach((s) => {
-    const data = new Date(value.split(s)[0])
-    if (!isNaN(data.getTime())) return [data, true]
-  })
+// toDateの方が、より後の日付ならtrueを返す。
+// fromDateとtoDateが同じ日付の場合や、fromDateの方がより後の日付ならfalseを返す。
+const compareDate = (fromDate: Date, toDate: Date): boolean => {
+  if(fromDate.getFullYear() === toDate.getFullYear() &&
+  fromDate.getMonth() === toDate.getMonth() &&
+  fromDate.getDay() === toDate.getDay()) return false
 
-  return [new Date(), false]
+  // 以下の比較演算子による比較だと、同日として文字列から作ったDate型の比較がイコール
+  // にならないため、上記の処理が必要。
+  return fromDate < toDate
 }
