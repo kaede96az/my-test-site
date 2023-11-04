@@ -1,85 +1,69 @@
 <template>
-  <v-container fluid>
-    <v-expansion-panels>
-      <v-expansion-panel>
-        <v-expansion-panel-title color="#66BB6A">
-          <v-icon class="search-icon">mdi-magnify</v-icon>
-          <span class="search-title">詳細検索...</span>
-        </v-expansion-panel-title>
+  <v-expansion-panels>
+    <v-expansion-panel>
+      <v-expansion-panel-title color="#66BB6A">
+        <v-icon class="search-icon">mdi-magnify</v-icon>
+        <span class="search-title">詳細検索...</span>
+        <v-spacer></v-spacer>
+        <v-chip v-if="searchConditionChanged" size="small" variant="elevated" color="orange-lighten-3">変更あり</v-chip>
+      </v-expansion-panel-title>
 
-        <v-expansion-panel-text>
-          <v-row>
-            <v-col cols="12" sm="6" class="group">
-              <v-text-field
-                label="症状"
-                v-model="symptomsFilterVal"
-                @input="triggerFunc()"
-                clearable
-                hide-details
-              ></v-text-field>
-            </v-col>
+      <v-expansion-panel-text>
+        <v-row>
+          <v-col v-for="item, i in searchItems" :key="i" cols="12" :sm="item.sm" class="group">
+            <v-text-field
+              :label="item.label"
+              v-model="item.model.value"
+              :type="item.type"
+              @input="searchTrigerFunc"
+              @click:clear="clearTriggerFunc"
+              clearable
+              hide-details
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </v-expansion-panel-text>
 
-            <v-col cols="12" sm="3" class="group">
-              <v-text-field
-                label="合計件数（最小値）"
-                v-model="sumFromFilterVal"
-                @input="triggerFunc()"
-                type="number"
-                clearable
-                hide-details
-              ></v-text-field>
-            </v-col>
-            <v-col cols="12" sm="3" class="group">
-              <v-text-field
-                label="合計件数（最大値）"
-                v-model="sumToFilterVal"
-                @input="triggerFunc()"
-                type="number"
-                clearable
-                hide-details
-              ></v-text-field>
-            </v-col>
-          </v-row>
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
-    <br />
+    </v-expansion-panel>
+  </v-expansion-panels>
+  <br />
 
-    <v-data-table
-      loading-text="データを読み込み中です。"
-      :loading="loading"
-      :items="items as any"
-      :headers="headers"
-      :search="searchTrigger"
-      :custom-filter="
-        () => {
-          return true
-        }
-      "
-      density="compact"
-      class="data-table-health-hazard"
-      :custom-key-filter="{
-        symptom_name: symptomsFilterFunc,
-        sum_count: sumFilterFunc
-      }"
-    >
-      <template v-slot:[`item.symptom_name`]="item">
-        <v-btn variant="text" color="deep-purple-darken-1" @click="navigateWithQuery(item.value)"
-          ><b>{{ item.value }}</b></v-btn
-        >
-        <span></span>
-      </template>
-    </v-data-table>
-  </v-container>
+  <v-data-table
+    loading-text="データを読み込み中です。"
+    :loading="loading"
+    :items="items as any"
+    :headers="headers as any"
+    :search="SearchTrigger"
+    :custom-filter="
+      () => {
+        return true
+      }
+    "
+    density="compact"
+    class="data-table-health-hazard"
+    :custom-key-filter="{
+      symptom_name: symptomsFilterFunc,
+      sum_count: sumFilterFunc
+    }"
+  >
+    <template v-slot:[`item.symptom_name`]="item">
+      <v-btn variant="text" color="deep-purple-darken-1" @click="navigateWithQuery(item.value)"
+        ><b>{{ item.value }}</b></v-btn
+      >
+      <span></span>
+    </template>
+  </v-data-table>
 </template>
 
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
+import router from '@/router/index'
 import axios from 'axios'
 import { AppBarTitle, AppBarColor, CertifiedSymptomsDataURL } from '@/router/data'
 import { NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import type { ICertifiedSymptoms } from '@/types/CertifiedSymptom'
-import router from '@/router/index'
+import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
+import type { ShallowRef } from 'vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#4CAF50'
@@ -96,25 +80,18 @@ onMounted(() => {
     .catch((error) => console.log('failed to get certified symptoms data: ' + error))
 })
 
+const headers = [
+  { title: '症状', align: 'start', key: 'symptom_name' },
+  { title: '件数 (男性)', align: 'end', key: 'male_count' },
+  { title: '件数 (女性)', align: 'end', key: 'female_count' },
+  { title: '合計件数', align: 'end', key: 'sum_count' }
+]
+
 // todo: Navigate先のURLをここに直書きしているため、routes側を変更時に一致しなくなる可能性が・・
 const navigateWithQuery = (value: string) => {
   router.push({ path: 'certified-issues', query: { symptom: value } })
 }
 
-// searchになにか文字を指定することでv-data-tableのfilterが実行されるようにする。（空文字だとフィルタリングがOffになる）
-// custom-filterの処理は常にtrueを返すように上書きして、search文字列によるフィルタリング処理が行われないようにする。
-// custom-key-filterの設定は、keyに対応する列のアイテムに対して指定の関数をフィルタリング処理として使う。
-// custom-key-filterは、すべての列に対して設定すると、すべての処理でtrueを返していても「No data available」表示になるので注意。
-const searchTrigger = shallowRef('a')
-const trigger = () => {
-  searchTrigger.value = searchTrigger.value == 'a' ? 'b' : 'a'
-}
-
-const triggerFunc = () => {
-  // todo: 変化があった入力欄がどれなのかを判別する必要があれば、string型の引数で情報を
-  // もらうように変更して対応すればよいと思う。
-  trigger()
-}
 
 const symptomsFilterVal = shallowRef('')
 const symptomsFilterFunc = (value: string): boolean => {
@@ -127,12 +104,28 @@ const sumFilterFunc = (value: string): boolean => {
   return NumberFilterFunc(value, sumFromFilterVal, sumToFilterVal)
 }
 
-let headers: any
-headers = [
-  { title: '症状', align: 'start', key: 'symptom_name' },
-  { title: '件数 (男性)', align: 'end', key: 'male_count' },
-  { title: '件数 (女性)', align: 'end', key: 'female_count' },
-  { title: '合計件数', align: 'end', key: 'sum_count' }
+const searchConditionChanged = shallowRef<boolean>(false)
+const searchTrigerFunc = () => {
+  SearchTriggerFunc()
+  searchConditionChanged.value = isConditionChanged()
+}
+const clearTriggerFunc = () => {
+  searchConditionChanged.value = isConditionChanged()
+}
+const isConditionChanged = () => {
+  let ret = searchItems.find( item => isNotNullEmpty(item.model) )
+  if(ret != undefined) return true
+
+  return false
+}
+const isNotNullEmpty = (val: ShallowRef<string>): boolean => {
+  return val.value != '' && val.value != null
+}
+
+const searchItems = [
+  { sm: 6, label: "症状", model: symptomsFilterVal, type: "text"},
+  { sm: 3, label: "合計件数（最小値）", model: sumFromFilterVal, type: "number"},
+  { sm: 3, label: "合計件数（最大値）", model: sumToFilterVal, type: "number"},
 ]
 </script>
 

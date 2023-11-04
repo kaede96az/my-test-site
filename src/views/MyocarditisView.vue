@@ -84,8 +84,8 @@
 
     <template v-slot:expanded-row="{ item }">
       <td :colspan="headers.length + 1">
-        <v-row cols="12" md="6">
-          <v-col>
+        <v-row>
+          <v-col cols="12" md="6">
             <DateAndPT
             :no="item.no"
             :date_vaccinated="item.date_vaccinated"
