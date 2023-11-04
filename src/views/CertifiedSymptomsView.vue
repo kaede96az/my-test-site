@@ -33,6 +33,12 @@
           </template>
           クリップボードにURLをコピーしました!
         </v-snackbar>
+        <v-snackbar :timeout="2000" color="blue-grey-darken-3">
+          <template v-slot:activator="{ props }">
+            <v-btn prepend-icon="mdi-content-copy" color="green-darken-1" @click="createFilteredTableData" v-bind="props">この検索条件のURLをコピーする</v-btn>
+          </template>
+          クリップボードに検索結果のデータをコピーしました!
+        </v-snackbar>
       </v-expansion-panel-text>
 
     </v-expansion-panel>
@@ -58,9 +64,7 @@
     }"
   >
     <template v-slot:[`item.symptom_name`]="item">
-      <v-btn variant="text" color="deep-purple-darken-1" @click="navigateWithQuery(item.value)"
-        ><b>{{ item.value }}</b></v-btn
-      >
+      <v-btn variant="text" color="deep-purple-darken-1" @click="navigateWithQuery(item.value)" class="text-none"><b>{{ item.value }}</b></v-btn>
       <span></span>
     </template>
   </v-data-table>
@@ -172,6 +176,18 @@ const searchItems = [
   { sm: 3, label: "合計件数（最小値）", model: sumFromFilterVal, type: "number"},
   { sm: 3, label: "合計件数（最大値）", model: sumToFilterVal, type: "number"},
 ]
+
+const createFilteredTableData = () => {
+  const filteredTableData = items.value?.issues.filter(issue => {
+    if(isNotNullEmpty(symptomsFilterVal)){
+      if(issue.symptom_name.indexOf(symptomsFilterVal.value) < 0) return false
+    }
+  })
+
+  if(navigator.clipboard && filteredTableData != undefined){
+    navigator.clipboard.writeText(filteredTableData.toString());
+  }
+}
 </script>
 
 <style scoped>
