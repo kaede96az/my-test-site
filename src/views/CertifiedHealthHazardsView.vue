@@ -39,7 +39,20 @@
             ></v-text-field>
           </v-col>
         </v-row>
+
       </v-expansion-panel-text>
+
+      <v-divider></v-divider>
+
+      <v-expansion-panel-text>
+        <v-snackbar :timeout="2000" color="blue-grey-darken-3">
+          <template v-slot:activator="{ props }">
+            <v-btn class="ma-2" color="green-darken-1" @click="createUrlWithQueryParams" v-bind="props">この検索条件のURLをコピーする</v-btn>
+          </template>
+          クリップボードにURLをコピーしました!
+        </v-snackbar>
+      </v-expansion-panel-text>
+
     </v-expansion-panel>
   </v-expansion-panels>
   <br />
@@ -183,13 +196,6 @@ const preExistingConditionFilterFunc = (value: string): boolean => {
   return StringFilterFunc(value, preExistingConditionFilterVal)
 }
 
-const symptomQuery = router.currentRoute.value.query.symptom
-console.log('symptomQuery is ' + symptomQuery)
-if(symptomQuery != undefined){
-  symptomsFilterVal.value = symptomQuery.toString()
-  expandSearchCard.value = [0]
-}
-
 const customKeyFilter = {
   vaccine_name: vaccineNameFilterFunc,
   name: symptomsFilterFunc,
@@ -220,6 +226,46 @@ const isConditionChanged = () => {
 }
 const isNotNullEmpty = (val: ShallowRef<string>): boolean => {
   return val.value != '' && val.value != null
+}
+
+const pageQueryParams = router.currentRoute.value.query
+const queryParamMap = [
+  {name: "vn", val: vaccineNameFilterVal},
+  {name: "sym", val: symptomsFilterVal},
+  {name: "tp", val: billingTypeFilterVal},
+  {name: "re", val: resultFilterVal},
+  {name: "cdf", val: certifiedDateFromFilterVal},
+  {name: "cdt", val: certifiedDateToFilterVal},
+  {name: "adf", val: ageFromFilterVal},
+  {name: "adt", val: ageToFilterVal},
+  {name: "gen", val: genderFilterVal},
+  {name: "pre", val: preExistingConditionFilterVal},
+]
+queryParamMap.forEach(item => {
+  const param = pageQueryParams[item.name]
+  if(param != undefined) {
+    item.val.value = param.toString()
+    expandSearchCard.value = [0]
+    searchConditionChanged.value = true
+  }
+});
+const createUrlWithQueryParams = () => {
+  let retUrl = window.location.origin + '/#' + router.currentRoute.value.path + '?'
+  let isFirstQuery = true
+  queryParamMap.forEach(item => {
+    if(item.val.value != '' && item.val.value != null) {
+      if(isFirstQuery){
+        retUrl = retUrl + item.name + '=' + item.val.value
+        isFirstQuery = false
+      } else {
+        retUrl = retUrl + '&' + item.name + '=' + item.val.value
+      }
+    }
+  });
+
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(retUrl);
+  }
 }
 
 const issueSearchItems = [

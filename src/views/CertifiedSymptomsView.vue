@@ -89,9 +89,8 @@ const headers = [
 
 // todo: Navigate先のURLをここに直書きしているため、routes側を変更時に一致しなくなる可能性が・・
 const navigateWithQuery = (value: string) => {
-  router.push({ path: 'certified-issues', query: { symptom: value } })
+  router.push({ path: 'certified-issues', query: { sym: value } })
 }
-
 
 const symptomsFilterVal = shallowRef('')
 const symptomsFilterFunc = (value: string): boolean => {
