@@ -47,7 +47,7 @@
       <v-expansion-panel-text>
         <v-snackbar :timeout="2000" color="blue-grey-darken-3">
           <template v-slot:activator="{ props }">
-            <v-btn class="ma-2" color="green-darken-1" @click="createUrlWithQueryParams" v-bind="props">この検索条件のURLをコピーする</v-btn>
+            <v-btn prepend-icon="mdi-content-copy" color="green-darken-1" @click="createUrlWithQueryParams" v-bind="props">この検索条件のURLをコピーする</v-btn>
           </template>
           クリップボードにURLをコピーしました!
         </v-snackbar>
@@ -253,7 +253,7 @@ const createUrlWithQueryParams = () => {
   let retUrl = window.location.origin + '/#' + router.currentRoute.value.path + '?'
   let isFirstQuery = true
   queryParamMap.forEach(item => {
-    if(item.val.value != '' && item.val.value != null) {
+    if(isNotNullEmpty(item.val)) {
       if(isFirstQuery){
         retUrl = retUrl + item.name + '=' + item.val.value
         isFirstQuery = false
