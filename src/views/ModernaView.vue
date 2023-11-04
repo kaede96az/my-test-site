@@ -47,7 +47,7 @@
   <v-data-table
     loading-text="データを読み込み中です。"
     :loading="loading"
-    :items="items as any"
+    :items="dataTableItems as any"
     :headers="headers as any"
     :search="SearchTrigger"
     :custom-filter="
@@ -91,6 +91,10 @@
       <ResultRow :result="item.value"></ResultRow>
     </template>
 
+    <template v-slot:[`item.source`]="item">
+      <a :href="findLinkItem(item.value).url">{{ item.value }}</a>
+    </template>
+
     <template v-slot:expanded-row="{ item }">
       <td :colspan="headers.length + 1">
         <VaccinatedPtResultCard
@@ -102,6 +106,7 @@
           :CR="item.causual"
           :result="item.result"
           :result_date="item.result_date"
+          :link-item="findLinkItem(item.source)"
           :clickClose="() => { expandedArray = expandedArray.filter( n => n !== item.no )}"
         ></VaccinatedPtResultCard>
       </td>
@@ -114,7 +119,7 @@
 import { onMounted, shallowRef } from 'vue'
 import router from '@/router/index'
 import axios from 'axios'
-import { AppBarTitle, AppBarColor, ReportedModernaDataURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, ReportedModernaDataURL, ModernaSourceListURL } from '@/router/data'
 import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import type { IReportedModernaIssues } from '@/types/Moderna'
 import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
@@ -125,21 +130,35 @@ import PtRow from '@/components/PtRow.vue'
 import VaccinatedPtResultCard from '@/components/VaccinatedPtResultCard.vue'
 import CausualRelationshipRow from '@/components/CausualRelationshipRow.vue'
 import type { ShallowRef } from 'vue'
+import type { ISourceItem, ISourceList } from '@/types/SourceList'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 
 const loading = shallowRef(true)
-const items = shallowRef<IReportedModernaIssues>()
+const dataTableItems = shallowRef<IReportedModernaIssues>()
+const sourceList = shallowRef<ISourceList>()
 onMounted(() => {
   axios
     .get<IReportedModernaIssues>(ReportedModernaDataURL)
     .then((response) => {
-      items.value = response.data
+      dataTableItems.value = response.data
       loading.value = false
     })
     .catch((error) => console.log('failed to get reported moderna data: ' + error))
+
+  axios
+    .get<ISourceList>(ModernaSourceListURL)
+    .then((response) => {
+      sourceList.value = response.data
+    })
+    .catch((error) => console.log('failed to get source list for moderna data: ' + error))
 })
+
+const findLinkItem = (value: string): ISourceItem => {
+  const item = sourceList.value?.source_pdf_list.find( x => x.name == value )
+  return item != undefined ? item : {"name": "", "url": "#"}
+}
 
 const headers = [
   { key: 'data-table-expand', width: 20 },

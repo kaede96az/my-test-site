@@ -3,6 +3,7 @@
     <v-card-title>症状と経過の詳細（No. {{ no }}）</v-card-title>
 
     <v-card-text>
+      
       <v-timeline density="compact" align="start">
         <v-timeline-item dot-color="yellow-darken-1" size="x-small">
           <div class="mb-4">
@@ -57,11 +58,13 @@
       </div>
     </v-card-item>
 
-    <v-card-actions
-      ><v-btn variant="outlined" @click="clickClose"
-        >詳細表示を閉じる</v-btn
-      ></v-card-actions
-    >
+    <v-divider></v-divider>
+
+    <v-card-actions>
+      <v-btn variant="outlined" @click="clickClose">詳細表示を閉じる</v-btn>
+      <v-btn variant="outlined" :href="linkItem.url">元資料 {{ linkItem.name }} を開く</v-btn>
+    </v-card-actions>
+
   </v-card>
 </template>
 
@@ -69,6 +72,7 @@
 import {SplitValue, SplitDate, SplitWithArrow} from '@/tools/SplitData'
 import CrChip from '@/components/CertifiedRelationChip.vue'
 import { ElapsedDays } from '@/tools/ElapsedDays';
+import type { ISourceItem } from '@/types/SourceList';
 
 defineProps<{
   no: string
@@ -79,6 +83,7 @@ defineProps<{
   CR: string
   result: string
   result_date: string
+  linkItem: ISourceItem
   clickClose: () => void
 }>()
 

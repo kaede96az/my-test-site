@@ -17,3 +17,8 @@ export const ReportedModernaDataURL =
 
 export const AppBarTitle = shallowRef('副反応ダッシュボード')
 export const AppBarColor = shallowRef('white')
+
+export const PfizerSourceListURL = 
+  'https://gist.githubusercontent.com/kaede96az/ada60fe6a35349f8d3635193e030ff7c/raw/dbe4a23e856147f3084d8fcd0542c527de5a7da1/pfizer-source-pdf-list.json'
+export const ModernaSourceListURL =
+  'https://gist.githubusercontent.com/kaede96az/7e5450d8e2bede068e496e1f4294286b/raw/41954a594c5c918211ca671405f28418d7ef9bd6/moderna-source-pdf-list.json'
