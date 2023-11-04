@@ -1,5 +1,5 @@
 <template>
-  <v-expansion-panels>
+  <v-expansion-panels v-model="expandSearchCard">
     <v-expansion-panel>
       <v-expansion-panel-title color="#66BB6A">
         <v-icon class="search-icon">mdi-magnify</v-icon>
@@ -22,6 +22,17 @@
             ></v-text-field>
           </v-col>
         </v-row>
+      </v-expansion-panel-text>
+
+      <v-divider></v-divider>
+
+      <v-expansion-panel-text>
+        <v-snackbar :timeout="2000" color="blue-grey-darken-3">
+          <template v-slot:activator="{ props }">
+            <v-btn prepend-icon="mdi-content-copy" color="green-darken-1" @click="createUrlWithQueryParams" v-bind="props">この検索条件のURLをコピーする</v-btn>
+          </template>
+          クリップボードにURLをコピーしました!
+        </v-snackbar>
       </v-expansion-panel-text>
 
     </v-expansion-panel>
@@ -87,6 +98,8 @@ const headers = [
   { title: '合計件数', align: 'end', key: 'sum_count' }
 ]
 
+const expandSearchCard = shallowRef<Number[]>([])
+
 // todo: Navigate先のURLをここに直書きしているため、routes側を変更時に一致しなくなる可能性が・・
 const navigateWithQuery = (value: string) => {
   router.push({ path: 'certified-issues', query: { sym: value } })
@@ -119,6 +132,39 @@ const isConditionChanged = () => {
 }
 const isNotNullEmpty = (val: ShallowRef<string>): boolean => {
   return val.value != '' && val.value != null
+}
+
+const pageQueryParams = router.currentRoute.value.query
+const queryParamMap = [
+  {name: "sym", val: symptomsFilterVal},
+  {name: "sf", val: sumFromFilterVal},
+  {name: "st", val: sumToFilterVal},
+]
+queryParamMap.forEach(item => {
+  const param = pageQueryParams[item.name]
+  if(param != undefined) {
+    item.val.value = param.toString()
+    expandSearchCard.value = [0]
+    searchConditionChanged.value = true
+  }
+});
+const createUrlWithQueryParams = () => {
+  let retUrl = window.location.origin + '/#' + router.currentRoute.value.path + '?'
+  let isFirstQuery = true
+  queryParamMap.forEach(item => {
+    if(isNotNullEmpty(item.val)) {
+      if(isFirstQuery){
+        retUrl = retUrl + item.name + '=' + item.val.value
+        isFirstQuery = false
+      } else {
+        retUrl = retUrl + '&' + item.name + '=' + item.val.value
+      }
+    }
+  });
+
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(retUrl);
+  }
 }
 
 const searchItems = [

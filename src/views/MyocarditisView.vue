@@ -1,5 +1,5 @@
 <template>
-  <v-expansion-panels>
+  <v-expansion-panels v-model="expandSearchCard">
     <v-expansion-panel>
       <v-expansion-panel-title color="#00b0ff">
         <v-icon class="search-icon">mdi-magnify</v-icon>
@@ -40,6 +40,18 @@
           </v-col>
         </v-row>
       </v-expansion-panel-text>
+
+      <v-divider></v-divider>
+
+      <v-expansion-panel-text>
+        <v-snackbar :timeout="2000" color="blue-grey-darken-3">
+          <template v-slot:activator="{ props }">
+            <v-btn prepend-icon="mdi-content-copy" color="green-darken-1" @click="createUrlWithQueryParams" v-bind="props">この検索条件のURLをコピーする</v-btn>
+          </template>
+          クリップボードにURLをコピーしました!
+        </v-snackbar>
+      </v-expansion-panel-text>
+
     </v-expansion-panel>
   </v-expansion-panels>
   <br />
@@ -153,6 +165,7 @@ const headers = [
   { title: '評価', align: 'start', key: 'evaluation' }
 ]
 
+const expandSearchCard = shallowRef<Number[]>([])
 let expandedArray = shallowRef([])
 
 const makerFilterVal = shallowRef('')
@@ -237,6 +250,48 @@ const isNotNullEmpty = (val: ShallowRef<string>): boolean => {
   return val.value != '' && val.value != null
 }
 
+const pageQueryParams = router.currentRoute.value.query
+const queryParamMap = [
+  {name: "mk", val: makerFilterVal},
+  {name: "vn", val: vaccineNameFilterVal},
+  {name: "ln", val: lotNoFilterVal},
+  {name: "adf", val: ageFromFilterVal},
+  {name: "adt", val: ageToFilterVal},
+  {name: "gen", val: genderFilterVal},
+  {name: "vdf", val: vaccinatedDateFromFilterVal},
+  {name: "vdt", val: vaccinatedDateToFilterVal},
+  {name: "dtof", val: daysToOnsetFromFilterVal},
+  {name: "dtot", val: daysToOnsetToFilterVal},
+  {name: "vtf", val: vaccinatedTimesFromFilterVal},
+  {name: "vtt", val: vaccinatedTimesToFilterVal},
+  {name: "pre", val: preExistingConditionFilterVal},
+]
+queryParamMap.forEach(item => {
+  const param = pageQueryParams[item.name]
+  if(param != undefined) {
+    item.val.value = param.toString()
+    expandSearchCard.value = [0]
+    searchConditionChanged.value = true
+  }
+});
+const createUrlWithQueryParams = () => {
+  let retUrl = window.location.origin + '/#' + router.currentRoute.value.path + '?'
+  let isFirstQuery = true
+  queryParamMap.forEach(item => {
+    if(isNotNullEmpty(item.val)) {
+      if(isFirstQuery){
+        retUrl = retUrl + item.name + '=' + item.val.value
+        isFirstQuery = false
+      } else {
+        retUrl = retUrl + '&' + item.name + '=' + item.val.value
+      }
+    }
+  });
+
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(retUrl);
+  }
+}
 
 const vaccineSearchItems = [
   { sm: 4, label: "メーカー", model: makerFilterVal, type: "text"},
