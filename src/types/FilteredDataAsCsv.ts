@@ -34,7 +34,7 @@ export const CreateFilteredData = <T>(keyFilters: IKeyAndFilter[], tableData: Sh
 				case FilterType.String:
 					return StringFilterFunc(value, kf.valFilter)
 				case FilterType.Number:
-					return NumberFilterFunc(value, kf.fromFilter, kf.toFilter)
+					return NumberFilterFunc(value.replaceAll('回目', ''), kf.fromFilter, kf.toFilter)
 				case FilterType.Date:
 					return DateFilterFunc(value, kf.fromFilter, kf.toFilter)
 			
@@ -57,9 +57,9 @@ export const CreateCsvContent = <T>(filteredData: ShallowRef<T[] |undefined> ,he
 		headerKeys.forEach(key => {
 			if(isFirstItem){
 				isFirstItem=false
-				csvRow = row[key]
+				csvRow = '"' + row[key] + '"'
 			} else {
-				csvRow = csvRow + ',' + row[key]
+				csvRow = csvRow + ',' + '"' + row[key] + '"'
 			}
 		});
 		lineArray.push(csvRow);

@@ -1,11 +1,11 @@
 <template>
-  <v-expansion-panels v-model="expandSearchCard">
+  <v-expansion-panels>
     <v-expansion-panel>
       <v-expansion-panel-title color="#00b0ff">
         <v-icon class="search-icon">mdi-magnify</v-icon>
         <span class="search-title">詳細検索...</span>
         <v-spacer></v-spacer>
-        <v-chip v-if="searchConditionChanged" size="small" variant="elevated" color="orange-lighten-3">変更あり</v-chip>
+        <v-chip v-if="searchConditionChanged" size="small" variant="elevated" color="orange-lighten-3">検索ワード入力中</v-chip>
       </v-expansion-panel-title>
 
       <v-expansion-panel-text>
@@ -40,19 +40,12 @@
           </v-col>
         </v-row>
       </v-expansion-panel-text>
-
-      <v-divider></v-divider>
-
-      <v-expansion-panel-text>
-        <v-snackbar :timeout="2000" color="blue-grey-darken-3">
-          <template v-slot:activator="{ props }">
-            <v-btn prepend-icon="mdi-content-copy" color="green-darken-1" @click="copyUrlWithQueryParams" v-bind="props">この検索条件のURLをコピーする</v-btn>
-          </template>
-          クリップボードにURLをコピーしました!
-        </v-snackbar>
-      </v-expansion-panel-text>
-
     </v-expansion-panel>
+
+    <v-expansion-panel>
+      <SearchRelatedToolBar btn-color="blue-darken-3" :copy-func="copyUrlWithQueryParams" :download-func="downloadFilterdDataAsCsv"></SearchRelatedToolBar>
+    </v-expansion-panel>
+
   </v-expansion-panels>
   <br />
 
@@ -133,7 +126,7 @@ import router from '@/router/index'
 import axios from 'axios'
 import { AppBarTitle, AppBarColor, ReportedPfizerDataURL, PfizerSourceListURL } from '@/router/data'
 import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
-import type { IReportedPfizerIssues } from '@/types/Pfizer'
+import type { IReportedPfizerIssue } from '@/types/Pfizer'
 import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
 import DateOccurredRow from '@/components/DateOccurredRow.vue'
 import ResultDateRow from '@/components/ResultDateRow.vue'
@@ -145,16 +138,18 @@ import type { ShallowRef } from 'vue'
 import type { ISourceItem, ISourceList } from '@/types/SourceList'
 import type { IQueryParam } from '@/types/QueryParam'
 import { CreateUrlWithQueryParams } from '@/types/QueryParam'
+import { CreateCsvContent, CreateFilteredData, DownloadCsvFile, FilterType, type IKeyAndFilter } from '@/types/FilteredDataAsCsv'
+import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 
 const loading = shallowRef(true)
-const dataTableItems = shallowRef<IReportedPfizerIssues>()
+const dataTableItems = shallowRef<IReportedPfizerIssue[]>()
 const sourceList = shallowRef<ISourceList>()
 onMounted(() => {
   axios
-    .get<IReportedPfizerIssues>(ReportedPfizerDataURL)
+    .get<IReportedPfizerIssue[]>(ReportedPfizerDataURL)
     .then((response) => {
       dataTableItems.value = response.data
       loading.value = false
@@ -195,7 +190,6 @@ const headers = [
   */
 ]
 
-const expandSearchCard = shallowRef<Number[]>([])
 let expandedArray = shallowRef([])
 
 const makerFilterVal = shallowRef('')
@@ -314,7 +308,6 @@ queryParamMap.forEach(item => {
   const param = pageQueryParams[item.name]
   if(param != undefined) {
     item.val.value = param.toString()
-    expandSearchCard.value = [0]
     searchConditionChanged.value = true
   }
 });
@@ -344,6 +337,32 @@ const individualSearchItems = [
   { sm: 2, label: "転帰日（to）", model: resultDateToFilterVal, type: "date"},
   { sm: 4, label: "転帰内容", model: resultFilterVal, type: "text"},
 ]
+
+const _blank = shallowRef('')
+const keyAndFilterMap: IKeyAndFilter[] = [
+  { key: "no", filterType: FilterType.String , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
+  { key: "maker", filterType: FilterType.String , valFilter: makerFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "vaccine_name", filterType: FilterType.String , valFilter: vaccineNameFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "lot_no", filterType: FilterType.String , valFilter: lotNoFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "age", filterType: FilterType.Number , valFilter: _blank, fromFilter: ageFromFilterVal, toFilter: ageToFilterVal},
+  { key: "gender", filterType: FilterType.String , valFilter: genderFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "date_vaccinated", filterType: FilterType.Date , valFilter: _blank, fromFilter: vaccinatedDateFromFilterVal, toFilter: vaccinatedDateToFilterVal},
+  { key: "date_occurred", filterType: FilterType.Date , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
+  { key: "diff", filterType: FilterType.Number , valFilter: _blank, fromFilter: daysToOnsetFromFilterVal, toFilter: daysToOnsetToFilterVal},
+  { key: "PT_name", filterType: FilterType.String , valFilter: ptNameFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "causual", filterType: FilterType.String , valFilter: causualFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "result_date", filterType: FilterType.Date , valFilter: _blank, fromFilter: resultDateFromFilterVal, toFilter: resultDateToFilterVal},
+  { key: "result", filterType: FilterType.String , valFilter: resultFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "source", filterType: FilterType.String , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
+]
+const downloadFilterdDataAsCsv = () => {
+  const filteredData = CreateFilteredData<IReportedPfizerIssue>(keyAndFilterMap, dataTableItems)
+  const headerTitles = headers.filter(head => head.title != undefined).map( head => head.title).join(',')
+  const headerKeys = headers.filter(head => head.title != undefined).map( head => head.key)
+  const csvContent = CreateCsvContent<IReportedPfizerIssue>(filteredData, headerTitles, headerKeys)
+
+  DownloadCsvFile(router.currentRoute.value.path.replace('/',''), csvContent)
+}
 </script>
 
 <style scoped>

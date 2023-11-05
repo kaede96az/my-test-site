@@ -24,12 +24,13 @@
         </v-row>
       </v-expansion-panel-text>
 
-      <v-divider></v-divider>
-
     </v-expansion-panel>
-  </v-expansion-panels>
 
-  <SearchRelatedToolBar :copy-func="copyUrlWithQueryParams" :download-func="downloadFilterdDataAsCsv"></SearchRelatedToolBar>
+    <v-expansion-panel>
+      <SearchRelatedToolBar btn-color="green-darken-3" :copy-func="copyUrlWithQueryParams" :download-func="downloadFilterdDataAsCsv"></SearchRelatedToolBar>
+    </v-expansion-panel>
+
+  </v-expansion-panels>
   <br />
 
   <v-data-table
@@ -153,14 +154,15 @@ const searchItems = [
   { sm: 3, label: "合計件数（最大値）", model: sumToFilterVal, type: "number"},
 ]
 
+const _blank = shallowRef('')
 const keyAndFilterMap: IKeyAndFilter[] = [
-  { key: "symptom_name", filterType: FilterType.String , valFilter: symptomsFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
-  { key: "sum_count", filterType: FilterType.Number , valFilter: shallowRef(''), fromFilter: sumFromFilterVal, toFilter: sumToFilterVal},
+  { key: "symptom_name", filterType: FilterType.String , valFilter: symptomsFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "sum_count", filterType: FilterType.Number , valFilter: _blank, fromFilter: sumFromFilterVal, toFilter: sumToFilterVal},
 ]
 const downloadFilterdDataAsCsv = () => {
   const filteredData = CreateFilteredData<ICertifiedSymptom>(keyAndFilterMap, dataTableItems)
-  const headerTitles = headers.map( head => head.title).join(',')
-  const headerKeys = headers.map( head => head.key)
+  const headerTitles = headers.filter(head => head.title != undefined).map( head => head.title).join(',')
+  const headerKeys = headers.filter(head => head.title != undefined).map( head => head.key)
   const csvContent = CreateCsvContent<ICertifiedSymptom>(filteredData, headerTitles, headerKeys)
 
   DownloadCsvFile(router.currentRoute.value.path.replace('/',''), csvContent)

@@ -10,6 +10,5 @@ export interface ICertifiedHealthHazardIssue {
   basic_disease: string
   name: string
   result: string
-  reason: string
   approved_date: string
 }

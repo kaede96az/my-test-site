@@ -1,11 +1,11 @@
 <template>
-  <v-expansion-panels v-model="expandSearchCard">
+  <v-expansion-panels>
     <v-expansion-panel>
       <v-expansion-panel-title color="#00b0ff">
         <v-icon class="search-icon">mdi-magnify</v-icon>
         <span class="search-title">詳細検索...</span>
         <v-spacer></v-spacer>
-        <v-chip v-if="searchConditionChanged" size="small" variant="elevated" color="orange-lighten-3">変更あり</v-chip>
+        <v-chip v-if="searchConditionChanged" size="small" variant="elevated" color="orange-lighten-3">検索ワード入力中</v-chip>
       </v-expansion-panel-title>
 
       <v-expansion-panel-text>
@@ -40,19 +40,12 @@
           </v-col>
         </v-row>
       </v-expansion-panel-text>
-
-      <v-divider></v-divider>
-
-      <v-expansion-panel-text>
-        <v-snackbar :timeout="2000" color="blue-grey-darken-3">
-          <template v-slot:activator="{ props }">
-            <v-btn prepend-icon="mdi-content-copy" color="green-darken-1" @click="copyUrlWithQueryParams" v-bind="props">この検索条件のURLをコピーする</v-btn>
-          </template>
-          クリップボードにURLをコピーしました!
-        </v-snackbar>
-      </v-expansion-panel-text>
-
     </v-expansion-panel>
+
+    <v-expansion-panel>
+      <SearchRelatedToolBar btn-color="blue-darken-3" :copy-func="copyUrlWithQueryParams" :download-func="downloadFilterdDataAsCsv"></SearchRelatedToolBar>
+    </v-expansion-panel>
+
   </v-expansion-panels>
   <br />
 
@@ -61,7 +54,7 @@
     :loading="loading"
     color="#00b0ff"
     :items="dataTableItems as any"
-    :headers="(headers as any)"
+    :headers="headers as any"
     :search="SearchTrigger"
     :custom-filter="
       () => {
@@ -127,7 +120,7 @@
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
-import type { IReportedDeathIssues } from '@/types/ReportedDeath'
+import type { IReportedDeathIssue } from '@/types/ReportedDeath'
 import { AppBarTitle, AppBarColor, ReportedDeathDataURL } from '@/router/data'
 import { NumberFilterFunc, DateFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import router from '@/router/index'
@@ -141,15 +134,17 @@ import CausualRelationshipRow from '@/components/CausualRelationshipRow.vue'
 import type { ShallowRef } from 'vue'
 import type { IQueryParam } from '@/types/QueryParam'
 import { CreateUrlWithQueryParams } from '@/types/QueryParam'
+import { CreateCsvContent, CreateFilteredData, DownloadCsvFile, FilterType, type IKeyAndFilter } from '@/types/FilteredDataAsCsv'
+import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 
 const loading = shallowRef(true)
-const dataTableItems = shallowRef<IReportedDeathIssues>()
+const dataTableItems = shallowRef<IReportedDeathIssue[]>()
 onMounted(() => {
   axios
-    .get<IReportedDeathIssues>(ReportedDeathDataURL)
+    .get<IReportedDeathIssue[]>(ReportedDeathDataURL)
     .then((response) => {
       dataTableItems.value = response.data
       loading.value = false
@@ -184,7 +179,6 @@ let headers = [
   */
 ]
 
-const expandSearchCard = shallowRef<Number[]>([])
 let expandedArray = shallowRef([])
 
 const makerFilterVal = shallowRef('')
@@ -303,7 +297,6 @@ queryParamMap.forEach(item => {
   const param = pageQueryParams[item.name]
   if(param != undefined) {
     item.val.value = param.toString()
-    expandSearchCard.value = [0]
     searchConditionChanged.value = true
   }
 });
@@ -333,6 +326,31 @@ const individualSearchItems = [
   { sm: 2, label: "接種回数（to）", model: vaccinatedTimesToFilterVal, type: "number"},
   { sm: 4, label: "基礎疾患", model: preExistingConditionFilterVal, type: "text"},
 ]
+
+const _blank = shallowRef('')
+const keyAndFilterMap: IKeyAndFilter[] = [
+  { key: "no", filterType: FilterType.String , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
+  { key: "maker", filterType: FilterType.String , valFilter: makerFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "vaccine_name", filterType: FilterType.String , valFilter: vaccineNameFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "lot_no", filterType: FilterType.String , valFilter: lotNoFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "age", filterType: FilterType.Number , valFilter: _blank, fromFilter: ageFromFilterVal, toFilter: ageToFilterVal},
+  { key: "gender", filterType: FilterType.String , valFilter: genderFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "date_vaccinated", filterType: FilterType.Date , valFilter: _blank, fromFilter: vaccinatedDateFromFilterVal, toFilter: vaccinatedDateToFilterVal},
+  { key: "date_occurred", filterType: FilterType.Date , valFilter: _blank, fromFilter: occurredDateFromFilterVal, toFilter: occurredDateToFilterVal},
+  { key: "PT", filterType: FilterType.String , valFilter: ptFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "causual_relationship", filterType: FilterType.String , valFilter: causalRelFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "evaluation2", filterType: FilterType.String , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
+  { key: "count", filterType: FilterType.Number , valFilter: _blank, fromFilter: vaccinatedTimesFromFilterVal, toFilter: vaccinatedTimesToFilterVal},
+  { key: "basic_disease", filterType: FilterType.String , valFilter: preExistingConditionFilterVal, fromFilter: _blank, toFilter: _blank},
+]
+const downloadFilterdDataAsCsv = () => {
+  const filteredData = CreateFilteredData<IReportedDeathIssue>(keyAndFilterMap, dataTableItems)
+  const headerTitles = headers.filter(head => head.title != undefined).map( head => head.title).join(',')
+  const headerKeys = headers.filter(head => head.title != undefined).map( head => head.key)
+  const csvContent = CreateCsvContent<IReportedDeathIssue>(filteredData, headerTitles, headerKeys)
+
+  DownloadCsvFile(router.currentRoute.value.path.replace('/',''), csvContent)
+}
 </script>
 
 <style scoped>

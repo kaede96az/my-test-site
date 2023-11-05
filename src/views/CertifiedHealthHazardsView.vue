@@ -1,11 +1,11 @@
 <template>
-  <v-expansion-panels v-model="expandSearchCard">
+  <v-expansion-panels>
     <v-expansion-panel>
       <v-expansion-panel-title color="#66BB6A">
         <v-icon class="search-icon">mdi-magnify</v-icon>
         <span class="search-title">詳細検索...</span>
         <v-spacer></v-spacer>
-        <v-chip v-if="searchConditionChanged" size="small" variant="elevated" color="orange-lighten-3">変更あり</v-chip>
+        <v-chip v-if="searchConditionChanged" size="small" variant="elevated" color="orange-lighten-3">検索ワード入力中</v-chip>
       </v-expansion-panel-title>
 
       <v-expansion-panel-text>
@@ -42,25 +42,19 @@
 
       </v-expansion-panel-text>
 
-      <v-divider></v-divider>
-
-      <v-expansion-panel-text>
-        <v-snackbar :timeout="2000" color="blue-grey-darken-3">
-          <template v-slot:activator="{ props }">
-            <v-btn prepend-icon="mdi-content-copy" color="green-darken-1" @click="copyUrlWithQueryParams" v-bind="props">この検索条件のURLをコピーする</v-btn>
-          </template>
-          クリップボードにURLをコピーしました!
-        </v-snackbar>
-      </v-expansion-panel-text>
-
     </v-expansion-panel>
+
+    <v-expansion-panel>
+      <SearchRelatedToolBar btn-color="green-darken-3" :copy-func="copyUrlWithQueryParams" :download-func="downloadFilterdDataAsCsv"></SearchRelatedToolBar>
+    </v-expansion-panel>
+
   </v-expansion-panels>
   <br />
 
   <v-data-table
     loading-text="データを読み込み中です。"
     :loading="loading"
-    :items="items as any"
+    :items="dataTableItems as any"
     :headers="headers as any "
     :search="SearchTrigger"
     :custom-filter="
@@ -113,7 +107,7 @@ import { onMounted, shallowRef } from 'vue'
 import router from '@/router/index'
 import axios from 'axios'
 import { AppBarTitle, AppBarColor, CertifiedHealthHazardDataURL } from '@/router/data'
-import type { ICertifiedHealthHazardIssues } from '@/types/CertifiedHealthHazard'
+import type { ICertifiedHealthHazardIssue } from '@/types/CertifiedHealthHazard'
 import { NumberFilterFunc, DateFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
 import type { ShallowRef } from 'vue'
@@ -124,17 +118,19 @@ import SymptomsCard from '@/components/SymptomsCard.vue'
 import BillingDetailsChip from '@/components/BillingDetailsChip.vue'
 import type { IQueryParam } from '@/types/QueryParam'
 import { CreateUrlWithQueryParams } from '@/types/QueryParam'
+import { CreateCsvContent, CreateFilteredData, DownloadCsvFile, FilterType, type IKeyAndFilter } from '@/types/FilteredDataAsCsv'
+import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#4CAF50'
 
 const loading = shallowRef(true)
-const items = shallowRef<ICertifiedHealthHazardIssues>()
+const dataTableItems = shallowRef<ICertifiedHealthHazardIssue[]>()
 onMounted(() => {
   axios
-    .get<ICertifiedHealthHazardIssues>(CertifiedHealthHazardDataURL)
+    .get<ICertifiedHealthHazardIssue[]>(CertifiedHealthHazardDataURL)
     .then((response) => {
-      items.value = response.data
+      dataTableItems.value = response.data
       loading.value = false
     })
     .catch((error) => console.log('failed to get certified heallth hazard data: ' + error))
@@ -146,14 +142,12 @@ const headers = [
   { title: '症状', align: 'start', key: 'name' },
   { title: '請求内容', align: 'start', key: 'type' },
   { title: '判定', align: 'start', key: 'result' },
-  { title: '理由', align: 'start', key: 'reason' },
   { title: '認定日', align: 'start', key: 'approved_date' },
   { title: '年齢', align: 'start', key: 'age' },
   { title: '性別', align: 'start', key: 'gender' },
   { title: '基礎疾患', align: 'start', key: 'basic_disease' }
 ]
 
-const expandSearchCard = shallowRef<Number[]>([])
 const expandedArray = shallowRef<string[]>([])
 
 const vaccineNameFilterVal = shallowRef('')
@@ -247,7 +241,6 @@ queryParamMap.forEach(item => {
   const param = pageQueryParams[item.name]
   if(param != undefined) {
     item.val.value = param.toString()
-    expandSearchCard.value = [0]
     searchConditionChanged.value = true
   }
 });
@@ -272,6 +265,25 @@ const individualSearchItems = [
   { sm: 4, label: "性別", model: genderFilterVal, type: "text"},
   { sm: 4, label: "基礎疾患", model: preExistingConditionFilterVal, type: "text"},
 ]
+
+const keyAndFilterMap: IKeyAndFilter[] = [
+  { key: "vaccine_name", filterType: FilterType.String , valFilter: vaccineNameFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
+  { key: "name", filterType: FilterType.String , valFilter: symptomsFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
+  { key: "type", filterType: FilterType.String , valFilter: billingTypeFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
+  { key: "result", filterType: FilterType.String , valFilter: resultFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
+  { key: "approved_date", filterType: FilterType.Date , valFilter: shallowRef(''), fromFilter: certifiedDateFromFilterVal, toFilter: certifiedDateToFilterVal},
+  { key: "age", filterType: FilterType.Number , valFilter: shallowRef(''), fromFilter: ageFromFilterVal, toFilter: ageToFilterVal},
+  { key: "gender", filterType: FilterType.String , valFilter: genderFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
+  { key: "basic_disease", filterType: FilterType.String , valFilter: preExistingConditionFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
+]
+const downloadFilterdDataAsCsv = () => {
+  const filteredData = CreateFilteredData<ICertifiedHealthHazardIssue>(keyAndFilterMap, dataTableItems)
+  const headerTitles = headers.filter(head => head.title != undefined).map( head => head.title).join(',')
+  const headerKeys = headers.filter(head => head.title != undefined).map( head => head.key)
+  const csvContent = CreateCsvContent<ICertifiedHealthHazardIssue>(filteredData, headerTitles, headerKeys)
+
+  DownloadCsvFile(router.currentRoute.value.path.replace('/',''), csvContent)
+}
 </script>
 
 <style scoped>
