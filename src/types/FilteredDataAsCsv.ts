@@ -1,8 +1,18 @@
+import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from "@/tools/FilterFunc"
 import { shallowRef, type ShallowRef } from "vue"
 
 export interface IKeyAndFilter {
 	key: string
-	filter: ShallowRef<string>
+	filterType: FilterType
+	valFilter: ShallowRef<string>
+	fromFilter: ShallowRef<string>
+	toFilter: ShallowRef<string>
+}
+
+export enum FilterType {
+	String = 0,
+	Number = 1,
+	Date = 2
 }
 
 export const CreateFilteredData = <T>(keyFilters: IKeyAndFilter[], tableData: ShallowRef<T[] | undefined> | undefined): ShallowRef<T[] | undefined> => {
@@ -11,26 +21,32 @@ export const CreateFilteredData = <T>(keyFilters: IKeyAndFilter[], tableData: Sh
 		return shallowRef<T[]>([])
 	}
 
-	const filteredData = tableData
+	// const filteredData = tableData というように、直接tableDataの参照を使ってはいけない。
+	// 元データをいじることになってしまうため、検索条件をクリアしても、表示件数が少ないままになってしまう。
+	const filteredData = shallowRef<T[] | undefined>([])
+	filteredData.value = tableData.value
 	keyFilters.forEach(kf => {
 		filteredData.value = filteredData.value?.filter( (item: any): boolean => {
-			if(isNotNullEmpty(kf.filter)){
-				if(item[kf.key].indexOf(kf.filter.value) < 0) return false
+			const value = item[kf.key] as string
+			if(value == undefined) return false
+
+			switch (kf.filterType) {
+				case FilterType.String:
+					return StringFilterFunc(value, kf.valFilter)
+				case FilterType.Number:
+					return NumberFilterFunc(value, kf.fromFilter, kf.toFilter)
+				case FilterType.Date:
+					return DateFilterFunc(value, kf.fromFilter, kf.toFilter)
+			
+				default:
+					break;
 			}
+			
 			return true
 		})
 	});
 	
-	if(filteredData == undefined) {
-		console.log('failed to create csv: filteredData is undefined')
-		return shallowRef<T[]>([])
-	}
-
 	return filteredData
-}
-
-const isNotNullEmpty = (val: ShallowRef<string>): boolean => {
-  return val.value != '' && val.value != null
 }
 
 export const CreateCsvContent = <T>(filteredData: ShallowRef<T[] |undefined> ,headerTitles: string, headerKeys: string[]): string => {

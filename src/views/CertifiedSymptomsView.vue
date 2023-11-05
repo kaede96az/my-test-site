@@ -68,7 +68,7 @@ import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
 import type { ShallowRef } from 'vue'
 import type { IQueryParam } from '@/types/QueryParam'
 import { CreateUrlWithQueryParams } from '@/types/QueryParam'
-import { CreateCsvContent, CreateFilteredData, DownloadCsvFile } from '@/types/FilteredDataAsCsv'
+import { CreateCsvContent, CreateFilteredData, DownloadCsvFile, FilterType, type IKeyAndFilter } from '@/types/FilteredDataAsCsv'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
@@ -156,8 +156,9 @@ const searchItems = [
   { sm: 3, label: "合計件数（最大値）", model: sumToFilterVal, type: "number"},
 ]
 
-const keyAndFilterMap = [
-  { key: "symptom_name", filter: symptomsFilterVal},
+const keyAndFilterMap: IKeyAndFilter[] = [
+  { key: "symptom_name", filterType: FilterType.String , valFilter: symptomsFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
+  { key: "sum_count", filterType: FilterType.Number , valFilter: shallowRef(''), fromFilter: sumFromFilterVal, toFilter: sumToFilterVal},
 ]
 const downloadFilterdDataAsCsv = () => {
   const filteredData = CreateFilteredData<ICertifiedSymptom>(keyAndFilterMap, dataTableItems)
