@@ -1,5 +1,5 @@
 <template>
-  <v-expansion-panels v-model="expandSearchCard">
+  <v-expansion-panels>
     <v-expansion-panel>
       <v-expansion-panel-title color="#66BB6A">
         <v-icon class="search-icon">mdi-magnify</v-icon>
@@ -93,8 +93,6 @@ const headers = [
   { title: '合計件数', align: 'end', key: 'sum_count' }
 ]
 
-const expandSearchCard = shallowRef<Number[]>([])
-
 // todo: Navigate先のURLをここに直書きしているため、routes側を変更時に一致しなくなる可能性が・・
 const navigateWithQuery = (value: string) => {
   router.push({ path: 'certified-issues', query: { sym: value } })
@@ -139,7 +137,6 @@ queryParamMap.forEach(item => {
   const param = pageQueryParams[item.name]
   if(param != undefined) {
     item.val.value = param.toString()
-    expandSearchCard.value = [0]
     searchConditionChanged.value = true
   }
 });
