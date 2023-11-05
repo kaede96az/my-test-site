@@ -5,7 +5,7 @@
         <v-icon class="search-icon">mdi-magnify</v-icon>
         <span class="search-title">詳細検索...</span>
         <v-spacer></v-spacer>
-        <v-chip v-if="searchConditionChanged" size="small" variant="elevated" color="orange-lighten-3">変更あり</v-chip>
+        <v-chip v-if="searchConditionChanged" size="small" variant="elevated" color="orange-lighten-3">検索ワード入力中</v-chip>
       </v-expansion-panel-title>
 
       <v-expansion-panel-text>
@@ -26,23 +26,16 @@
 
       <v-divider></v-divider>
 
-      <v-expansion-panel-text>
-        <v-snackbar :timeout="2000" color="blue-grey-darken-3">
-          <template v-slot:activator="{ props }">
-            <v-btn prepend-icon="mdi-content-copy" color="green-darken-1" @click="copyUrlWithQueryParams" v-bind="props">この検索条件のURLをコピーする</v-btn>
-          </template>
-          クリップボードにURLをコピーしました!
-        </v-snackbar>
-      </v-expansion-panel-text>
-
     </v-expansion-panel>
   </v-expansion-panels>
+
+  <SearchRelatedToolBar :copy-func="copyUrlWithQueryParams" :download-func="downloadFilterdDataAsCsv"></SearchRelatedToolBar>
   <br />
 
   <v-data-table
     loading-text="データを読み込み中です。"
     :loading="loading"
-    :items="items as any"
+    :items="dataTableItems as any"
     :headers="headers as any"
     :search="SearchTrigger"
     :custom-filter="
@@ -70,22 +63,24 @@ import router from '@/router/index'
 import axios from 'axios'
 import { AppBarTitle, AppBarColor, CertifiedSymptomsDataURL } from '@/router/data'
 import { NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
-import type { ICertifiedSymptoms } from '@/types/CertifiedSymptom'
+import type { ICertifiedSymptom } from '@/types/CertifiedSymptom'
 import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
 import type { ShallowRef } from 'vue'
 import type { IQueryParam } from '@/types/QueryParam'
 import { CreateUrlWithQueryParams } from '@/types/QueryParam'
+import { CreateCsvContent, CreateFilteredData, DownloadCsvFile } from '@/types/FilteredDataAsCsv'
+import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#4CAF50'
 
 const loading = shallowRef(true)
-const items = shallowRef<ICertifiedSymptoms>()
+const dataTableItems = shallowRef<ICertifiedSymptom[]>()
 onMounted(() => {
   axios
-    .get<ICertifiedSymptoms>(CertifiedSymptomsDataURL)
+    .get<ICertifiedSymptom[]>(CertifiedSymptomsDataURL)
     .then((response) => {
-      items.value = response.data
+      dataTableItems.value = response.data
       loading.value = false
     })
     .catch((error) => console.log('failed to get certified symptoms data: ' + error))
@@ -160,6 +155,18 @@ const searchItems = [
   { sm: 3, label: "合計件数（最小値）", model: sumFromFilterVal, type: "number"},
   { sm: 3, label: "合計件数（最大値）", model: sumToFilterVal, type: "number"},
 ]
+
+const keyAndFilterMap = [
+  { key: "symptom_name", filter: symptomsFilterVal},
+]
+const downloadFilterdDataAsCsv = () => {
+  const filteredData = CreateFilteredData<ICertifiedSymptom>(keyAndFilterMap, dataTableItems)
+  const headerTitles = headers.map( head => head.title).join(',')
+  const headerKeys = headers.map( head => head.key)
+  const csvContent = CreateCsvContent<ICertifiedSymptom>(filteredData, headerTitles, headerKeys)
+
+  DownloadCsvFile(router.currentRoute.value.path.replace('/',''), csvContent)
+}
 </script>
 
 <style scoped>
