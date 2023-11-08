@@ -29,7 +29,8 @@ export default {
     <v-app-bar app :color="AppBarColor">
       <template v-slot:prepend>
         <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-toolbar-title>{{ AppBarTitle }}</v-toolbar-title>
+        <v-toolbar-title class="d-none d-sm-flex">{{ AppBarTitle }}</v-toolbar-title>
+        <v-toolbar-title class="d-flex d-sm-none small-app-title">{{ AppBarTitle }}</v-toolbar-title>
       </template>
     </v-app-bar>
 
@@ -98,7 +99,10 @@ export default {
               prepend-icon="mdi-medical-bag"
               class="root-icon health-hazards-root"
             >
-              <v-list-item-title class="root-title health-hazards-root"
+              <v-list-item-title class="d-none d-sm-flex root-title health-hazards-root"
+                >予防接種健康被害 救済制度</v-list-item-title
+              >
+              <v-list-item-title class="d-flex d-sm-none root-small-title health-hazards-root"
                 >予防接種健康被害 救済制度</v-list-item-title
               >
             </v-list-item>
@@ -167,6 +171,9 @@ export default {
 .root-title {
   font-size: 1.5rem;
 }
+.root-small-title {
+  font-size: 0.9rem;
+}
 
 .sub-icon {
   font-size: 1.5rem;
@@ -194,7 +201,7 @@ export default {
   color: #c62828;
 }
 
-.app-title {
-  color: #fafafa;
+.small-app-title {
+  font-size: 0.85rem;
 }
 </style>
