@@ -57,7 +57,7 @@ import { AppBarTitle, AppBarColor, SummaryDataURL } from '@/router/data'
 import router from '@/router/index'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
-AppBarColor.value = '#00c853'
+AppBarColor.value = 'green'
 
 const items = shallowRef<ISummaryItems>()
 onMounted(() => {

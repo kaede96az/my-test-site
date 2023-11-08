@@ -122,7 +122,7 @@ import { CreateCsvContent, CreateFilteredData, DownloadCsvFile, FilterType, type
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
-AppBarColor.value = '#4CAF50'
+AppBarColor.value = 'green'
 
 const loading = shallowRef(true)
 const dataTableItems = shallowRef<ICertifiedHealthHazardIssue[]>()

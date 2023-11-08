@@ -71,10 +71,9 @@ import type { IQueryParam } from '@/types/QueryParam'
 import { CreateUrlWithQueryParams } from '@/types/QueryParam'
 import { CreateCsvContent, CreateFilteredData, DownloadCsvFile, FilterType, type IKeyAndFilter } from '@/types/FilteredDataAsCsv'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
-import type { VCardItem } from 'vuetify/components'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
-AppBarColor.value = '#4CAF50'
+AppBarColor.value = 'green'
 
 const loading = shallowRef(true)
 const dataTableItems = shallowRef<ICertifiedSymptom[]>()
