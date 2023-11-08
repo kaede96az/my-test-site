@@ -43,7 +43,7 @@
     </v-expansion-panel>
 
     <v-expansion-panel>
-      <SearchRelatedToolBar btn-color="blue-darken-3" :copy-func="copyUrlWithQueryParams" :download-func="downloadFilterdDataAsCsv"></SearchRelatedToolBar>
+      <SearchRelatedToolBar btn-color="blue-darken-3" :copy-func="copyUrlWithQueryParams" :download-func="downloadFilterdDataAsCsv" :clear-func="clearFilter"></SearchRelatedToolBar>
     </v-expansion-panel>
 
   </v-expansion-panels>
@@ -317,6 +317,15 @@ const downloadFilterdDataAsCsv = () => {
   const csvContent = CreateCsvContent<IReportedMyocarditisIssue>(filteredData, headerTitles, headerKeys)
 
   DownloadCsvFile(router.currentRoute.value.path.replace('/',''), csvContent)
+}
+const clearFilter = () => {
+  vaccineSearchItems.forEach(item => {
+    item.model.value = ''
+  });
+  individualSearchItems.forEach(item => {
+    item.model.value = ''
+  });
+  searchConditionChanged.value = false
 }
 </script>
 

@@ -27,7 +27,7 @@
     </v-expansion-panel>
 
     <v-expansion-panel>
-      <SearchRelatedToolBar btn-color="green-darken-3" :copy-func="copyUrlWithQueryParams" :download-func="downloadFilterdDataAsCsv"></SearchRelatedToolBar>
+      <SearchRelatedToolBar btn-color="green-darken-3" :copy-func="copyUrlWithQueryParams" :download-func="downloadFilterdDataAsCsv" :clear-func="clearFilter"></SearchRelatedToolBar>
     </v-expansion-panel>
 
   </v-expansion-panels>
@@ -71,6 +71,7 @@ import type { IQueryParam } from '@/types/QueryParam'
 import { CreateUrlWithQueryParams } from '@/types/QueryParam'
 import { CreateCsvContent, CreateFilteredData, DownloadCsvFile, FilterType, type IKeyAndFilter } from '@/types/FilteredDataAsCsv'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
+import type { VCardItem } from 'vuetify/components'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#4CAF50'
@@ -166,6 +167,12 @@ const downloadFilterdDataAsCsv = () => {
   const csvContent = CreateCsvContent<ICertifiedSymptom>(filteredData, headerTitles, headerKeys)
 
   DownloadCsvFile(router.currentRoute.value.path.replace('/',''), csvContent)
+}
+const clearFilter = () => {
+  searchItems.forEach(item => {
+    item.model.value = ''
+  });
+  searchConditionChanged.value = false
 }
 </script>
 
