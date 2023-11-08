@@ -26,6 +26,7 @@ export const CreateFilteredData = <T>(keyFilters: IKeyAndFilter[], tableData: Sh
 	const filteredData = shallowRef<T[] | undefined>([])
 	filteredData.value = tableData.value
 	keyFilters.forEach(kf => {
+		let val: string = ''
 		filteredData.value = filteredData.value?.filter( (item: any): boolean => {
 			const value = item[kf.key] as string
 			if(value == undefined) return false
@@ -34,7 +35,11 @@ export const CreateFilteredData = <T>(keyFilters: IKeyAndFilter[], tableData: Sh
 				case FilterType.String:
 					return StringFilterFunc(value, kf.valFilter)
 				case FilterType.Number:
-					return NumberFilterFunc(value.replaceAll('回目', ''), kf.fromFilter, kf.toFilter)
+					val = value
+					if(typeof(val) == typeof('')){
+						val = val.replaceAll('回目', '')
+					}
+					return NumberFilterFunc(val, kf.fromFilter, kf.toFilter)
 				case FilterType.Date:
 					return DateFilterFunc(value, kf.fromFilter, kf.toFilter)
 			
