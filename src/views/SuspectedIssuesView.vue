@@ -52,12 +52,12 @@
             :options="{
               chart: { id: 'number_of_deaths_reported_by_age_group' },
               colors: ['#c83f3d'],
-              title: { text: '年代別の死亡報告数', floating: true },
+              title: { text: '亡くなられた方の人数（年代別）', floating: true },
               xaxis: {
-                title: { text: '年代' },
+                title: { text: '死亡報告数 (人)' },
                 categories: items.number_of_deaths_reported_by_age_group.x_axis.data
               },
-              yaxis: { title: { text: '死亡報告数 (人)' } },
+              yaxis: { title: { text: '年代' } },
               plotOptions: { bar: { horizontal: true, borderRadius: 2 } }
             }"
             :series="[
@@ -76,12 +76,12 @@
             :options="{
               chart: { id: 'number_of_deaths_reported_by_vaccinated_times_group' },
               colors: ['#c83f3d'],
-              title: { text: '接種回数別の死亡報告数', floating: true },
+              title: { text: '亡くなられた方の人数（接種回数別）', floating: true },
               xaxis: {
-                title: { text: '接種回数' },
+                title: { text: '死亡報告数 (人)' },
                 categories: items.number_of_deaths_reported_by_vaccinated_times_group.x_axis.data
               },
-              yaxis: { title: { text: '死亡報告数 (人)' } },
+              yaxis: { title: { text: '接種回数（回）' } },
               plotOptions: { bar: { horizontal: true, borderRadius: 2 } }
             }"
             :series="[
