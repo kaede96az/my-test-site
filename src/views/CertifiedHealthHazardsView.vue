@@ -70,30 +70,38 @@
     v-model:expanded="expandedArray"
     :custom-key-filter="customKeyFilter"
   >
-    <template v-slot:[`item.vaccine_name`]="item">
-      <span>{{ item.value }}</span>
+    <template v-slot:[`item.age`]="item">
+      <span>{{ item.value.join(', ') }}</span>
     </template>
 
-    <template v-slot:[`item.name`]="item">
-      <SymptomsRow :sym="item.value"></SymptomsRow>
+    <template v-slot:[`item.symptoms`]="item">
+      <SymptomsRow :symptoms="item.value"></SymptomsRow>
     </template>
 
-    <template v-slot:[`item.type`]="item">
-      <BillingDetailsChip :billing_type="item.value"></BillingDetailsChip>
+    <template v-slot:[`item.description_of_claim`]="item">
+      <BillingDetailsChip :description_of_claim="item.value"></BillingDetailsChip>
     </template>
 
-    <template v-slot:[`item.basic_disease`]="item">
-      <BasicDiseaseRow :bd="item.value"></BasicDiseaseRow>
+    <template v-slot:[`item.pre_existing_conditions`]="item">
+      <BasicDiseaseRow :pre_existing_conditions="item.value"></BasicDiseaseRow>
+    </template>
+
+    <template v-slot:[`item.reasons_for_repudiation`]="item">
+      <span>{{ item.value.join(', ') }}</span>
+    </template>
+
+    <template v-slot:[`item.source_url`]="item">
+      <a :href="item.value">リンク</a>
     </template>
 
     <template v-slot:expanded-row="{ item }">
       <td :colspan="headers.length + 1">
         <v-row>
           <v-col cols="12" md="6">
-            <SymptomsCard :symptoms="item.name" :click-close="() => { expandedArray = expandedArray.filter( n => n !== item.no )}"></SymptomsCard>
+            <SymptomsCard :symptoms="item.symptoms" :click-close="() => { expandedArray = expandedArray.filter( n => n !== item.no )}"></SymptomsCard>
           </v-col>
           <v-col cols="12" md="6">
-            <BasicDiseaseCard :basic_disease="item.basic_disease"></BasicDiseaseCard>
+            <BasicDiseaseCard :pre_existing_conditions="item.pre_existing_conditions"></BasicDiseaseCard>
           </v-col>
         </v-row>
       </td>
@@ -108,7 +116,7 @@ import router from '@/router/index'
 import axios from 'axios'
 import { AppBarTitle, AppBarColor, CertifiedHealthHazardDataURL } from '@/router/data'
 import type { ICertifiedHealthHazardIssue } from '@/types/CertifiedHealthHazard'
-import { NumberFilterFunc, DateFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
+import { DateFilterFunc, StringFilterFunc, StringArrayFilterFunc, NumberArrayFilterFunc } from '@/tools/FilterFunc'
 import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
 import type { ShallowRef } from 'vue'
 import BasicDiseaseRow from '@/components/BasicDiseaseRow.vue'
@@ -138,14 +146,16 @@ onMounted(() => {
 
 const headers = [
   { key: 'data-table-expand', width: 20 },
+  { title: '認定日', align: 'start', key: 'certified_date', width: 120 },
+  { title: '性別', align: 'start', key: 'gender', width: 25},
+  { title: '年齢', align: 'start', key: 'age', width: 25 },
   { title: 'ワクチン名', align: 'start', key: 'vaccine_name', width: 110 },
-  { title: '症状', align: 'start', key: 'name' },
-  { title: '請求内容', align: 'start', key: 'type' },
-  { title: '判定', align: 'start', key: 'result' },
-  { title: '認定日', align: 'start', key: 'approved_date' },
-  { title: '年齢', align: 'start', key: 'age' },
-  { title: '性別', align: 'start', key: 'gender' },
-  { title: '基礎疾患', align: 'start', key: 'basic_disease' }
+  { title: '請求内容', align: 'start', key: 'description_of_claim', width: 170 },
+  { title: '症状', align: 'start', key: 'symptoms' },
+  { title: '基礎疾患', align: 'start', key: 'pre_existing_conditions' },
+  { title: '判定', align: 'start', key: 'judgment_result', width: 25 },
+  { title: '否認理由', align: 'start', key: 'reasons_for_repudiation', width: 110 },
+  { title: '元資料', align: 'start', key: 'source_url', width: 100},
 ]
 
 const expandedArray = shallowRef<string[]>([])
@@ -156,18 +166,18 @@ const vaccineNameFilterFunc = (value: string): boolean => {
 }
 
 const symptomsFilterVal = shallowRef('')
-const symptomsFilterFunc = (value: string): boolean => {
-  return StringFilterFunc(value, symptomsFilterVal)
+const symptomsFilterFunc = (values: any): boolean => {
+  return StringArrayFilterFunc(values, symptomsFilterVal)
 }
 
-const billingTypeFilterVal = shallowRef('')
-const billingTypeFilterFunc = (value: string): boolean => {
-  return StringFilterFunc(value, billingTypeFilterVal)
+const descriptionOfClaimFilterVal = shallowRef('')
+const descriptionOfClaimFilterFunc = (value: string): boolean => {
+  return StringFilterFunc(value, descriptionOfClaimFilterVal)
 }
 
-const resultFilterVal = shallowRef('')
-const resultFilterFunc = (value: string): boolean => {
-  return StringFilterFunc(value, resultFilterVal)
+const judgmentResultFilterVal = shallowRef('')
+const judgmentResultFilterFunc = (value: string): boolean => {
+  return StringFilterFunc(value, judgmentResultFilterVal)
 }
 
 const certifiedDateFromFilterVal = shallowRef('')
@@ -176,10 +186,13 @@ const certifiedDateFilterFunc = (value: string): boolean => {
   return DateFilterFunc(value, certifiedDateFromFilterVal, certifiedDateToFilterVal)
 }
 
-const ageFromFilterVal = shallowRef('')
-const ageToFilterVal = shallowRef('')
-const ageFilterFunc = (value: string): boolean => {
-  return NumberFilterFunc(value, ageFromFilterVal, ageToFilterVal)
+// todo: 本当はnumber型にしたいのだが、検索入力の関係で空文字やnullも入る
+// それらも考慮した型にすると今度は別の箇所でエラーが・・
+// という事情から、anyを使用
+const ageFromFilterVal = shallowRef<any>('')
+const ageToFilterVal = shallowRef<any>('')
+const ageFilterFunc = (values: any): boolean => {
+  return NumberArrayFilterFunc(values, ageFromFilterVal, ageToFilterVal)
 }
 
 const genderFilterVal = shallowRef('')
@@ -188,19 +201,19 @@ const genderFilterFunc = (value: string): boolean => {
 }
 
 const preExistingConditionFilterVal = shallowRef('')
-const preExistingConditionFilterFunc = (value: string): boolean => {
-  return StringFilterFunc(value, preExistingConditionFilterVal)
+const preExistingConditionFilterFunc = (value: any): boolean => {
+  return StringArrayFilterFunc(value, preExistingConditionFilterVal)
 }
 
 const customKeyFilter = {
-  vaccine_name: vaccineNameFilterFunc,
-  name: symptomsFilterFunc,
-  type: billingTypeFilterFunc,
-  result: resultFilterFunc,
-  approved_date: certifiedDateFilterFunc,
-  age: ageFilterFunc,
+  certified_date: certifiedDateFilterFunc,
   gender: genderFilterFunc,
-  basic_disease: preExistingConditionFilterFunc
+  age: ageFilterFunc,
+  vaccine_name: vaccineNameFilterFunc,
+  description_of_claim: descriptionOfClaimFilterFunc,
+  symptoms: symptomsFilterFunc,
+  judgment_result: judgmentResultFilterFunc,
+  pre_existing_conditions: preExistingConditionFilterFunc
 }
 
 const searchConditionChanged = shallowRef<boolean>(false)
@@ -228,8 +241,8 @@ const pageQueryParams = router.currentRoute.value.query
 const queryParamMap: IQueryParam[] = [
   {name: "vn", val: vaccineNameFilterVal},
   {name: "sym", val: symptomsFilterVal},
-  {name: "tp", val: billingTypeFilterVal},
-  {name: "re", val: resultFilterVal},
+  {name: "tp", val: descriptionOfClaimFilterVal},
+  {name: "re", val: judgmentResultFilterVal},
   {name: "cdf", val: certifiedDateFromFilterVal},
   {name: "cdt", val: certifiedDateToFilterVal},
   {name: "adf", val: ageFromFilterVal},
@@ -252,12 +265,13 @@ const copyUrlWithQueryParams = () => {
 }
 
 const issueSearchItems = [
-  { sm: 3, label: "ワクチン名", model: vaccineNameFilterVal, type: "text"},
-  { sm: 3, label: "判定", model: resultFilterVal, type: "text"},
+  { sm: 6, label: "請求内容", model: descriptionOfClaimFilterVal, type: "text"},
   { sm: 6, label: "症状", model: symptomsFilterVal, type: "text"},
+  { sm: 3, label: "判定", model: judgmentResultFilterVal, type: "text"},
+  // todo: かわりに否認理由をここに
+  //{ sm: 3, label: "ワクチン名", model: vaccineNameFilterVal, type: "text"},
   { sm: 3, label: "認定日（from）", model: certifiedDateFromFilterVal, type: "date"},
   { sm: 3, label: "認定日（to）", model: certifiedDateToFilterVal, type: "date"},
-  { sm: 6, label: "請求内容", model: billingTypeFilterVal, type: "text"},
 ]
 const individualSearchItems = [
   { sm: 2, label: "年齢（from）", model: ageFromFilterVal, type: "number"},
@@ -267,14 +281,14 @@ const individualSearchItems = [
 ]
 
 const keyAndFilterMap: IKeyAndFilter[] = [
-  { key: "vaccine_name", filterType: FilterType.String , valFilter: vaccineNameFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
-  { key: "name", filterType: FilterType.String , valFilter: symptomsFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
-  { key: "type", filterType: FilterType.String , valFilter: billingTypeFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
-  { key: "result", filterType: FilterType.String , valFilter: resultFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
-  { key: "approved_date", filterType: FilterType.Date , valFilter: shallowRef(''), fromFilter: certifiedDateFromFilterVal, toFilter: certifiedDateToFilterVal},
-  { key: "age", filterType: FilterType.Number , valFilter: shallowRef(''), fromFilter: ageFromFilterVal, toFilter: ageToFilterVal},
+  { key: "certified_date", filterType: FilterType.Date , valFilter: shallowRef(''), fromFilter: certifiedDateFromFilterVal, toFilter: certifiedDateToFilterVal},
+  { key: "age", filterType: FilterType.NumberArray , valFilter: shallowRef(''), fromFilter: ageFromFilterVal, toFilter: ageToFilterVal},
   { key: "gender", filterType: FilterType.String , valFilter: genderFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
-  { key: "basic_disease", filterType: FilterType.String , valFilter: preExistingConditionFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
+  { key: "vaccine_name", filterType: FilterType.String , valFilter: vaccineNameFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
+  { key: "description_of_claim", filterType: FilterType.String , valFilter: descriptionOfClaimFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
+  { key: "symptoms", filterType: FilterType.StringArray , valFilter: symptomsFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
+  { key: "pre_existing_conditions", filterType: FilterType.StringArray , valFilter: preExistingConditionFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
+  { key: "judgment_result", filterType: FilterType.StringArray , valFilter: judgmentResultFilterVal, fromFilter: shallowRef(''), toFilter: shallowRef('')},
 ]
 const downloadFilterdDataAsCsv = () => {
   const filteredData = CreateFilteredData<ICertifiedHealthHazardIssue>(keyAndFilterMap, dataTableItems)

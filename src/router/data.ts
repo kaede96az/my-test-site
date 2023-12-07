@@ -7,9 +7,9 @@ export const ReportedMyocarditisDataURL =
 export const ReportedDeathDataURL =
   'https://gist.githubusercontent.com/kaede96az/88e2090c0a0f81615cd37abbfb5474d0/raw/4e865fb0a6a686116e720eb4c549aed02c1f3a21/reported-death-issues.json'
 export const CertifiedHealthHazardDataURL =
-  'https://gist.githubusercontent.com/kaede96az/982f47e9e6613c77af9ba49acf818b7e/raw/a7fcb13544fd94d91d9202a30565eb952219bb62/certified-health-hazards.json'
+  'https://kaede96az.github.io/dashboard-datasets/certified-reports.json'
 export const CertifiedSymptomsDataURL =
-  'https://gist.githubusercontent.com/kaede96az/25e3d9708055f37b2d1fa01c0d0bb4f5/raw/fdf17a8c92b6c6d0381adcc8a2b8586e47a00cc2/certified-symptoms.json'
+  'https://kaede96az.github.io/dashboard-datasets/certified-symptoms.json'
 export const ReportedPfizerDataURL =
   'https://raw.githubusercontent.com/kaede96az/sample-data/main/pfizer.json'
 export const ReportedModernaDataURL =

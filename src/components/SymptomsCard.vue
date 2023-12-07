@@ -5,7 +5,7 @@
     <v-card-text class="test">
       <div class="mb-4">
         <div class="bd-list">
-          <ul v-for="bd, j in SplitSymptoms(symptoms).filter( n => n != '' ).filter( m => m != ' ' )" :key="j">
+          <ul v-for="bd, j in symptoms.filter( n => n != '' ).filter( m => m != ' ' )" :key="j">
             <li>{{ bd }}</li>
           </ul>
         </div>
@@ -20,10 +20,8 @@
 </template>
 
 <script setup lang="ts">
-import {SplitSymptoms} from '@/tools/SplitData'
-
 defineProps<{
-  symptoms: string
+  symptoms: string[]
   clickClose: () => void
 }>()
 </script>

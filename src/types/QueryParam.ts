@@ -3,7 +3,7 @@ import router from '@/router/index'
 
 export interface IQueryParam {
 	name: string
-	val: ShallowRef<string>
+	val: ShallowRef<any>
 }
 
 export const CreateUrlWithQueryParams = (queryParamMap: IQueryParam[]): string => {

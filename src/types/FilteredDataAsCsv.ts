@@ -1,18 +1,20 @@
-import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from "@/tools/FilterFunc"
+import { DateFilterFunc, NumberArrayFilterFunc, NumberFilterFunc, StringArrayFilterFunc, StringFilterFunc } from "@/tools/FilterFunc"
 import { shallowRef, type ShallowRef } from "vue"
 
 export interface IKeyAndFilter {
 	key: string
 	filterType: FilterType
 	valFilter: ShallowRef<string>
-	fromFilter: ShallowRef<string>
-	toFilter: ShallowRef<string>
+	fromFilter: ShallowRef<any>
+	toFilter: ShallowRef<any>
 }
 
 export enum FilterType {
 	String = 0,
-	Number = 1,
-	Date = 2
+	StringArray = 1,
+	Number = 2,
+	NumberArray = 3,
+	Date = 4
 }
 
 export const CreateFilteredData = <T>(keyFilters: IKeyAndFilter[], tableData: ShallowRef<T[] | undefined> | undefined): ShallowRef<T[] | undefined> => {
@@ -28,18 +30,22 @@ export const CreateFilteredData = <T>(keyFilters: IKeyAndFilter[], tableData: Sh
 	keyFilters.forEach(kf => {
 		let val: string = ''
 		filteredData.value = filteredData.value?.filter( (item: any): boolean => {
-			const value = item[kf.key] as string
+			const value = item[kf.key]
 			if(value == undefined) return false
 
 			switch (kf.filterType) {
 				case FilterType.String:
 					return StringFilterFunc(value, kf.valFilter)
+				case FilterType.StringArray:
+					return StringArrayFilterFunc(value, kf.valFilter)
 				case FilterType.Number:
 					val = value
 					if(typeof(val) == typeof('')){
 						val = val.replaceAll('回目', '')
 					}
 					return NumberFilterFunc(val, kf.fromFilter, kf.toFilter)
+				case FilterType.NumberArray:
+					return NumberArrayFilterFunc(value, kf.fromFilter, kf.toFilter)
 				case FilterType.Date:
 					return DateFilterFunc(value, kf.fromFilter, kf.toFilter)
 			
