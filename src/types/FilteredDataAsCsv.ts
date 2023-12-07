@@ -30,7 +30,7 @@ export const CreateFilteredData = <T>(keyFilters: IKeyAndFilter[], tableData: Sh
 	keyFilters.forEach(kf => {
 		let val: string = ''
 		filteredData.value = filteredData.value?.filter( (item: any): boolean => {
-			const value = item[kf.key]
+			const value = getValueFromCompexKey(item, kf.key)
 			if(value == undefined) return false
 
 			switch (kf.filterType) {
@@ -60,17 +60,29 @@ export const CreateFilteredData = <T>(keyFilters: IKeyAndFilter[], tableData: Sh
 	return filteredData
 }
 
+// counts.sum のようにデータが階層構造（countsオブジェクト内のsumプロパティ）でkeyを指定して
+// いるようなケースに対応するため、専用の抽出処理を行う
+const getValueFromCompexKey = (item: any, key: string): any => {
+	const keys = key.split('.')
+	let result = item[keys[0]]
+	for (let index = 1; index < keys.length; index++) {
+		result = result[keys[index]]
+	}
+	return result
+}
+
 export const CreateCsvContent = <T>(filteredData: ShallowRef<T[] |undefined> ,headerTitles: string, headerKeys: string[]): string => {
 	const lineArray: string[] = [headerTitles]
 	filteredData.value?.forEach( (row: any) => {
 		let csvRow = ""
 		let isFirstItem = true
 		headerKeys.forEach(key => {
+			const data = getValueFromCompexKey(row, key)
 			if(isFirstItem){
 				isFirstItem=false
-				csvRow = '"' + row[key] + '"'
+				csvRow = '"' + data + '"'
 			} else {
-				csvRow = csvRow + ',' + '"' + row[key] + '"'
+				csvRow = csvRow + ',' + '"' + data + '"'
 			}
 		});
 		lineArray.push(csvRow);
