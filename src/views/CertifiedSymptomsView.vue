@@ -47,11 +47,11 @@
     density="compact"
     class="data-table-health-hazard"
     :custom-key-filter="{
-      symptom_name: symptomsFilterFunc,
-      sum_count: sumFilterFunc
+      name: symptomsFilterFunc,
+      'counts.sum': sumFilterFunc
     }"
   >
-    <template v-slot:[`item.symptom_name`]="item">
+    <template v-slot:[`item.name`]="item">
       <v-btn variant="text" color="deep-purple-darken-1" @click="navigateWithQuery(item.value)" class="text-none"><b>{{ item.value }}</b></v-btn>
       <span></span>
     </template>
@@ -88,10 +88,10 @@ onMounted(() => {
 })
 
 const headers = [
-  { title: '症状', align: 'start', key: 'symptom_name' },
-  { title: '件数 (男性)', align: 'end', key: 'male_count' },
-  { title: '件数 (女性)', align: 'end', key: 'female_count' },
-  { title: '合計件数', align: 'end', key: 'sum_count' }
+  { title: '症状', align: 'start', key: 'name' },
+  { title: '件数 (男性)', align: 'end', key: 'counts.male' },
+  { title: '件数 (女性)', align: 'end', key: 'counts.female' },
+  { title: '合計件数', align: 'end', key: 'counts.sum' }
 ]
 
 // todo: Navigate先のURLをここに直書きしているため、routes側を変更時に一致しなくなる可能性が・・
@@ -104,9 +104,9 @@ const symptomsFilterFunc = (value: string): boolean => {
   return StringFilterFunc(value, symptomsFilterVal)
 }
 
-const sumFromFilterVal = shallowRef('')
-const sumToFilterVal = shallowRef('')
-const sumFilterFunc = (value: string): boolean => {
+const sumFromFilterVal = shallowRef<any>('')
+const sumToFilterVal = shallowRef<any>('')
+const sumFilterFunc = (value: any): boolean => {
   return NumberFilterFunc(value, sumFromFilterVal, sumToFilterVal)
 }
 
@@ -156,8 +156,8 @@ const searchItems = [
 
 const _blank = shallowRef('')
 const keyAndFilterMap: IKeyAndFilter[] = [
-  { key: "symptom_name", filterType: FilterType.String , valFilter: symptomsFilterVal, fromFilter: _blank, toFilter: _blank},
-  { key: "sum_count", filterType: FilterType.Number , valFilter: _blank, fromFilter: sumFromFilterVal, toFilter: sumToFilterVal},
+  { key: "name", filterType: FilterType.String , valFilter: symptomsFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "counts.sum", filterType: FilterType.Number , valFilter: _blank, fromFilter: sumFromFilterVal, toFilter: sumToFilterVal},
 ]
 const downloadFilterdDataAsCsv = () => {
   const filteredData = CreateFilteredData<ICertifiedSymptom>(keyAndFilterMap, dataTableItems)

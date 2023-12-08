@@ -1,14 +1,13 @@
-export interface ICertifiedHealthHazardIssues {
-  issues: ICertifiedHealthHazardIssue[]
-}
-
 export interface ICertifiedHealthHazardIssue {
+  certified_date: string
   gender: string
-  age: number
+  age: number[]
   vaccine_name: string
-  type: string
-  basic_disease: string
-  name: string
-  result: string
-  approved_date: string
+  description_of_claim: string
+  symptoms: string[]
+  judgment_result: string
+  pre_existing_conditions: string[]
+  reasons_for_repudiation: string[]
+  remarks: string
+  source_url: string
 }

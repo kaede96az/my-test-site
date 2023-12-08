@@ -84,7 +84,7 @@
     </template>
 
     <template v-slot:[`item.basic_disease`]="item">
-      <BasicDiseaseRow :bd="item.value"></BasicDiseaseRow>
+      <BasicDiseaseRow :pre_existing_conditions="item.value"></BasicDiseaseRow>
     </template>
 
     <template v-slot:expanded-row="{ item }">
@@ -102,7 +102,7 @@
             ></DateAndPT>
           </v-col>
           <v-col cols="12" md="6">
-            <BasicDiseaseCard :basic_disease="item.basic_disease"></BasicDiseaseCard>
+            <BasicDiseaseCard :pre_existing_conditions="item.basic_disease"></BasicDiseaseCard>
           </v-col>
         </v-row>
       </td>
