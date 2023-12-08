@@ -9,12 +9,10 @@ export const StringFilterFunc = (value: string, filterVal: ShallowRef<string>): 
   if (nullOrEmptyString(filterVal.value)) return true
 
   //todo
-  //return value.indexOf(filterVal.value) > -1
-  if(value.indexOf(filterVal.value) > -1){
-    return true
-  } else {
-    return false
-  }
+  const targetVal = value.normalize('NFKC')
+  const searchVal = filterVal.value.normalize('NFKC')
+
+  return targetVal.indexOf(searchVal) > -1
 }
 
 export const StringArrayFilterFunc = (values: string[], filterVal: ShallowRef<string>): boolean => {
