@@ -4,10 +4,15 @@ import router from '@/router/index'
 export interface IQueryParam {
 	name: string
 	val: ShallowRef<any>
+}
+
+export interface IQueryParamWithArray {
+	name: string
+	val: ShallowRef<any>
 	isArray: boolean
 }
 
-export const CreateUrlWithQueryParams = (queryParamMap: IQueryParam[]): string => {
+export const CreateUrlWithQueryParams = (queryParamMap: IQueryParam[] | IQueryParamWithArray[]): string => {
 	let retUrl = window.location.origin + import.meta.env.BASE_URL + '#' + router.currentRoute.value.path + '?'
 	let isFirstQuery = true
 	queryParamMap.forEach(item => {

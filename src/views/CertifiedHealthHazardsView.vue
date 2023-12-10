@@ -178,7 +178,7 @@ import BasicDiseaseCard from '@/components/BasicDiseaseCard.vue'
 import SymptomsRow from '@/components/SymptomsRow.vue'
 import SymptomsCard from '@/components/SymptomsCard.vue'
 import BillingDetailsChip from '@/components/BillingDetailsChip.vue'
-import type { IQueryParam } from '@/types/QueryParam'
+import type { IQueryParamWithArray } from '@/types/QueryParam'
 import { CreateUrlWithQueryParams } from '@/types/QueryParam'
 import { CreateCsvContent, CreateFilteredData, DownloadCsvFile, FilterType, type IKeyAndFilter } from '@/types/FilteredDataAsCsv'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
@@ -308,7 +308,7 @@ const isNotNullEmpty = (val: ShallowRef<string>): boolean => {
 }
 
 const pageQueryParams = router.currentRoute.value.query
-const queryParamMap: IQueryParam[] = [
+const queryParamMap: IQueryParamWithArray[] = [
   {name: "vn", val: vaccineNameFilterVal, isArray: false},
   {name: "sym", val: symptomsFilterVal, isArray: false},
   {name: "tp", val: descriptionOfClaimFilterVal, isArray: false},
