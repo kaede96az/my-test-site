@@ -4,6 +4,7 @@ import router from '@/router/index'
 export interface IQueryParam {
 	name: string
 	val: ShallowRef<any>
+	isArray: boolean
 }
 
 export const CreateUrlWithQueryParams = (queryParamMap: IQueryParam[]): string => {

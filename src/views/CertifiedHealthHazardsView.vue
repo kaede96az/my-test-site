@@ -11,11 +11,28 @@
       <v-expansion-panel-text>
         <h6 class="text-h6">症状など申請に関する条件の設定</h6>
         <v-row>
-          <v-col v-for="item, i in issueSearchItems" :key="i" cols="12" :sm="item.sm" class="group">
-            <v-text-field
-              :label="item.label"
-              v-model="item.model.value"
-              :type="item.type"
+          <v-col v-for="sItem, i in issueSearchItems" :key="i" cols="12" :sm="sItem.sm" class="group">
+
+            <v-select v-if="sItem.type == 'reasons'"
+             v-model="reasonsForRepudiationValues"
+             :items="reasonsForRepudiationItems"
+             :label="sItem.label" multiple
+             @update:model-value="searchTrigerFunc"
+             >
+              <template v-slot:selection="{ item, index }">
+                <v-chip v-if="index < 2">
+                  <span>{{ item.title }}</span>
+                </v-chip>
+                <span v-if="index === 2" class="text-grey text-caption align-self-center">
+                  (+{{ reasonsForRepudiationValues.length - 2 }} others)
+                </span>
+              </template>
+            </v-select>
+
+            <v-text-field v-else
+              :label="sItem.label"
+              v-model="sItem.model.value"
+              :type="sItem.type"
               @input="searchTrigerFunc"
               @click:clear="clearTriggerFunc"
               clearable
@@ -28,7 +45,7 @@
         <h6 class="text-h6">個人に関する条件の設定</h6>
         <v-row>
           <v-col v-for="item, i in individualSearchItems" :key="i" cols="12" :sm="item.sm" class="group">
-            <v-text-field
+            <v-text-field 
               :label="item.label"
               v-model="item.model.value"
               :type="item.type"
@@ -205,6 +222,21 @@ const preExistingConditionFilterFunc = (value: any): boolean => {
   return StringArrayFilterFunc(value, preExistingConditionFilterVal)
 }
 
+const reasonsForRepudiationItems = ['TypeA-1', 'TypeA-2', 'TypeA-3', 'TypeA-4', 'TypeA-5', 'TypeB-1', 'TypeB-2', 'TypeB-3', 'TypeB-4']
+const reasonsForRepudiationValues = shallowRef<any>([])
+const reasonsForRepudiationFilterFunc = (value: any): boolean => {
+  if(reasonsForRepudiationValues.value.length == 0) return true
+  if(value.length == 0) return false // 検索しようとしているが対象列の内容が空っぽの場合なので非表示
+
+  for (let index = 0; index < value.length; index++) {
+    if(reasonsForRepudiationValues.value.indexOf(value[index]) > -1){
+      return true
+    }
+  }
+
+  return false
+}
+
 const customKeyFilter = {
   certified_date: certifiedDateFilterFunc,
   gender: genderFilterFunc,
@@ -213,7 +245,8 @@ const customKeyFilter = {
   description_of_claim: descriptionOfClaimFilterFunc,
   symptoms: symptomsFilterFunc,
   judgment_result: judgmentResultFilterFunc,
-  pre_existing_conditions: preExistingConditionFilterFunc
+  pre_existing_conditions: preExistingConditionFilterFunc,
+  reasons_for_repudiation: reasonsForRepudiationFilterFunc
 }
 
 const searchConditionChanged = shallowRef<boolean>(false)
@@ -239,22 +272,30 @@ const isNotNullEmpty = (val: ShallowRef<string>): boolean => {
 
 const pageQueryParams = router.currentRoute.value.query
 const queryParamMap: IQueryParam[] = [
-  {name: "vn", val: vaccineNameFilterVal},
-  {name: "sym", val: symptomsFilterVal},
-  {name: "tp", val: descriptionOfClaimFilterVal},
-  {name: "re", val: judgmentResultFilterVal},
-  {name: "cdf", val: certifiedDateFromFilterVal},
-  {name: "cdt", val: certifiedDateToFilterVal},
-  {name: "adf", val: ageFromFilterVal},
-  {name: "adt", val: ageToFilterVal},
-  {name: "gen", val: genderFilterVal},
-  {name: "pre", val: preExistingConditionFilterVal},
+  {name: "vn", val: vaccineNameFilterVal, isArray: false},
+  {name: "sym", val: symptomsFilterVal, isArray: false},
+  {name: "tp", val: descriptionOfClaimFilterVal, isArray: false},
+  {name: "re", val: judgmentResultFilterVal, isArray: false},
+  {name: "cdf", val: certifiedDateFromFilterVal, isArray: false},
+  {name: "cdt", val: certifiedDateToFilterVal, isArray: false},
+  {name: "adf", val: ageFromFilterVal, isArray: false},
+  {name: "adt", val: ageToFilterVal, isArray: false},
+  {name: "gen", val: genderFilterVal, isArray: false},
+  {name: "pre", val: preExistingConditionFilterVal, isArray: false},
+  {name: "rea", val: reasonsForRepudiationValues, isArray: true}
 ]
 queryParamMap.forEach(item => {
   const param = pageQueryParams[item.name]
   if(param != undefined) {
-    item.val.value = param.toString()
-    searchConditionChanged.value = true
+    if(item.isArray){
+      const paramArray = param.toString().split(',')
+      for (let index = 0; index < paramArray.length; index++) {
+        item.val.value.push(paramArray[index])
+      }
+    } else {
+      item.val.value = param.toString()
+      searchConditionChanged.value = true
+    }
   }
 });
 const copyUrlWithQueryParams = () => {
@@ -267,9 +308,8 @@ const copyUrlWithQueryParams = () => {
 const issueSearchItems = [
   { sm: 6, label: "請求内容", model: descriptionOfClaimFilterVal, type: "text"},
   { sm: 6, label: "症状", model: symptomsFilterVal, type: "text"},
-  { sm: 3, label: "判定", model: judgmentResultFilterVal, type: "text"},
-  // todo: かわりに否認理由をここに
-  //{ sm: 3, label: "ワクチン名", model: vaccineNameFilterVal, type: "text"},
+  { sm: 2, label: "判定", model: judgmentResultFilterVal, type: "text"},
+  { sm: 4, label: "否認理由（いずれかに合致）", model: shallowRef() , type: "reasons"},
   { sm: 3, label: "認定日（from）", model: certifiedDateFromFilterVal, type: "date"},
   { sm: 3, label: "認定日（to）", model: certifiedDateToFilterVal, type: "date"},
 ]
