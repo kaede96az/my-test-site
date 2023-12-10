@@ -20,8 +20,8 @@
       <p class="text-body-1">進達受理件数の総数 <b>{{ items.total_entries.toLocaleString() }}</b> [件] に対して、判定結果の割合は以下の通りです。</p>
 
       <div class="d-flex justify-end">
-        <v-btn size="small" @click="changeChartView" v-if="isPersentView">件数表示に切り替え</v-btn>
-        <v-btn size="small" @click="changeChartView" v-else>割合表示に切り替え</v-btn>
+        <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
+        <v-btn size="small" @click="changeChartView" color="blue" v-else >割合を表示</v-btn>
       </div>
 
       <v-row>
@@ -59,8 +59,8 @@
       <p class="text-body-1">認定・否認された申請の総数 <b>{{ certified_and_denied_count.toLocaleString() }}</b> [件] に対して、申請内容の内訳はそれぞれ以下の通りです。</p>
 
       <div class="d-flex justify-end">
-        <v-btn size="small" @click="changeChartView" v-if="isPersentView">件数表示に切り替え</v-btn>
-        <v-btn size="small" @click="changeChartView" v-else>割合表示に切り替え</v-btn>
+        <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
+        <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
       </div>
       
       <v-row>
@@ -138,7 +138,7 @@ onMounted(() => {
 })
 
 const judgementTableSeries = shallowRef<any[]>([])
-const itemColors = ['#5FAF51', '#F23B61', '#F6AD21', '#808080']
+const itemColors = ['#5FAF51', '#F44336', '#F6AD21', '#808080']
 const selectItemColor = (name: any): string => {
   switch (name) {
     case '認定':
@@ -186,7 +186,12 @@ const judgementChartOptions = {
     },
     style: {
       fontSize: '1.2rem',
+      colors: ['#212121'],
     },
+    background: {
+      enabled: true,
+      foreColor: '#fff',
+    }
   },
   plotOptions: {
     pie: {
@@ -210,7 +215,7 @@ const certifiedClaimChartOptions = {
     position: 'bottom',
   },
   labels: ['医療費・医療手当 又は 障害年金', '死亡一時金 又は 葬祭料'],
-  colors: ['#64B5F6', '#F48FB1'],
+  colors: ['#2962FF', '#FF4081'],
   tooltip: {
     y: {
         formatter: (val: any) => {
@@ -236,6 +241,11 @@ const certifiedClaimChartOptions = {
     },
     style: {
       fontSize: '1.2rem',
+      colors: ['#212121'],
+    },
+    background: {
+      enabled: true,
+      foreColor: '#fff',
     }
   }
 }
@@ -253,7 +263,7 @@ const deniedClaimChartOptions = {
     position: 'bottom',
   },
   labels: ['医療費・医療手当 又は 障害年金', '死亡一時金 又は 葬祭料'],
-  colors: ['#64B5F6', '#F48FB1'],
+  colors: ['#2962FF', '#FF4081'],
   tooltip: {
     y: {
         formatter: (val: any) => {
@@ -279,6 +289,11 @@ const deniedClaimChartOptions = {
     },
     style: {
       fontSize: '1.2rem',
+      colors: ['#212121'],
+    },
+    background: {
+      enabled: true,
+      foreColor: '#fff',
     }
   }
 }
