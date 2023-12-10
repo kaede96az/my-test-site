@@ -29,6 +29,43 @@
               </template>
             </v-select>
 
+            <v-dialog v-else-if="sItem.type == 'reasons-help'" transition="dialog-bottom-transition" width="auto">
+              <template v-slot:activator="{ props }">
+                <v-btn prepend-icon="mdi-help-circle-outline" v-bind="props">否認理由について...</v-btn>
+              </template>
+
+              <template v-slot:default="{ isActive }">
+                <v-card title="否認理由について">
+                  <v-card-text>
+                    2023年2月10日 以前の報告では、否認理由は下図のように5段階で分けられていました。
+                  </v-card-text>
+                  <v-img src="TypeA.png"></v-img>
+
+                  <v-card-text>
+                    しかし、2023年3月14日 以降の報告では、否認理由は下図の4段階で表現されるようになりました。
+                  </v-card-text>
+                  <v-img src="TypeB.png"></v-img>
+
+                  <v-card-text>
+                    それぞれの数字が表す内容が異なるため、本サイトではタイプを表す文字列をつけて区別するようにしました。
+                    <ul>
+                      <li>2023年2月10日 以前: TypeA-</li>
+                      <li>2023年3月14日 以降: TypeB-</li>
+                    </ul>
+                  </v-card-text>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+
+                    <v-btn
+                      text="閉じる"
+                      @click="isActive.value = false"
+                    >閉じる</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-dialog>
+
             <v-text-field v-else
               :label="sItem.label"
               v-model="sItem.model.value"
@@ -308,8 +345,9 @@ const copyUrlWithQueryParams = () => {
 const issueSearchItems = [
   { sm: 6, label: "請求内容", model: descriptionOfClaimFilterVal, type: "text"},
   { sm: 6, label: "症状", model: symptomsFilterVal, type: "text"},
-  { sm: 2, label: "判定", model: judgmentResultFilterVal, type: "text"},
-  { sm: 4, label: "否認理由（いずれかに合致）", model: shallowRef() , type: "reasons"},
+  { sm: 1, label: "判定", model: judgmentResultFilterVal, type: "text"},
+  { sm: 3, label: "否認理由（いずれかに合致）", model: shallowRef() , type: "reasons"},
+  { sm: 2, label: "", model: shallowRef() , type: "reasons-help"},
   { sm: 3, label: "認定日（from）", model: certifiedDateFromFilterVal, type: "date"},
   { sm: 3, label: "認定日（to）", model: certifiedDateToFilterVal, type: "date"},
 ]
