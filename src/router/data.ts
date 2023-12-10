@@ -6,10 +6,13 @@ export const ReportedMyocarditisDataURL =
   'https://gist.githubusercontent.com/kaede96az/4a8008d80d5e36840e89021918cfa27e/raw/e1ec3da421d78fe1efe096ee90b27502010a769a/myocarditis.json'
 export const ReportedDeathDataURL =
   'https://gist.githubusercontent.com/kaede96az/88e2090c0a0f81615cd37abbfb5474d0/raw/4e865fb0a6a686116e720eb4c549aed02c1f3a21/reported-death-issues.json'
+
 export const CertifiedHealthHazardDataURL =
   'https://kaede96az.github.io/dashboard-datasets/certified-reports.json'
 export const CertifiedSymptomsDataURL =
   'https://kaede96az.github.io/dashboard-datasets/certified-symptoms.json'
+export const CertifiedSummaryURL = 'https://kaede96az.github.io/dashboard-datasets/certified-summary.json'
+
 export const ReportedPfizerDataURL =
   'https://raw.githubusercontent.com/kaede96az/sample-data/main/pfizer.json'
 export const ReportedModernaDataURL =
