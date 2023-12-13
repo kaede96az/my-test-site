@@ -89,6 +89,25 @@ export const NumberArrayFilterFunc = (
   return true
 }
 
+export const DateArrayFilterFunc = (
+  values: string[],
+  fromFilterVal: ShallowRef<string>,
+  toFilterVal: ShallowRef<string>
+): boolean => {
+  // フィルタリング処理が不要な場合はtrueを返すことで、項目を表示させる
+  if (nullOrEmptyString(fromFilterVal.value) && nullOrEmptyString(toFilterVal.value)) return true
+  if (values.length == 0) return false
+
+  // 複数の日付に対してチェックして、どれか該当するなら表示する（true返す）
+  for (let index = 0; index < values.length; index++) {
+    if(DateFilterFunc(values[index], fromFilterVal, toFilterVal)) return true
+  }
+
+  // 該当する日付がなかったので非表示にする（false返す）
+  return false
+}
+
+
 export const DateFilterFunc = (
   value: string,
   fromFilterVal: ShallowRef<string>,

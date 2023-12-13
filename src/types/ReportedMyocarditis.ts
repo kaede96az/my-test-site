@@ -1,25 +1,27 @@
-export interface IReportedMyocarditisIssues {
-  issues: IReportedMyocarditisIssue[]
-}
-
 export interface IReportedMyocarditisIssue {
   no: number
-  age: number
+  age: string
   gender: string
-  date_vaccinated: string
-  date_occurred: string
-  diff: string
+  vaccinated_date: string
+  onset_dates: string[]
+  days_to_onset: string
   vaccine_name: string
-  maker: string
+  manufacturer: string
   lot_no: string
-  count: string
-  basic_disease: string
-  PT: string
-  result_date: string
-  result: string
-  PT_by_expert: string
-  evaluation: string
-  level: string
-  opinion: string
+  vaccinated_times: string
+  pre_existing_disease_names: string[]
+  PT_names: string[]
+  gross_result_dates: string[]
+  gross_results: string[]
+  evaluated_PT: string
+  evaluated_result: string
+  brighton_classification: string
+  expert_opinion: string
   remarks: string
+  source: ISourceInfo
+}
+
+export interface ISourceInfo {
+  name: string
+  url: string
 }

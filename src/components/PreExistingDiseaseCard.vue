@@ -5,7 +5,7 @@
     <v-card-text class="test">
       <div class="mb-4">
         <div class="bd-list">
-          <ul v-for="bd, j in SplitBasicDisease(basic_disease).filter( n => n != '' ).filter( m => m != ' ' )" :key="j">
+          <ul v-for="bd, j in pre_existing_disease_names" :key="j">
             <li>{{ bd }}</li>
           </ul>
         </div>
@@ -16,10 +16,8 @@
 </template>
 
 <script setup lang="ts">
-import {SplitBasicDisease} from '@/tools/SplitData'
-
 defineProps<{
-  basic_disease: string
+  pre_existing_disease_names: string[]
 }>()
 </script>
 

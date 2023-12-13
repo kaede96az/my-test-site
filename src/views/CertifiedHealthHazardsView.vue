@@ -129,7 +129,7 @@
     </template>
 
     <template v-slot:[`item.symptoms`]="item">
-      <SymptomsRow :symptoms="item.value"></SymptomsRow>
+      <StringArrayRow :s-array="item.value"></StringArrayRow>
     </template>
 
     <template v-slot:[`item.description_of_claim`]="item">
@@ -137,7 +137,7 @@
     </template>
 
     <template v-slot:[`item.pre_existing_conditions`]="item">
-      <BasicDiseaseRow :pre_existing_conditions="item.value"></BasicDiseaseRow>
+      <StringArrayRow :s-array="item.value"></StringArrayRow>
     </template>
 
     <template v-slot:[`item.reasons_for_repudiation`]="item">
@@ -155,7 +155,7 @@
             <SymptomsCard :symptoms="item.symptoms" :click-close="() => { expandedArray = expandedArray.filter( n => n !== item.no )}"></SymptomsCard>
           </v-col>
           <v-col cols="12" md="6">
-            <BasicDiseaseCard :pre_existing_conditions="item.pre_existing_conditions"></BasicDiseaseCard>
+            <PreExistingDiseaseCard :pre_existing_disease_names="item.pre_existing_conditions"></PreExistingDiseaseCard>
           </v-col>
         </v-row>
       </td>
@@ -173,9 +173,8 @@ import type { ICertifiedHealthHazardIssue } from '@/types/CertifiedHealthHazard'
 import { DateFilterFunc, StringFilterFunc, StringArrayFilterFunc, NumberArrayFilterFunc } from '@/tools/FilterFunc'
 import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
 import type { ShallowRef } from 'vue'
-import BasicDiseaseRow from '@/components/BasicDiseaseRow.vue'
-import BasicDiseaseCard from '@/components/BasicDiseaseCard.vue'
-import SymptomsRow from '@/components/SymptomsRow.vue'
+import StringArrayRow from '@/components/StringArrayRow.vue'
+import PreExistingDiseaseCard from '@/components/PreExistingDiseaseCard.vue'
 import SymptomsCard from '@/components/SymptomsCard.vue'
 import BillingDetailsChip from '@/components/BillingDetailsChip.vue'
 import type { IQueryParamWithArray } from '@/types/QueryParam'

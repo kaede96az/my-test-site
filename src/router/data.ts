@@ -2,8 +2,10 @@ import { shallowRef } from 'vue'
 
 export const SummaryDataURL =
   'https://gist.githubusercontent.com/kaede96az/b9102295771f6c4bf0f3e98ea2d2e6f2/raw/6df68c6e1acc7eef396d11f421cf991e35c31024/summary.json'
-export const ReportedMyocarditisDataURL =
-  'https://gist.githubusercontent.com/kaede96az/4a8008d80d5e36840e89021918cfa27e/raw/e1ec3da421d78fe1efe096ee90b27502010a769a/myocarditis.json'
+export const CarditisReportsURL =
+  'https://kaede96az.github.io/dashboard-datasets/carditis-reports.json'
+export const CarditisSummaryURL =
+  'https://kaede96az.github.io/dashboard-datasets/carditis-summary.json'
 export const ReportedDeathDataURL =
   'https://gist.githubusercontent.com/kaede96az/88e2090c0a0f81615cd37abbfb5474d0/raw/4e865fb0a6a686116e720eb4c549aed02c1f3a21/reported-death-issues.json'
 
