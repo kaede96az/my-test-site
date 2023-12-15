@@ -1,3 +1,5 @@
+import type { ISourceInfo } from "./General"
+
 export interface IReportedMyocarditisIssue {
   no: number
   age: string
@@ -19,9 +21,4 @@ export interface IReportedMyocarditisIssue {
   expert_opinion: string
   remarks: string
   source: ISourceInfo
-}
-
-export interface ISourceInfo {
-  name: string
-  url: string
 }

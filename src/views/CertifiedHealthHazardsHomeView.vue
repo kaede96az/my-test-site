@@ -1,10 +1,5 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col cols="12">
-        <h4 class="text-h4">予防接種健康被害 救済制度</h4>
-      </v-col>
-    </v-row>
 
     <v-container v-if="items == undefined">
       <v-progress-circular
@@ -76,7 +71,7 @@
       </v-row>
     </v-container>
 
-    <p class="text-caption text-right">※ <b>{{ items?.date }}</b> 時点の「疾病・障害認定審査会」累計データを用いて算出しています。</p>
+    <p class="text-caption text-right">※ <b>{{ items?.date }}</b> までの「疾病・障害認定審査会」累計データを用いて算出しています。</p>
 
   </v-container>
 </template>
