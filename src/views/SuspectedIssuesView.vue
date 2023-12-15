@@ -1,10 +1,5 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col cols="12">
-        <h4 class="text-h4">副反応疑い報告</h4>
-      </v-col>
-    </v-row>
 
     <v-container v-if="items == undefined">
       <v-progress-circular
@@ -16,6 +11,12 @@
     </v-container>
 
     <v-container v-else>
+      <v-row>
+        <v-col cols="12">
+          <h4 class="text-h4">副反応疑い報告</h4>
+        </v-col>
+      </v-row>
+
       <v-row>
         <v-col
           cols="12"
@@ -93,7 +94,38 @@
           ></apexchart>
         </v-col>
       </v-row>
+
+      <v-container>
+        <h4 class="text-h4">心筋炎/心膜炎 報告</h4>
+        <p>
+          「新型コロナワクチン接種後の心筋炎又は心膜炎疑い」として製造販売業者から報告された事例 <b>{{ carditisSummaryData?.carditis_summary.total.toLocaleString() }} [件]</b> の集計結果を示します。
+        </p>
+
+        <div class="d-flex justify-end">
+          <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
+          <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
+        </div>
+
+        <v-row>
+          <v-col cols="12" sm="6">
+            <apexchart :options="carditisSummaryOptions" :series="carditisSummarySeries"></apexchart>
+          </v-col>
+
+          <v-col cols="12" sm="6">
+            <apexchart :options="myocarditisByVaccineOptions" :series="myocarditisByVaccineSeries"></apexchart>
+          </v-col>
+
+          <v-col cols="12" sm="6">
+            <apexchart :options="pericarditisByVaccineOptions" :series="pericarditisByVaccineSeries"></apexchart>
+          </v-col>
+        </v-row>
+      </v-container>
+
+      <p class="text-caption text-right">※ 「 <a :href="carditisSummaryData?.carditis_summary.source.url">{{ carditisSummaryData?.carditis_summary.source.name }}</a> 」で
+      発表された資料の <b>{{ carditisSummaryData?.carditis_summary.date }}</b> 時点の数値を用いています。</p>
+
     </v-container>
+
   </v-container>
 </template>
 
@@ -104,19 +136,211 @@ import SummaryCard from '../components/SummaryCard.vue'
 import type { ISummaryItems } from '@/types/Summary'
 import { SelectIcon } from '@/tools/SelectIcon'
 import { SelectTileColor } from '@/tools/SelectTileColor'
-import { AppBarTitle, AppBarColor, SummaryDataURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, SummaryDataURL, CarditisSummaryURL } from '@/router/data'
 import router from '@/router/index'
+import type { ICarditisSummaryRoot } from '@/types/CarditisSummary'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 
 const items = shallowRef<ISummaryItems>()
+const carditisSummaryData = shallowRef<ICarditisSummaryRoot>()
 onMounted(() => {
   axios
     .get<ISummaryItems>(SummaryDataURL)
-    .then((response) => (items.value = response.data))
+    .then((response) => {
+      items.value = response.data
+    })
     .catch((error) => console.log('failed to get summary data: ' + error))
+
+  axios
+    .get<ICarditisSummaryRoot>(CarditisSummaryURL)
+    .then((response) => {
+      carditisSummaryData.value = response.data
+
+      carditisSummarySeries.value.push(carditisSummaryData.value.carditis_summary.myocarditis)
+      carditisSummarySeries.value.push(carditisSummaryData.value.carditis_summary.pericarditis)
+
+      for (let index = 0; index < carditisSummaryData.value.carditis_issues.issues_with_vaccine_name.length; index++) {
+        const issue = carditisSummaryData.value.carditis_issues.issues_with_vaccine_name[index]
+
+        myocarditisByVaccineLabels.value.push(issue.vaccine_name)
+        myocarditisByVaccineSeries.value.push(issue.myocarditis_count)
+
+        pericarditisByVaccineLabels.value.push(issue.vaccine_name)
+        pericarditisByVaccineSeries.value.push(issue.pericarditis_count)
+      }
+      
+      // 2つ目以降のグラフが手動リフレッシュ無しにちゃんと表示されるようにするために必要な処理
+      window.dispatchEvent(new Event('resize'))
+    })
+    .catch((error) => console.log('failed to get carditis summary data: ' + error))
 })
+
+const isPersentView = shallowRef(true)
+
+const carditisSummarySeries = shallowRef<any[]>([])
+const carditisSummaryOptions = {
+  title: {
+    text: '心筋炎/心膜炎の内訳',
+    align: 'center',
+    offsetX: 10,
+    offsetY: 10,
+  },
+  chart: { type: 'pie' },
+  legend: {
+    position: 'bottom',
+  },
+  labels: ['心筋炎', '心膜炎'],
+  colors: ['#2962FF', '#FF4081'],
+  tooltip: {
+    y: {
+        formatter: (val: any) => {
+          return (val as number).toLocaleString() + ' 件'
+        },
+    },
+  },
+  responsive: [{
+    breakpoint: 800,
+    options: {
+      chart: {
+        width: 300
+      }
+    }
+  }],
+  dataLabels: {
+    formatter: function (val: any, { seriesIndex, dataPointIndex, w } :any ) {
+      if(isPersentView.value){
+        return val.toFixed(1) + ' %'
+      } else {
+        return w.config.series[seriesIndex].toLocaleString() + ' 件'
+      }
+    },
+    style: {
+      fontSize: '1.2rem',
+      colors: ['#212121'],
+    },
+    background: {
+      enabled: true,
+      foreColor: '#fff',
+    }
+  }
+}
+
+const myocarditisByVaccineLabels = shallowRef<string[]>([])
+const myocarditisByVaccineSeries = shallowRef<any[]>([])
+const myocarditisByVaccineOptions = {
+  title: {
+    text: 'ワクチン種類ごとの心筋炎件数',
+    align: 'center',
+    offsetX: 10,
+    offsetY: 10,
+  },
+  chart: { type: 'pie' },
+  legend: {
+    position: 'bottom',
+  },
+  labels: myocarditisByVaccineLabels.value,
+  plotOptions: {
+    pie: {
+      dataLabels: {
+        minAngleToShowLabel: 0.1
+      }, 
+    }
+  },
+  tooltip: {
+    y: {
+        formatter: (val: any) => {
+          return (val as number).toLocaleString() + ' 件'
+        },
+    },
+  },
+  responsive: [{
+    breakpoint: 800,
+    options: {
+      chart: {
+        width: 300
+      }
+    }
+  }],
+  dataLabels: {
+    formatter: function (val: any, { seriesIndex, dataPointIndex, w } :any ) {
+      if(isPersentView.value){
+        return val.toFixed(1) + ' %'
+      } else {
+        return w.config.series[seriesIndex].toLocaleString() + ' 件'
+      }
+    },
+    style: {
+      fontSize: '1.2rem',
+      colors: ['#212121'],
+    },
+    background: {
+      enabled: true,
+      foreColor: '#fff',
+    }
+  }
+}
+
+const pericarditisByVaccineLabels = shallowRef<string[]>([])
+const pericarditisByVaccineSeries = shallowRef<any[]>([])
+const pericarditisByVaccineOptions = {
+  title: {
+    text: 'ワクチン種類ごとの心膜炎件数',
+    align: 'center',
+    offsetX: 10,
+    offsetY: 10,
+  },
+  chart: { type: 'pie' },
+  legend: {
+    position: 'bottom',
+  },
+  labels: pericarditisByVaccineLabels.value,
+  plotOptions: {
+    pie: {
+      dataLabels: {
+        minAngleToShowLabel: 0.1
+      }, 
+    }
+  },
+  tooltip: {
+    y: {
+        formatter: (val: any) => {
+          return (val as number).toLocaleString() + ' 件'
+        },
+    },
+  },
+  responsive: [{
+    breakpoint: 800,
+    options: {
+      chart: {
+        width: 300
+      }
+    }
+  }],
+  dataLabels: {
+    formatter: function (val: any, { seriesIndex, dataPointIndex, w } :any ) {
+      if(isPersentView.value){
+        return val.toFixed(1) + ' %'
+      } else {
+        return w.config.series[seriesIndex].toLocaleString() + ' 件'
+      }
+    },
+    style: {
+      fontSize: '1.2rem',
+      colors: ['#212121'],
+    },
+    background: {
+      enabled: true,
+      foreColor: '#fff',
+    }
+  }
+}
+
+const changeChartView = () => {
+  isPersentView.value = !isPersentView.value
+  window.dispatchEvent(new Event('resize'))
+}
 </script>
 
 <style lang="scss"></style>

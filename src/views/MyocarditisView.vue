@@ -68,105 +68,133 @@
     v-model:expanded="expandedArray"
     :custom-key-filter="keyFilters"
   >
-    <template v-slot:[`item.maker`]="item">
-      <span class="maker-text">{{ item.value }}</span>
+    <template v-slot:[`item.manufacturer`]="item">
+      <span class="manufacturer-text">{{ item.value }}</span>
     </template>
+
     <template v-slot:[`item.vaccine_name`]="item">
       <span class="vaccine-name-text">{{ item.value }}</span>
     </template>
 
-    <template v-slot:[`item.date_occurred`]="item">
-      <DateOccurredRow :date="item.value"></DateOccurredRow> 
+    <template v-slot:[`item.onset_dates`]="item">
+      <DatesRow :dates="item.value"></DatesRow> 
     </template>
 
-    <template v-slot:[`item.PT`]="item">
-      <PtRow :PT="item.value"></PtRow>
+    <template v-slot:[`item.pre_existing_disease_names`]="item">
+      <StringArrayRow :s-array="item.value"></StringArrayRow>
     </template>
 
-    <template v-slot:[`item.basic_disease`]="item">
-      <BasicDiseaseRow :pre_existing_conditions="item.value"></BasicDiseaseRow>
+    <template v-slot:[`item.PT_names`]="item">
+      <StringArrayRow :s-array="item.value"></StringArrayRow>
+    </template>    
+
+    <template v-slot:[`item.gross_result_dates`]="item">
+      <DatesRow :dates="item.value"></DatesRow> 
+    </template>
+
+    <template v-slot:[`item.gross_results`]="item">
+      <StringArrayRow :s-array="item.value"></StringArrayRow>
+    </template>
+
+    <template v-slot:[`item.source`]="item">
+      <a :href="(item.value as ISourceInfo).url">{{ (item.value as ISourceInfo).name }}</a>
     </template>
 
     <template v-slot:expanded-row="{ item }">
       <td :colspan="headers.length + 1">
         <v-row>
           <v-col cols="12" md="6">
-            <DateAndPT
+            <DateAndPTnames
             :no="item.no"
-            :date_vaccinated="item.date_vaccinated"
-            :date_occurred="item.date_occurred"
-            :PT="item.PT"
-            postfix="）"
-            CR=''
+            :vaccinated_date="item.vaccinated_date"
+            :onset_dates="item.onset_dates"
+            :PT_names="item.PT_names"
+            :gross_result_dates="item.gross_result_dates"
+            :gross_results="item.gross_results"
             :clickClose="() => { expandedArray = expandedArray.filter( n => n !== item.no )}"
-            ></DateAndPT>
+            ></DateAndPTnames>
           </v-col>
           <v-col cols="12" md="6">
-            <BasicDiseaseCard :pre_existing_conditions="item.basic_disease"></BasicDiseaseCard>
+            <PreExistingDiseaseCard :pre_existing_disease_names="item.pre_existing_disease_names"></PreExistingDiseaseCard>
           </v-col>
         </v-row>
       </td>
     </template>
 
   </v-data-table>
+
+  <p class="text-caption text-right">※ 「 <a :href="carditisSummaryData?.carditis_summary.source.url">{{ carditisSummaryData?.carditis_summary.source.name }}</a> 」で
+      発表された資料の <b>{{ carditisSummaryData?.carditis_issues.date }}</b> 時点までの一覧を用いています。</p>
 </template>
 
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
 import type { IReportedMyocarditisIssue } from '@/types/ReportedMyocarditis'
-import { AppBarTitle, AppBarColor, ReportedMyocarditisDataURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, CarditisReportsURL, CarditisSummaryURL } from '@/router/data'
 import router from '@/router/index'
-import { DateFilterFunc, NumberFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
-import BasicDiseaseRow from '@/components/BasicDiseaseRow.vue'
-import DateOccurredRow from '@/components/DateOccurredRow.vue'
-import BasicDiseaseCard from '@/components/BasicDiseaseCard.vue'
-import PtRow from '@/components/PtRow.vue'
-import DateAndPT from '@/components/DateAndPT.vue'
+import { DateArrayFilterFunc, DateFilterFunc, NumberFilterFunc, StringArrayFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
+import StringArrayRow from '@/components/StringArrayRow.vue'
+import DatesRow from '@/components/DatesRow.vue'
+import PreExistingDiseaseCard from '@/components/PreExistingDiseaseCard.vue'
+import DateAndPTnames from '@/components/DateAndPTnames.vue'
 import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
 import type { ShallowRef } from 'vue'
 import type { IQueryParam } from '@/types/QueryParam'
 import { CreateUrlWithQueryParams } from '@/types/QueryParam'
 import { CreateCsvContent, CreateFilteredData, DownloadCsvFile, FilterType, type IKeyAndFilter } from '@/types/FilteredDataAsCsv'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
+import type { ISourceInfo } from '@/types/Summary'
+import type { ICarditisSummaryRoot } from '@/types/CarditisSummary'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 
 const loading = shallowRef(true)
 const dataTableItems = shallowRef<IReportedMyocarditisIssue[]>()
+const carditisSummaryData = shallowRef<ICarditisSummaryRoot>()
 onMounted(() => {
   axios
-    .get<IReportedMyocarditisIssue[]>(ReportedMyocarditisDataURL)
+    .get<IReportedMyocarditisIssue[]>(CarditisReportsURL)
     .then((response) => {
       dataTableItems.value = response.data
       loading.value = false
     })
     .catch((error) => console.log('failed to get myocarditis data: ' + error))
+
+    axios
+    .get<ICarditisSummaryRoot>(CarditisSummaryURL)
+    .then((response) => {
+      carditisSummaryData.value = response.data
+    })
+    .catch((error) => console.log('failed to get carditis summary data: ' + error))
 })
 
 const headers = [
-  { key: 'data-table-expand', width: 20 },
-  { title: 'No', align: 'start', key: 'no' },
-  { title: 'メーカー', align: 'start', key: 'maker', width: 110},
-  { title: 'ワクチン名', align: 'start', key: 'vaccine_name', width: 110 },
-  { title: 'ロット番号', align: 'start', key: 'lot_no' },
-  { title: '年齢', align: 'start', key: 'age' },
-  { title: '性別', align: 'start', key: 'gender' },
-  { title: '接種日', align: 'start', key: 'date_vaccinated' },
-  { title: '症状発生日', align: 'start', key: 'date_occurred' },
-  { title: '発症までの日数', align: 'start', key: 'diff' },
-  { title: '症状名', align: 'start', key: 'PT' },
-  { title: '接種回数', align: 'start', key: 'count' },
-  { title: '基礎疾患', align: 'start', key: 'basic_disease' },
-  { title: '評価', align: 'start', key: 'evaluation' }
+  { key: 'data-table-expand', width: 10 },
+  { title: 'No', align: 'start', key: 'no'},
+  { title: '年齢', align: 'start', key: 'age'},
+  { title: '性別', align: 'start', key: 'gender'},
+  { title: '接種日', align: 'start', key: 'vaccinated_date'},
+  { title: '症状発生日', align: 'start', key: 'onset_dates'},
+  { title: '発症までの日数', align: 'start', key: 'days_to_onset'},
+  { title: 'ワクチン名', align: 'start', key: 'vaccine_name'},
+  { title: '製造販売業者', align: 'start', key: 'manufacturer'},
+  { title: 'ロット番号', align: 'start', key: 'lot_no'},
+  { title: '接種回数', align: 'start', key: 'vaccinated_times'},
+  { title: '基礎疾患', align: 'start', key: 'pre_existing_disease_names' },
+  { title: '症状名', align: 'start', key: 'PT_names' },
+  { title: '転帰日', align: 'start', key: 'gross_result_dates' },
+  { title: '転帰内容', align: 'start', key: 'gross_results' },
+  { title: '評価', align: 'start', key: 'evaluated_result'},
+  { title: '元資料', align: 'start', key: 'source'}
 ]
 
 let expandedArray = shallowRef([])
 
-const makerFilterVal = shallowRef('')
-const makerFilterFunc = (value: string): boolean => {
-  return StringFilterFunc(value, makerFilterVal)
+const manufacturerFilterVal = shallowRef('')
+const manufacturerFilterFunc = (value: string): boolean => {
+  return StringFilterFunc(value, manufacturerFilterVal)
 }
 
 const vaccineNameFilterVal = shallowRef('')
@@ -208,21 +236,40 @@ const vaccinatedTimesFilterFunc = (value: string): boolean => {
   return NumberFilterFunc(value.replace('回目', ''), vaccinatedTimesFromFilterVal, vaccinatedTimesToFilterVal)
 }
 
-const preExistingConditionFilterVal = shallowRef('')
-const preExistingConditionFilterFunc = (value: string): boolean => {
-  return StringFilterFunc(value, preExistingConditionFilterVal)
+const preExistingDiseaseFilterVal = shallowRef('')
+const preExistingDiseaseFilterFunc = (value: any): boolean => {
+  return StringArrayFilterFunc(value, preExistingDiseaseFilterVal)
+}
+
+const PTnamesFilterVal = shallowRef('')
+const PTnamesFilterFunc = (value: any): boolean => {
+  return StringArrayFilterFunc(value, PTnamesFilterVal)
+}
+
+const grossResultDateFromFilterVal = shallowRef('')
+const grossResultDateToFilterVal = shallowRef('')
+const grossResultDateFilterFunc = (value: any): boolean => {
+  return DateArrayFilterFunc(value, grossResultDateFromFilterVal, grossResultDateToFilterVal)
+}
+
+const grossResultFilterVal = shallowRef('')
+const grossResultFilterFunc = (value: any): boolean => {
+  return StringArrayFilterFunc(value, grossResultFilterVal)
 }
 
 const keyFilters = {
-  maker: makerFilterFunc,
+  manufacturer: manufacturerFilterFunc,
   vaccine_name: vaccineNameFilterFunc,
   lot_no: lotNoFilterFunc,
   age: ageFilterFunc,
   gender: genderFilterFunc,
-  date_vaccinated: vaccinatedDateFilterFunc,
-  diff: daysToOnsetFilterFunc,
-  count: vaccinatedTimesFilterFunc,
-  basic_disease: preExistingConditionFilterFunc,
+  vaccinated_date: vaccinatedDateFilterFunc,
+  days_to_onset: daysToOnsetFilterFunc,
+  vaccinated_times: vaccinatedTimesFilterFunc,
+  pre_existing_disease_names: preExistingDiseaseFilterFunc,
+  PT_names: PTnamesFilterFunc,
+  gross_result_dates: grossResultDateFilterFunc,
+  gross_results: grossResultFilterFunc
 }
 
 const searchConditionChanged = shallowRef<boolean>(false)
@@ -248,8 +295,8 @@ const isNotNullEmpty = (val: ShallowRef<string>): boolean => {
 
 const pageQueryParams = router.currentRoute.value.query
 const queryParamMap: IQueryParam[] = [
-  {name: "mk", val: makerFilterVal},
   {name: "vn", val: vaccineNameFilterVal},
+  {name: "mk", val: manufacturerFilterVal},
   {name: "ln", val: lotNoFilterVal},
   {name: "adf", val: ageFromFilterVal},
   {name: "adt", val: ageToFilterVal},
@@ -260,7 +307,11 @@ const queryParamMap: IQueryParam[] = [
   {name: "dtot", val: daysToOnsetToFilterVal},
   {name: "vtf", val: vaccinatedTimesFromFilterVal},
   {name: "vtt", val: vaccinatedTimesToFilterVal},
-  {name: "pre", val: preExistingConditionFilterVal},
+  {name: "pre", val: preExistingDiseaseFilterVal},
+  {name: "ptn", val: PTnamesFilterVal},
+  {name: "grdf", val: grossResultDateFromFilterVal},
+  {name: "grdt", val: grossResultDateToFilterVal},
+  {name: "gr", val: grossResultFilterVal},
 ]
 queryParamMap.forEach(item => {
   const param = pageQueryParams[item.name]
@@ -277,38 +328,43 @@ const copyUrlWithQueryParams = () => {
 }
 
 const vaccineSearchItems = [
-  { sm: 4, label: "メーカー", model: makerFilterVal, type: "text"},
   { sm: 4, label: "ワクチン名", model: vaccineNameFilterVal, type: "text"},
+  { sm: 4, label: "製造販売業者", model: manufacturerFilterVal, type: "text"},
   { sm: 4, label: "ロット番号", model: lotNoFilterVal, type: "text"}
 ]
 const individualSearchItems = [
-  { sm: 2, label: "年齢（from）", model: ageFromFilterVal, type: "number"},
-  { sm: 2, label: "年齢（to）", model: ageToFilterVal, type: "number"},
-  { sm: 4, label: "性別", model: genderFilterVal, type: "text"},
+  { sm: 1, label: "年齢（from）", model: ageFromFilterVal, type: "number"},
+  { sm: 1, label: "年齢（to）", model: ageToFilterVal, type: "number"},
+  { sm: 2, label: "性別", model: genderFilterVal, type: "text"},
   { sm: 2, label: "接種日（from）", model: vaccinatedDateFromFilterVal, type: "date"},
   { sm: 2, label: "接種日（to）", model: vaccinatedDateToFilterVal, type: "date"},
   { sm: 2, label: "発症までの日数（from）", model: daysToOnsetFromFilterVal, type: "number"},
   { sm: 2, label: "発症までの日数（to）", model: daysToOnsetToFilterVal, type: "number"},
   { sm: 2, label: "接種回数（from）", model: vaccinatedTimesFromFilterVal, type: "number"},
   { sm: 2, label: "接種回数（to）", model: vaccinatedTimesToFilterVal, type: "number"},
-  { sm: 4, label: "基礎疾患", model: preExistingConditionFilterVal, type: "text"},
+  { sm: 4, label: "基礎疾患", model: preExistingDiseaseFilterVal, type: "text"},
+  { sm: 4, label: "症状", model: PTnamesFilterVal, type: "text"},
+  { sm: 2, label: "転帰日（from）", model: grossResultDateFromFilterVal, type: "date"},
+  { sm: 2, label: "転帰日（to）", model: grossResultDateToFilterVal, type: "date"},
+  { sm: 4, label: "転帰内容", model: grossResultFilterVal, type: "text"},
 ]
 
 const _blank = shallowRef('')
 const keyAndFilterMap: IKeyAndFilter[] = [
   { key: "no", filterType: FilterType.String , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
-  { key: "maker", filterType: FilterType.String , valFilter: makerFilterVal, fromFilter: _blank, toFilter: _blank},
-  { key: "vaccine_name", filterType: FilterType.String , valFilter: vaccineNameFilterVal, fromFilter: _blank, toFilter: _blank},
-  { key: "lot_no", filterType: FilterType.String , valFilter: lotNoFilterVal, fromFilter: _blank, toFilter: _blank},
   { key: "age", filterType: FilterType.Number , valFilter: _blank, fromFilter: ageFromFilterVal, toFilter: ageToFilterVal},
   { key: "gender", filterType: FilterType.String , valFilter: genderFilterVal, fromFilter: _blank, toFilter: _blank},
-  { key: "date_vaccinated", filterType: FilterType.Date , valFilter: _blank, fromFilter: vaccinatedDateFromFilterVal, toFilter: vaccinatedDateToFilterVal},
-  { key: "date_occurred", filterType: FilterType.Date , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
-  { key: "diff", filterType: FilterType.Number , valFilter: _blank, fromFilter: daysToOnsetFromFilterVal, toFilter: daysToOnsetToFilterVal},
-  { key: "PT", filterType: FilterType.String , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
-  { key: "count", filterType: FilterType.Number , valFilter: _blank, fromFilter: vaccinatedTimesFromFilterVal, toFilter: vaccinatedTimesToFilterVal},
-  { key: "basic_disease", filterType: FilterType.String , valFilter: preExistingConditionFilterVal, fromFilter: _blank, toFilter: _blank},
-  { key: "evaluation", filterType: FilterType.String , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
+  { key: "vaccinated_date", filterType: FilterType.Date , valFilter: _blank, fromFilter: vaccinatedDateFromFilterVal, toFilter: vaccinatedDateToFilterVal},
+  { key: "days_to_onset", filterType: FilterType.Number , valFilter: _blank, fromFilter: daysToOnsetFromFilterVal, toFilter: daysToOnsetToFilterVal},
+  { key: "vaccine_name", filterType: FilterType.String , valFilter: vaccineNameFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "manufacturer", filterType: FilterType.String , valFilter: manufacturerFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "lot_no", filterType: FilterType.String , valFilter: lotNoFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "vaccinated_times", filterType: FilterType.Number , valFilter: _blank, fromFilter: vaccinatedTimesFromFilterVal, toFilter: vaccinatedTimesToFilterVal},
+  { key: "pre_existing_disease_names", filterType: FilterType.String , valFilter: preExistingDiseaseFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "PT_names", filterType: FilterType.String , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
+  { key: "gross_result_dates", filterType: FilterType.DateArray , valFilter: _blank, fromFilter: grossResultDateFromFilterVal, toFilter: grossResultDateToFilterVal},
+  { key: "gross_results", filterType: FilterType.StringArray , valFilter: grossResultFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "evaluated_result", filterType: FilterType.String , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
 ]
 const downloadFilterdDataAsCsv = () => {
   const filteredData = CreateFilteredData<IReportedMyocarditisIssue>(keyAndFilterMap, dataTableItems)
@@ -334,7 +390,7 @@ const clearFilter = () => {
   padding-top: 0.4rem;
   padding-bottom: 0.3rem;
 }
-.maker-text {
+.manufacturer-text {
   font-size: 0.9rem;
 }
 .vaccine-name-text {
