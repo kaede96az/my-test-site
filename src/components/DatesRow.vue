@@ -1,5 +1,8 @@
 <template>
-	<div v-if="dates.length > 1">
+	<div v-if="dates.length == 1">
+		<span>{{ dates[0] }}</span>
+    </div>
+	<div v-else-if="dates.length > 1">
 		<span>{{ dates[0] + '...' }}</span>
     </div>
 	<div v-else>-</div>
