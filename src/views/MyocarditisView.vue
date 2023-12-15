@@ -295,8 +295,8 @@ const isNotNullEmpty = (val: ShallowRef<string>): boolean => {
 
 const pageQueryParams = router.currentRoute.value.query
 const queryParamMap: IQueryParam[] = [
-  {name: "mk", val: manufacturerFilterVal},
   {name: "vn", val: vaccineNameFilterVal},
+  {name: "mk", val: manufacturerFilterVal},
   {name: "ln", val: lotNoFilterVal},
   {name: "adf", val: ageFromFilterVal},
   {name: "adt", val: ageToFilterVal},
@@ -308,6 +308,10 @@ const queryParamMap: IQueryParam[] = [
   {name: "vtf", val: vaccinatedTimesFromFilterVal},
   {name: "vtt", val: vaccinatedTimesToFilterVal},
   {name: "pre", val: preExistingDiseaseFilterVal},
+  {name: "ptn", val: PTnamesFilterVal},
+  {name: "grdf", val: grossResultDateFromFilterVal},
+  {name: "grdt", val: grossResultDateToFilterVal},
+  {name: "gr", val: grossResultFilterVal},
 ]
 queryParamMap.forEach(item => {
   const param = pageQueryParams[item.name]
@@ -340,6 +344,9 @@ const individualSearchItems = [
   { sm: 2, label: "接種回数（to）", model: vaccinatedTimesToFilterVal, type: "number"},
   { sm: 4, label: "基礎疾患", model: preExistingDiseaseFilterVal, type: "text"},
   { sm: 4, label: "症状", model: PTnamesFilterVal, type: "text"},
+  { sm: 2, label: "転帰日（from）", model: grossResultDateFromFilterVal, type: "date"},
+  { sm: 2, label: "転帰日（to）", model: grossResultDateToFilterVal, type: "date"},
+  { sm: 4, label: "転帰内容", model: grossResultFilterVal, type: "text"},
 ]
 
 const _blank = shallowRef('')
@@ -348,14 +355,15 @@ const keyAndFilterMap: IKeyAndFilter[] = [
   { key: "age", filterType: FilterType.Number , valFilter: _blank, fromFilter: ageFromFilterVal, toFilter: ageToFilterVal},
   { key: "gender", filterType: FilterType.String , valFilter: genderFilterVal, fromFilter: _blank, toFilter: _blank},
   { key: "vaccinated_date", filterType: FilterType.Date , valFilter: _blank, fromFilter: vaccinatedDateFromFilterVal, toFilter: vaccinatedDateToFilterVal},
-  { key: "onset_dates", filterType: FilterType.Date , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
   { key: "days_to_onset", filterType: FilterType.Number , valFilter: _blank, fromFilter: daysToOnsetFromFilterVal, toFilter: daysToOnsetToFilterVal},
   { key: "vaccine_name", filterType: FilterType.String , valFilter: vaccineNameFilterVal, fromFilter: _blank, toFilter: _blank},
   { key: "manufacturer", filterType: FilterType.String , valFilter: manufacturerFilterVal, fromFilter: _blank, toFilter: _blank},
   { key: "lot_no", filterType: FilterType.String , valFilter: lotNoFilterVal, fromFilter: _blank, toFilter: _blank},
-  { key: "PT_names", filterType: FilterType.String , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
   { key: "vaccinated_times", filterType: FilterType.Number , valFilter: _blank, fromFilter: vaccinatedTimesFromFilterVal, toFilter: vaccinatedTimesToFilterVal},
   { key: "pre_existing_disease_names", filterType: FilterType.String , valFilter: preExistingDiseaseFilterVal, fromFilter: _blank, toFilter: _blank},
+  { key: "PT_names", filterType: FilterType.String , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
+  { key: "gross_result_dates", filterType: FilterType.DateArray , valFilter: _blank, fromFilter: grossResultDateFromFilterVal, toFilter: grossResultDateToFilterVal},
+  { key: "gross_results", filterType: FilterType.StringArray , valFilter: grossResultFilterVal, fromFilter: _blank, toFilter: _blank},
   { key: "evaluated_result", filterType: FilterType.String , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
 ]
 const downloadFilterdDataAsCsv = () => {

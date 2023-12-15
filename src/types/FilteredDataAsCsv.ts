@@ -1,4 +1,4 @@
-import { DateFilterFunc, NumberArrayFilterFunc, NumberFilterFunc, StringArrayFilterFunc, StringFilterFunc } from "@/tools/FilterFunc"
+import { DateArrayFilterFunc, DateFilterFunc, NumberArrayFilterFunc, NumberFilterFunc, StringArrayFilterFunc, StringFilterFunc } from "@/tools/FilterFunc"
 import { shallowRef, type ShallowRef } from "vue"
 
 export interface IKeyAndFilter {
@@ -14,7 +14,8 @@ export enum FilterType {
 	StringArray = 1,
 	Number = 2,
 	NumberArray = 3,
-	Date = 4
+	Date = 4,
+	DateArray = 5
 }
 
 export const CreateFilteredData = <T>(keyFilters: IKeyAndFilter[], tableData: ShallowRef<T[] | undefined> | undefined): ShallowRef<T[] | undefined> => {
@@ -48,6 +49,8 @@ export const CreateFilteredData = <T>(keyFilters: IKeyAndFilter[], tableData: Sh
 					return NumberArrayFilterFunc(value, kf.fromFilter, kf.toFilter)
 				case FilterType.Date:
 					return DateFilterFunc(value, kf.fromFilter, kf.toFilter)
+				case FilterType.DateArray:
+					return DateArrayFilterFunc(value, kf.fromFilter, kf.toFilter)
 			
 				default:
 					break;
