@@ -122,13 +122,16 @@
     </template>
 
   </v-data-table>
+
+  <p class="text-caption text-right">※ 「 <a :href="carditisSummaryData?.carditis_summary.source.url">{{ carditisSummaryData?.carditis_summary.source.name }}</a> 」で
+      発表された資料の <b>{{ carditisSummaryData?.carditis_issues.date }}</b> 時点までの一覧を用いています。</p>
 </template>
 
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
 import type { IReportedMyocarditisIssue } from '@/types/ReportedMyocarditis'
-import { AppBarTitle, AppBarColor, CarditisReportsURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, CarditisReportsURL, CarditisSummaryURL } from '@/router/data'
 import router from '@/router/index'
 import { DateArrayFilterFunc, DateFilterFunc, NumberFilterFunc, StringArrayFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import StringArrayRow from '@/components/StringArrayRow.vue'
@@ -142,12 +145,14 @@ import { CreateUrlWithQueryParams } from '@/types/QueryParam'
 import { CreateCsvContent, CreateFilteredData, DownloadCsvFile, FilterType, type IKeyAndFilter } from '@/types/FilteredDataAsCsv'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
 import type { ISourceInfo } from '@/types/Summary'
+import type { ICarditisSummaryRoot } from '@/types/CarditisSummary'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 
 const loading = shallowRef(true)
 const dataTableItems = shallowRef<IReportedMyocarditisIssue[]>()
+const carditisSummaryData = shallowRef<ICarditisSummaryRoot>()
 onMounted(() => {
   axios
     .get<IReportedMyocarditisIssue[]>(CarditisReportsURL)
@@ -156,6 +161,13 @@ onMounted(() => {
       loading.value = false
     })
     .catch((error) => console.log('failed to get myocarditis data: ' + error))
+
+    axios
+    .get<ICarditisSummaryRoot>(CarditisSummaryURL)
+    .then((response) => {
+      carditisSummaryData.value = response.data
+    })
+    .catch((error) => console.log('failed to get carditis summary data: ' + error))
 })
 
 const headers = [
