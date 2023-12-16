@@ -96,8 +96,8 @@
       <StringArrayRow :s-array="item.value"></StringArrayRow>
     </template>
 
-    <template v-slot:[`item.source`]="item">
-      <a :href="(item.value as ISourceInfo).url">{{ (item.value as ISourceInfo).name }}</a>
+    <template v-slot:[`item.source.url`]="item">
+      <a :href="item.item['source']['url']">{{ item.item['source']['name'] }}</a>
     </template>
 
     <template v-slot:expanded-row="{ item }">
@@ -187,7 +187,7 @@ const headers = [
   { title: '転帰日', align: 'start', key: 'gross_result_dates' },
   { title: '転帰内容', align: 'start', key: 'gross_results' },
   { title: '評価', align: 'start', key: 'evaluated_result'},
-  { title: '元資料', align: 'start', key: 'source'}
+  { title: '元資料', align: 'start', key: 'source.url'}
 ]
 
 let expandedArray = shallowRef([])
