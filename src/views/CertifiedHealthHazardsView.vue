@@ -155,7 +155,7 @@
             <SymptomsCard :symptoms="item.symptoms" :click-close="() => { expandedArray = expandedArray.filter( n => n !== item.no )}"></SymptomsCard>
           </v-col>
           <v-col cols="12" md="6">
-            <PreExistingDiseaseCard :pre_existing_disease_names="item.pre_existing_conditions"></PreExistingDiseaseCard>
+            <PreExistingDiseaseCard title="基礎疾患一覧" :pre_existing_disease_names="item.pre_existing_conditions"></PreExistingDiseaseCard>
           </v-col>
         </v-row>
       </td>
