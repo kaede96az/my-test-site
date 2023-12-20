@@ -1,6 +1,6 @@
 <template>
   <v-card variant="elevated" color="blue-grey-darken-1" class="base">
-    <v-card-title>基礎疾患一覧</v-card-title>
+    <v-card-title>{{ title }}</v-card-title>
 
     <v-card-text class="test">
       <div class="mb-4">
@@ -17,6 +17,7 @@
 
 <script setup lang="ts">
 defineProps<{
+  title: string
   pre_existing_disease_names: string[]
 }>()
 </script>

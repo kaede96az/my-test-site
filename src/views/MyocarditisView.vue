@@ -115,7 +115,7 @@
             ></DateAndPTnames>
           </v-col>
           <v-col cols="12" md="6">
-            <PreExistingDiseaseCard :pre_existing_disease_names="item.pre_existing_disease_names"></PreExistingDiseaseCard>
+            <PreExistingDiseaseCard title="基礎疾患一覧" :pre_existing_disease_names="item.pre_existing_disease_names"></PreExistingDiseaseCard>
           </v-col>
         </v-row>
       </td>
@@ -144,7 +144,6 @@ import type { IQueryParam } from '@/types/QueryParam'
 import { CreateUrlWithQueryParams } from '@/types/QueryParam'
 import { CreateCsvContent, CreateFilteredData, DownloadCsvFile, FilterType, type IKeyAndFilter } from '@/types/FilteredDataAsCsv'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
-import type { ISourceInfo } from '@/types/Summary'
 import type { ICarditisSummaryRoot } from '@/types/CarditisSummary'
 
 AppBarTitle.value = String(router.currentRoute.value.name)

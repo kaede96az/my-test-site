@@ -4,24 +4,17 @@ export interface IReportedDeathIssues {
 
 export interface IReportedDeathIssue {
   no: number
+  manufacturer: string
+  vaccine_name: string
   age: number
   gender: string
-  date_vaccinated: string
-  date_occurred: string
+  vaccinated_dates: string
+  onset_dates: string
   lot_no: string
-  count: string
-  basic_disease: string
-  cause: string
-  PT: string
-  method: string
-  causual_relationship: string
-  other_possibility: string
-  evaluation1: string
-  comment1: string
-  evaluation2: string
-  comment2: string
-  document_no: string
-  case_no: string
-  maker: string
-  vaccine_name: string
+  vaccinated_times: string
+  pre_existing_conditions: string
+  PT_names: string[]
+  causal_relationship_by_expert: string
+  comments_by_expert: string
+  id: string
 }
