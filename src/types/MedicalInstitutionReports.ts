@@ -17,3 +17,14 @@ export interface IMedicalInstitutionReport {
 	gross_results: string
 	source: ISourceInfo
 }
+
+export interface IMedicalInstitutionSummary {
+	medical_institution_summary_from_reports: IMedicalInstitutionSummaryFromReports
+}
+
+export interface IMedicalInstitutionSummaryFromReports {
+	date: string
+	total_count: string
+	sum_causal_relationship: [string, number][]
+	sum_severities_of_related: [string, number][]
+}

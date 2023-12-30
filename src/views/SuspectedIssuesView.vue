@@ -238,8 +238,6 @@ onMounted(() => {
     .then((response) => {
       deathSummaryDataFromReports.value = response.data
 
-      
-
       // 2つ目以降のグラフが手動リフレッシュ無しにちゃんと表示されるようにするために必要な処理
       window.dispatchEvent(new Event('resize'))
     })
