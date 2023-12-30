@@ -15,7 +15,7 @@ export const AboutRoute = {
 
 export const SuspectedIssuesHomeRoute = {
   path: '/suspected-issues-summary',
-  name: '副反応疑い報告 - 集計結果',
+  name: '製造販売業者からの報告 - 集計結果',
   menu_name: '集計結果',
   icon: 'mdi-chart-bar',
   component: () => import('../views/SuspectedIssuesView.vue')
@@ -23,32 +23,35 @@ export const SuspectedIssuesHomeRoute = {
 export const SuspectedIssuesSubRoutes = [
   {
     path: '/reported-myocarditis-issues',
-    name: '副反応疑い報告 - 心筋炎/心膜炎報告',
+    name: '製造販売業者からの報告 - 心筋炎/心膜炎報告',
     menu_name: '心筋炎/心膜炎報告',
     icon: 'mdi-account-search',
     component: () => import('../views/MyocarditisView.vue')
   },
   {
     path: '/reported-death-issues',
-    name: '副反応疑い報告 - 死亡報告',
+    name: '製造販売業者からの報告 - 死亡報告',
     menu_name: '死亡報告',
     icon: 'mdi-account-search',
     component: () => import('../views/DeathView.vue')
   },
+]
+
+export const MedialInstitutionHomeRoute = {
+  path: '/summary-from-medical-institution',
+  name: '医療機関からの報告 - 集計結果',
+  menu_name: '集計結果',
+  icon: 'mdi-chart-bar',
+  component: () => import('../views/MedicalInstitutionSummaryView.vue')
+}
+export const MedialInstitutionRoutes = [
   {
-    path: '/reported-pfizer-issues',
-    name: '副反応疑い報告 - 医療機関から(ファイザーのみ)',
-    menu_name: 'ファイザーのみ',
+    path: '/reports-from-medical-institution',
+    name: '医療機関からの報告 - 副反応疑い報告',
+    menu_name: '副反応疑い報告',
     icon: 'mdi-account-search',
-    component: () => import('../views/PfizerView.vue')
+    component: () => import('../views/MedicalInstitutionView.vue')
   },
-  {
-    path: '/reported-moderna-issues',
-    name: '副反応疑い報告 - 医療機関から(モデルナの報告)',
-    menu_name: 'モデルナのみ',
-    icon: 'mdi-account-search',
-    component: () => import('../views/ModernaView.vue')
-  }
 ]
 
 export const HealthHazardsHomeRoute = {
@@ -81,6 +84,8 @@ export const AllRoutes = [
   AboutRoute,
   SuspectedIssuesHomeRoute,
   ...SuspectedIssuesSubRoutes,
+  MedialInstitutionHomeRoute,
+  ...MedialInstitutionRoutes,
   HealthHazardsHomeRoute,
   ...HealthHazardsSubRoutes
 ]

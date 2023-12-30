@@ -1,4 +1,4 @@
-import { DateArrayFilterFunc, DateFilterFunc, NumberArrayFilterFunc, NumberFilterFunc, StringArrayFilterFunc, StringFilterFunc } from "@/tools/FilterFunc"
+import { CausalRelationshipFunc, DateArrayFilterFunc, DateFilterFunc, NumberArrayFilterFunc, NumberFilterFunc, StringArrayFilterFunc, StringArrayStrictFilterFunc, StringFilterFunc } from "@/tools/FilterFunc"
 import { shallowRef, type ShallowRef } from "vue"
 
 export interface IKeyAndFilter {
@@ -12,10 +12,12 @@ export interface IKeyAndFilter {
 export enum FilterType {
 	String = 0,
 	StringArray = 1,
-	Number = 2,
-	NumberArray = 3,
-	Date = 4,
-	DateArray = 5
+	StringArrayStrict = 2,
+	Number = 3,
+	NumberArray = 4,
+	Date = 5,
+	DateArray = 6,
+	CausalRelationship = 7
 }
 
 export const CreateFilteredData = <T>(keyFilters: IKeyAndFilter[], tableData: ShallowRef<T[] | undefined> | undefined): ShallowRef<T[] | undefined> => {
@@ -39,6 +41,8 @@ export const CreateFilteredData = <T>(keyFilters: IKeyAndFilter[], tableData: Sh
 					return StringFilterFunc(value, kf.valFilter)
 				case FilterType.StringArray:
 					return StringArrayFilterFunc(value, kf.valFilter)
+				case FilterType.StringArrayStrict:
+					return StringArrayStrictFilterFunc(value, kf.valFilter)
 				case FilterType.Number:
 					val = value
 					if(typeof(val) == typeof('')){
@@ -51,6 +55,8 @@ export const CreateFilteredData = <T>(keyFilters: IKeyAndFilter[], tableData: Sh
 					return DateFilterFunc(value, kf.fromFilter, kf.toFilter)
 				case FilterType.DateArray:
 					return DateArrayFilterFunc(value, kf.fromFilter, kf.toFilter)
+				case FilterType.CausalRelationship:
+					return CausalRelationshipFunc(value, kf.valFilter)
 			
 				default:
 					break;

@@ -8,7 +8,6 @@ export const StringFilterFunc = (value: string, filterVal: ShallowRef<string>): 
   // フィルタリング処理が不要な場合はtrueを返すことで、項目を表示させる
   if (nullOrEmptyString(filterVal.value)) return true
 
-  //todo
   const targetVal = value.normalize('NFKC')
   const searchVal = filterVal.value.normalize('NFKC')
 
@@ -26,6 +25,28 @@ export const StringArrayFilterFunc = (values: string[], filterVal: ShallowRef<st
   }
 
   return false
+}
+
+export const StringArrayStrictFilterFunc = (values: string[], filterVal: ShallowRef<string>): boolean => {
+  if (nullOrEmptyString(filterVal.value)) return true
+  if(values.length == 0) return false
+
+  for (let index = 0; index < values.length; index++) {
+    if(values[index] == filterVal.value) return true
+  }
+
+  return false
+}
+
+export const CausalRelationshipFunc = (value: string, filterVal: ShallowRef<string>): boolean => {
+  if (nullOrEmptyString(filterVal.value)) return true
+
+  const targetVal = value.normalize('NFKC')
+  const searchVal = filterVal.value.normalize('NFKC')
+
+  if(targetVal == '' && searchVal == '(空白)') return true
+
+  return targetVal.indexOf(searchVal) > -1
 }
 
 export const NumberFilterFunc = (

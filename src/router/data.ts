@@ -3,6 +3,9 @@ import { shallowRef } from 'vue'
 export const AppBarTitle = shallowRef('副反応ダッシュボード')
 export const AppBarColor = shallowRef('white')
 
+export const MedicalInstitutionReportsURL = 
+  'https://kaede96az.github.io/dashboard-datasets/medical-institution-reports.json'
+
 export const CarditisReportsURL =
   'https://kaede96az.github.io/dashboard-datasets/carditis-reports.json'
 export const CarditisSummaryURL =

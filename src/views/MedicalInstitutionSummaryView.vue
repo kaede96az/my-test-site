@@ -6,46 +6,6 @@
       <p>（製造販売業者からの副反応疑い報告に関するまとめをここに掲載予定）</p>
     </v-container>
 
-    <v-container v-if="carditisSummaryData == undefined">
-      <v-progress-circular
-        color="primary"
-        indeterminate
-        :size="100"
-        :width="10"
-      ></v-progress-circular>
-    </v-container>
-
-    <v-container v-else>
-
-      <h4 class="text-h4">心筋炎/心膜炎 報告</h4>
-      <p>
-        「新型コロナワクチン接種後の心筋炎又は心膜炎疑い」として製造販売業者から報告された事例 <b>{{ carditisSummaryData?.carditis_summary.total.toLocaleString() }} [件]</b> の集計結果を示します。
-      </p>
-
-      <div class="d-flex justify-end">
-        <v-btn size="small" @click="changeChartView" color="blue" v-if="isPersentView">件数を表示</v-btn>
-        <v-btn size="small" @click="changeChartView" color="blue" v-else>割合を表示</v-btn>
-      </div>
-
-      <v-row>
-        <v-col cols="12" sm="6">
-          <apexchart :options="carditisSummaryOptions" :series="carditisSummarySeries"></apexchart>
-        </v-col>
-
-        <v-col cols="12" sm="6">
-          <apexchart :options="myocarditisByVaccineOptions" :series="myocarditisByVaccineSeries"></apexchart>
-        </v-col>
-
-        <v-col cols="12" sm="6">
-          <apexchart :options="pericarditisByVaccineOptions" :series="pericarditisByVaccineSeries"></apexchart>
-        </v-col>
-      </v-row>
-
-      <br>
-      <p class="text-caption text-right">※ 「 <a :href="carditisSummaryData?.carditis_summary.source.url">{{ carditisSummaryData?.carditis_summary.source.name }}</a> 」で
-      発表された資料の <b>{{ carditisSummaryData?.carditis_summary.date }}</b> 時点の数値を用いています。</p>
-    </v-container>
-
     <v-container v-if="deathSummaryData == undefined">
       <v-progress-circular
         color="primary"

@@ -3,6 +3,8 @@ import { RouterView } from 'vue-router'
 import {
   SuspectedIssuesHomeRoute,
   SuspectedIssuesSubRoutes,
+  MedialInstitutionHomeRoute,
+  MedialInstitutionRoutes,
   HealthHazardsHomeRoute,
   AboutRoute,
   HomeRoute,
@@ -54,6 +56,49 @@ export default {
           <v-list-item-title class="root-title">{{ HomeRoute.menu_name }}</v-list-item-title>
         </v-list-item>
 
+        <v-list-group value="MedicalInstitutionIssues">
+          <template v-slot:activator="{ props }">
+            <v-list-item
+              v-bind="props"
+              prepend-icon="mdi-file-document-alert-outline"
+              class="root-icon suspeted-issue-root"
+            >
+              <v-list-item-title class="d-none d-sm-flex root-title"
+                >医療機関からの報告</v-list-item-title
+              >
+              <v-list-item-title class="d-flex d-sm-none root-small-title2"
+                >医療機関からの報告</v-list-item-title
+              >
+            </v-list-item>
+          </template>
+
+          <v-list-item
+            :prepend-icon="MedialInstitutionHomeRoute.icon"
+            :href="`${baseURL}#${MedialInstitutionHomeRoute.path}`"
+            class="sub-icon suspeted-issue-sub"
+            :active="MedialInstitutionHomeRoute.name === selectedItem"
+            @click="selectedItem = MedialInstitutionHomeRoute.name"
+          >
+            <v-list-item-title class="sub-title suspeted-issue-sub">{{
+              MedialInstitutionHomeRoute.menu_name
+            }}</v-list-item-title>
+          </v-list-item>
+          <v-list-item
+            v-for="(r, i) in MedialInstitutionRoutes"
+            :key="i"
+            :prepend-icon="r.icon"
+            :value="r.name"
+            :href="`${baseURL}#${r.path}`"
+            class="sub-icon suspeted-issue-sub"
+            :active="r.name === selectedItem"
+            @click="selectedItem = r.name"
+          >
+            <v-list-item-title class="sub-title suspeted-issue-sub">{{
+              r.menu_name
+            }}</v-list-item-title>
+          </v-list-item>
+        </v-list-group>
+
         <v-list-group value="SuspectedIssues">
           <template v-slot:activator="{ props }">
             <v-list-item
@@ -61,7 +106,12 @@ export default {
               prepend-icon="mdi-file-document-alert-outline"
               class="root-icon suspeted-issue-root"
             >
-              <v-list-item-title class="root-title">副反応疑い報告</v-list-item-title>
+              <v-list-item-title class="d-none d-sm-flex root-title"
+                >製造販売業者からの報告</v-list-item-title
+              >
+              <v-list-item-title class="d-flex d-sm-none root-small-title2"
+                >製造販売業者からの報告</v-list-item-title
+              >
             </v-list-item>
           </template>
 
@@ -173,6 +223,9 @@ export default {
 }
 .root-small-title {
   font-size: 0.9rem;
+}
+.root-small-title2 {
+  font-size: 1.0rem;
 }
 
 .sub-icon {
