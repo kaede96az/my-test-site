@@ -50,6 +50,7 @@
       name: symptomsFilterFunc,
       'counts.sum': sumFilterFunc
     }"
+    items-per-page-text="ページに表示する項目数"
   >
     <template v-slot:[`item.name`]="item">
       <v-btn variant="text" color="deep-purple-darken-1" @click="navigateWithQuery(item.value)" class="text-none"><b>{{ item.value }}</b></v-btn>

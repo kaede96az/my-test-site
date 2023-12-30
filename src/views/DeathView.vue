@@ -28,7 +28,16 @@
         <h6 class="text-h6">個人に関する条件の設定</h6>
         <v-row>
           <v-col v-for="item, i in individualSearchItems" :key="i" cols="12" :sm="item.sm" class="group">
+            <v-select
+              v-if="item.type == 'select'"
+              v-model="item.model.value"
+              :label="item.label"
+              @update:model-value="searchTrigerFunc"
+              :items="item.selectList"
+            ></v-select>
+            <EvaluationResultHelpDialog v-else-if="item.type == 'help'"></EvaluationResultHelpDialog>
             <v-text-field
+              v-else
               :label="item.label"
               v-model="item.model.value"
               :type="item.type"
@@ -68,6 +77,7 @@
     item-value="id"
     v-model:expanded="expandedArray"
     :custom-key-filter="customKeyFilter"
+    items-per-page-text="ページに表示する項目数"
   >
     <template v-slot:[`item.manufacturer`]="item">
       <div class="maker-text">{{ item.value }}</div>
@@ -125,13 +135,15 @@
     </template>
 
   </v-data-table>
+
+  <p class="text-caption text-right">※ <b>{{ deathSummaryDataFromReports?.death_summary_from_reports.date }}</b> 時点までの集計一覧を用いています。</p>
 </template>
 
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import axios from 'axios'
 import type { IReportedDeathIssue } from '@/types/ReportedDeath'
-import { AppBarTitle, AppBarColor, DeathReportsURL } from '@/router/data'
+import { AppBarTitle, AppBarColor, DeathReportsURL, DeathSummaryFromReportsURL } from '@/router/data'
 import { NumberFilterFunc, DateFilterFunc, StringFilterFunc, DateArrayFilterFunc, StringArrayFilterFunc } from '@/tools/FilterFunc'
 import router from '@/router/index'
 import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
@@ -146,12 +158,15 @@ import type { IQueryParam } from '@/types/QueryParam'
 import { CreateUrlWithQueryParams } from '@/types/QueryParam'
 import { CreateCsvContent, CreateFilteredData, DownloadCsvFile, FilterType, type IKeyAndFilter } from '@/types/FilteredDataAsCsv'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
+import type { IDeathSummaryFromReportsRoot } from '@/types/DeathSummaryFromReports'
+import EvaluationResultHelpDialog from '@/components/EvaluationResultHelpDialog.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 
 const loading = shallowRef(true)
 const dataTableItems = shallowRef<IReportedDeathIssue[]>()
+const deathSummaryDataFromReports = shallowRef<IDeathSummaryFromReportsRoot>()
 onMounted(() => {
   axios
     .get<IReportedDeathIssue[]>(DeathReportsURL)
@@ -160,6 +175,16 @@ onMounted(() => {
       loading.value = false
     })
     .catch((error) => console.log('failed to get death data: ' + error))
+
+  axios
+    .get<IDeathSummaryFromReportsRoot>(DeathSummaryFromReportsURL)
+    .then((response) => {
+      deathSummaryDataFromReports.value = response.data
+
+      // 2つ目以降のグラフが手動リフレッシュ無しにちゃんと表示されるようにするために必要な処理
+      window.dispatchEvent(new Event('resize'))
+    })
+    .catch((error) => console.log('failed to get carditis summary data: ' + error))
 })
 
 let headers = [
@@ -307,6 +332,7 @@ const copyUrlWithQueryParams = () => {
   }
 }
 
+const _blank = shallowRef('')
 const vaccineSearchItems = [
   { sm: 4, label: "製造販売業者", model: makerFilterVal, type: "text"},
   { sm: 4, label: "ワクチン名", model: vaccineNameFilterVal, type: "text"},
@@ -324,10 +350,10 @@ const individualSearchItems = [
   { sm: 2, label: "接種回数（to）", model: vaccinatedTimesToFilterVal, type: "number"},
   { sm: 4, label: "基礎疾患等", model: preExistingConditionFilterVal, type: "text"},
   { sm: 4, label: "死因(MedDRA PT)", model: ptFilterVal, type: "text"},
-  { sm: 2, label: "専門家の因果関係評価", model: causalRelFilterVal, type: "text"},
+  { sm: 2, label: "専門家の因果関係評価", model: causalRelFilterVal, type: "select", selectList: ['', 'α', 'β', 'γ']},
+  { sm: 2, label: "専門家の因果関係評価のヘルプ", model: _blank, type: "help"},
 ]
 
-const _blank = shallowRef('')
 const keyAndFilterMap: IKeyAndFilter[] = [
   { key: "no", filterType: FilterType.String , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
   { key: "manufacturer", filterType: FilterType.String , valFilter: makerFilterVal, fromFilter: _blank, toFilter: _blank},

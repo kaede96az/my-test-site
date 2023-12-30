@@ -123,6 +123,7 @@
     item-value="no"
     v-model:expanded="expandedArray"
     :custom-key-filter="customKeyFilter"
+    items-per-page-text="ページに表示する項目数"
   >
     <template v-slot:[`item.age`]="item">
       <span>{{ item.value.join(', ') }}</span>

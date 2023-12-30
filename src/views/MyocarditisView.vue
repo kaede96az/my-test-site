@@ -28,7 +28,16 @@
         <h6 class="text-h6">個人に関する条件の設定</h6>
         <v-row>
           <v-col v-for="item, i in individualSearchItems" :key="i" cols="12" :sm="item.sm" class="group">
+            <v-select
+              v-if="item.type == 'select'"
+              v-model="item.model.value"
+              :label="item.label"
+              @update:model-value="searchTrigerFunc"
+              :items="item.selectList"
+            ></v-select>
+            <EvaluationResultHelpDialog v-else-if="item.type == 'help'"></EvaluationResultHelpDialog>
             <v-text-field
+              v-else
               :label="item.label"
               v-model="item.model.value"
               :type="item.type"
@@ -67,6 +76,7 @@
     item-value="no"
     v-model:expanded="expandedArray"
     :custom-key-filter="keyFilters"
+    items-per-page-text="ページに表示する項目数"
   >
     <template v-slot:[`item.manufacturer`]="item">
       <span class="manufacturer-text">{{ item.value }}</span>
@@ -124,7 +134,7 @@
   </v-data-table>
 
   <p class="text-caption text-right">※ 「 <a :href="carditisSummaryData?.carditis_summary.source.url">{{ carditisSummaryData?.carditis_summary.source.name }}</a> 」で
-      発表された資料の <b>{{ carditisSummaryData?.carditis_issues.date }}</b> 時点までの一覧を用いています。</p>
+      発表された資料の <b>{{ carditisSummaryData?.carditis_issues.date }}</b> 時点までの集計一覧を用いています。</p>
 </template>
 
 <script setup lang="ts">
@@ -145,6 +155,7 @@ import { CreateUrlWithQueryParams } from '@/types/QueryParam'
 import { CreateCsvContent, CreateFilteredData, DownloadCsvFile, FilterType, type IKeyAndFilter } from '@/types/FilteredDataAsCsv'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
 import type { ICarditisSummaryRoot } from '@/types/CarditisSummary'
+import EvaluationResultHelpDialog from '@/components/EvaluationResultHelpDialog.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
@@ -161,7 +172,7 @@ onMounted(() => {
     })
     .catch((error) => console.log('failed to get myocarditis data: ' + error))
 
-    axios
+  axios
     .get<ICarditisSummaryRoot>(CarditisSummaryURL)
     .then((response) => {
       carditisSummaryData.value = response.data
@@ -176,7 +187,7 @@ const headers = [
   { title: '性別', align: 'start', key: 'gender'},
   { title: '接種日', align: 'start', key: 'vaccinated_date'},
   { title: '症状発生日', align: 'start', key: 'onset_dates'},
-  { title: '発症までの日数', align: 'start', key: 'days_to_onset'},
+  { title: '発症までの日数', align: 'start', key: 'days_to_onset', width: 80},
   { title: 'ワクチン名', align: 'start', key: 'vaccine_name'},
   { title: '製造販売業者', align: 'start', key: 'manufacturer'},
   { title: 'ロット番号', align: 'start', key: 'lot_no'},
@@ -185,7 +196,7 @@ const headers = [
   { title: '症状名', align: 'start', key: 'PT_names' },
   { title: '転帰日', align: 'start', key: 'gross_result_dates' },
   { title: '転帰内容', align: 'start', key: 'gross_results' },
-  { title: '評価', align: 'start', key: 'evaluated_result'},
+  { title: '専門家の因果関係評価', align: 'start', key: 'evaluated_result', width: 100},
   { title: '元資料', align: 'start', key: 'source.url'}
 ]
 
@@ -240,6 +251,11 @@ const preExistingDiseaseFilterFunc = (value: any): boolean => {
   return StringArrayFilterFunc(value, preExistingDiseaseFilterVal)
 }
 
+const causalRelFilterVal = shallowRef('')
+const causalRelFilterFunc = (value: string): boolean => {
+  return StringFilterFunc(value, causalRelFilterVal)
+}
+
 const PTnamesFilterVal = shallowRef('')
 const PTnamesFilterFunc = (value: any): boolean => {
   return StringArrayFilterFunc(value, PTnamesFilterVal)
@@ -268,7 +284,8 @@ const keyFilters = {
   pre_existing_disease_names: preExistingDiseaseFilterFunc,
   PT_names: PTnamesFilterFunc,
   gross_result_dates: grossResultDateFilterFunc,
-  gross_results: grossResultFilterFunc
+  gross_results: grossResultFilterFunc,
+  evaluated_result: causalRelFilterFunc
 }
 
 const searchConditionChanged = shallowRef<boolean>(false)
@@ -311,6 +328,7 @@ const queryParamMap: IQueryParam[] = [
   {name: "grdf", val: grossResultDateFromFilterVal},
   {name: "grdt", val: grossResultDateToFilterVal},
   {name: "gr", val: grossResultFilterVal},
+  {name: "cr", val: causalRelFilterVal},
 ]
 queryParamMap.forEach(item => {
   const param = pageQueryParams[item.name]
@@ -326,9 +344,10 @@ const copyUrlWithQueryParams = () => {
   }
 }
 
+const _blank = shallowRef('')
 const vaccineSearchItems = [
-  { sm: 4, label: "ワクチン名", model: vaccineNameFilterVal, type: "text"},
   { sm: 4, label: "製造販売業者", model: manufacturerFilterVal, type: "text"},
+  { sm: 4, label: "ワクチン名", model: vaccineNameFilterVal, type: "text"},
   { sm: 4, label: "ロット番号", model: lotNoFilterVal, type: "text"}
 ]
 const individualSearchItems = [
@@ -346,9 +365,10 @@ const individualSearchItems = [
   { sm: 2, label: "転帰日（from）", model: grossResultDateFromFilterVal, type: "date"},
   { sm: 2, label: "転帰日（to）", model: grossResultDateToFilterVal, type: "date"},
   { sm: 4, label: "転帰内容", model: grossResultFilterVal, type: "text"},
+  { sm: 2, label: "専門家の因果関係評価", model: causalRelFilterVal, type: "select", selectList: ['', 'α', 'β', 'γ']},
+  { sm: 2, label: "専門家の因果関係評価のヘルプ", model: _blank, type: "help"},
 ]
 
-const _blank = shallowRef('')
 const keyAndFilterMap: IKeyAndFilter[] = [
   { key: "no", filterType: FilterType.String , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
   { key: "age", filterType: FilterType.Number , valFilter: _blank, fromFilter: ageFromFilterVal, toFilter: ageToFilterVal},
@@ -363,7 +383,7 @@ const keyAndFilterMap: IKeyAndFilter[] = [
   { key: "PT_names", filterType: FilterType.String , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
   { key: "gross_result_dates", filterType: FilterType.DateArray , valFilter: _blank, fromFilter: grossResultDateFromFilterVal, toFilter: grossResultDateToFilterVal},
   { key: "gross_results", filterType: FilterType.StringArray , valFilter: grossResultFilterVal, fromFilter: _blank, toFilter: _blank},
-  { key: "evaluated_result", filterType: FilterType.String , valFilter: _blank, fromFilter: _blank, toFilter: _blank},
+  { key: "evaluated_result", filterType: FilterType.String , valFilter: causalRelFilterVal, fromFilter: _blank, toFilter: _blank},
 ]
 const downloadFilterdDataAsCsv = () => {
   const filteredData = CreateFilteredData<IReportedMyocarditisIssue>(keyAndFilterMap, dataTableItems)

@@ -98,6 +98,7 @@
               </tr>
             </tbody>
           </v-table>
+          <EvaluationResultHelpDialog></EvaluationResultHelpDialog>
         </v-col>
 
         <v-col cols="12" sm="6">
@@ -179,6 +180,7 @@ import router from '@/router/index'
 import type { ICarditisSummaryRoot } from '@/types/CarditisSummary'
 import type { IDeathSummaryRoot } from '@/types/DeathSummary'
 import type { IDeathSummaryFromReportsRoot } from '@/types/DeathSummaryFromReports'
+import EvaluationResultHelpDialog from '@/components/EvaluationResultHelpDialog.vue'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'

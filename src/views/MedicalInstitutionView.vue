@@ -75,6 +75,7 @@
     item-value="no"
     v-model:expanded="expandedArray"
     :custom-key-filter="customKeyFilter"
+    items-per-page-text="ページに表示する項目数"
   >
     <template v-slot:[`item.manufacturer`]="item">
       <span class="manufacturer-text">{{ item.value }}</span>
@@ -135,14 +136,16 @@
     </template>
 
   </v-data-table>
+
+  <p class="text-caption text-right">※ <b>{{ medicalInstitutionSummary?.medical_institution_summary_from_reports.date }}</b> 時点までの集計一覧を用いています。</p>
 </template>
 
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import router from '@/router/index'
 import axios from 'axios'
-import { AppBarTitle, AppBarColor, MedicalInstitutionReportsURL } from '@/router/data'
-import { CausalRelationshipFunc, DateFilterFunc, NumberFilterFunc, StringArrayFilterFunc, StringArrayStrictFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
+import { AppBarTitle, AppBarColor, MedicalInstitutionReportsURL, MedicalInstitutionSummaryURL } from '@/router/data'
+import { CausalRelationshipFunc, DateFilterFunc, NumberFilterFunc, StringArrayStrictFilterFunc, StringFilterFunc } from '@/tools/FilterFunc'
 import { SearchTrigger, SearchTriggerFunc } from '@/tools/SearchTriggerFunc'
 import StringArrayRow from '@/components/StringArrayRow.vue'
 import DatesRow from '@/components/DatesRow.vue'
@@ -153,13 +156,14 @@ import type { IQueryParam } from '@/types/QueryParam'
 import { CreateUrlWithQueryParams } from '@/types/QueryParam'
 import { CreateCsvContent, CreateFilteredData, DownloadCsvFile, FilterType, type IKeyAndFilter } from '@/types/FilteredDataAsCsv'
 import SearchRelatedToolBar from '@/components/SearchRelatedToolBar.vue'
-import type { IMedicalInstitutionReport } from '@/types/MedicalInstitutionReports'
+import type { IMedicalInstitutionReport, IMedicalInstitutionSummary } from '@/types/MedicalInstitutionReports'
 
 AppBarTitle.value = String(router.currentRoute.value.name)
 AppBarColor.value = '#2962ff'
 
 const loading = shallowRef(true)
 const dataTableItems = shallowRef<IMedicalInstitutionReport[]>()
+const medicalInstitutionSummary = shallowRef<IMedicalInstitutionSummary>()
 onMounted(() => {
   axios
     .get<IMedicalInstitutionReport[]>(MedicalInstitutionReportsURL)
@@ -168,6 +172,13 @@ onMounted(() => {
       loading.value = false
     })
     .catch((error) => console.log('failed to get reported pfizer data: ' + error))
+
+  axios
+    .get<IMedicalInstitutionSummary>(MedicalInstitutionSummaryURL)
+    .then((response) => {
+      medicalInstitutionSummary.value = response.data
+    })
+    .catch((error) => console.log('failed to get medical insutitution summary data: ' + error))
 })
 
 const headers = [
@@ -177,9 +188,9 @@ const headers = [
   { title: '性別', align: 'start', key: 'gender' },
   { title: '接種日', align: 'start', key: 'vaccinated_dates' },
   { title: '症状発生日', align: 'start', key: 'onset_dates' },
-  { title: '発症までの日数', align: 'start', key: 'days_to_onset' },
+  { title: '発症までの日数', align: 'start', key: 'days_to_onset', width: 80 },
   { title: 'ワクチン名', align: 'start', key: 'vaccine_name', width: 200 },
-  { title: 'メーカー', align: 'start', key: 'manufacturer' },
+  { title: '製造販売業者', align: 'start', key: 'manufacturer' },
   { title: 'ロット番号', align: 'start', key: 'lot_no' },
   { title: '症状名', align: 'start', key: 'PT_names' },
   { title: '因果関係', align: 'start', key: 'causal_relationship' },
