@@ -14,11 +14,43 @@
       <v-card-title>副反応疑い報告・副作用報告</v-card-title>
       <v-card-text
         >新型コロナワクチンの接種により副反応や副作用を被った可能性がある方々に関して、
-        医療機関や製薬会社が行なった報告がをまとめて、閲覧や検索をしやすくしています。
+        医療機関や製造販売業者（製薬会社）からの報告をまとめて、閲覧や検索をしやすくしています。
       </v-card-text>
 
       <v-item-group selected-class="bg-primary">
+
         <v-container>
+          <h4>医療機関からの報告を検索するページ</h4>
+          <v-row>
+            <v-col cols="12" sm="6">
+              <v-hover v-slot:default="{ isHovering, props }">
+                <v-card
+                  v-bind="props"
+                  :prepend-icon="MedialInstitutionHomeRoute.icon"
+                  :title="MedialInstitutionHomeRoute.menu_name"
+                  :href="`${baseURL}#${MedialInstitutionHomeRoute.path}`"
+                  :elevation="isHovering ? 10 : 3"
+                >
+                </v-card>
+              </v-hover>
+            </v-col>
+            <v-col cols="12" sm="6" v-for="(r, i) in MedialInstitutionRoutes" :key="i">
+              <v-hover v-slot:default="{ isHovering, props }">
+                <v-card
+                  v-bind="props"
+                  :prepend-icon="r.icon"
+                  :title="r.menu_name"
+                  :href="`${baseURL}#${r.path}`"
+                  :elevation="isHovering ? 10 : 3"
+                >
+                </v-card>
+              </v-hover>
+            </v-col>
+          </v-row>
+        </v-container>
+
+        <v-container>
+          <h4>製造販売業者からの報告を検索するページ</h4>
           <v-row>
             <v-col cols="12" sm="6">
               <v-hover v-slot:default="{ isHovering, props }">
@@ -32,13 +64,7 @@
                 </v-card>
               </v-hover>
             </v-col>
-          </v-row>
-        </v-container>
-
-        <v-container>
-          <h4>製薬会社からの報告を検索するページ</h4>
-          <v-row>
-            <v-col cols="12" sm="6" v-for="(r, i) in SuspectedIssuesSubRoutes.slice(0, 2)" :key="i">
+            <v-col cols="12" sm="6" v-for="(r, i) in SuspectedIssuesSubRoutes" :key="i">
               <v-hover v-slot:default="{ isHovering, props }">
                 <v-card
                   v-bind="props"
@@ -53,23 +79,6 @@
           </v-row>
         </v-container>
 
-        <v-container>
-          <h4>医療機関からの報告を検索するページ</h4>
-          <v-row>
-            <v-col cols="12" sm="6" v-for="(r, i) in SuspectedIssuesSubRoutes.slice(2, 4)" :key="i">
-              <v-hover v-slot:default="{ isHovering, props }">
-                <v-card
-                  v-bind="props"
-                  :prepend-icon="r.icon"
-                  :title="r.menu_name"
-                  :href="`${baseURL}#${r.path}`"
-                  :elevation="isHovering ? 10 : 3"
-                >
-                </v-card>
-              </v-hover>
-            </v-col>
-          </v-row>
-        </v-container>
       </v-item-group>
 
       <v-divider></v-divider>
@@ -197,7 +206,9 @@ import {
   HealthHazardsHomeRoute,
   HealthHazardsSubRoutes,
   SuspectedIssuesHomeRoute,
-  SuspectedIssuesSubRoutes
+  SuspectedIssuesSubRoutes,
+  MedialInstitutionHomeRoute,
+  MedialInstitutionRoutes
 } from '@/router/routes'
 import { shallowRef } from 'vue'
 import router from '@/router/index'
